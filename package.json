@@ -1,7 +1,7 @@
 {
   "name": "ol3Echarts",
-  "version": "0.1.1",
-  "description": "echarts MapboxGL",
+  "version": "1.0.0",
+  "description": "ol3Echarts",
   "main": "index.js",
   "scripts": {
     "build": "webpack --env build"
