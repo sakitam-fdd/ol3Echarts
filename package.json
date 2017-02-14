@@ -1,0 +1,20 @@
+{
+  "name": "ol3Echarts",
+  "version": "0.1.1",
+  "description": "echarts MapboxGL",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --env build"
+  },
+  "author": "FDD",
+  "license": "ISC",
+  "dependencies": {
+    "echarts": "^3.3.2",
+    "webpack": "^2.2.0",
+    "webpack-dev-middleware": "^1.8.3",
+    "webpack-hot-middleware": "^2.12.2",
+    "webpack-merge": "^0.14.1",
+    "zrender": "^3.2.2"
+  },
+  "devDependencies": {}
+}
