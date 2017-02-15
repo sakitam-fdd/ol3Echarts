@@ -14,7 +14,7 @@
 </head>
 <body>
 <div id="map"></div>
-<script type="text/javascript" src="public/ol.js"></script>
+<script type="text/javascript" src="public/ol-debug.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
 <script src="../dist/ol3Echarts.js"></script>
@@ -31,143 +31,157 @@
       ],
       view: new ol.View({
         center: [0, 0],
-        zoom: 2
+        zoom: 2,
+        projection: projection
       })
     })
-
-    var geoCoordMap = {
-      '北京': [116.46, 39.92],
-      '乌鲁木齐': [87.68, 43.77],
-      '天津': [117.2, 39.13],
-      '洛阳': [112.44, 34.7],
-      '武汉': [114.31, 30.52]
-    };
-
-    var data = [
-      {
-        name: '北京',
-        value: [
-          {value: 335, name: '直接访问'},
-          {value: 310, name: '邮件营销'},
-          {value: 234, name: '联盟广告'},
-          {value: 135, name: '视频广告'},
-          {value: 1548, name: '搜索引擎'}
-        ]
-      },
-      {
-        name: '乌鲁木齐',
-        value: [
-          {value: 335, name: '直接访问'},
-          {value: 310, name: '邮件营销'},
-          {value: 234, name: '联盟广告'},
-          {value: 135, name: '视频广告'},
-          {value: 1548, name: '搜索引擎'}
-        ]
-      },
-      {
-        name: '天津',
-        value: [
-          {value: 335, name: '直接访问'},
-          {value: 310, name: '邮件营销'},
-          {value: 234, name: '联盟广告'},
-          {value: 135, name: '视频广告'},
-          {value: 1548, name: '搜索引擎'}
-        ]
-      },
-      {
-        name: '洛阳',
-        value: [
-          {value: 335, name: '直接访问'},
-          {value: 310, name: '邮件营销'},
-          {value: 234, name: '联盟广告'},
-          {value: 135, name: '视频广告'},
-          {value: 1548, name: '搜索引擎'}
-        ]
-      },
-      {
-        name: '武汉',
-        value: [
-          {value: 335, name: '直接访问'},
-          {value: 310, name: '邮件营销'},
-          {value: 234, name: '联盟广告'},
-          {value: 135, name: '视频广告'},
-          {value: 1548, name: '搜索引擎'}
-        ]
-      }
-    ];
-
-    var convertData = function (data) {
-      var res = [];
-      for (var i = 0; i < data.length; i++) {
-        var geoCoord = geoCoordMap[data[i].name];
-        if (geoCoord) {
-          res.push({
-            name: data[i].name,
-            value: geoCoord.concat(data[i].value)
-          });
-        }
-      }
-      return res;
-    };
-
-    var series = [];
-    data.forEach(function (item, i) {
-      series.push(
-        {
-          name: item['name'],
-          type: 'pie',
-          coordinateSystem: 'olMap',
-          zlevel: 2,
-          label: {
-            normal: {
-              show: true,
-              position: 'right',
-              formatter: '{b}'
-            }
-          },
-          itemStyle: {
-            emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
-          },
-          data: geoCoordMap[item['name']].concat(item['value'])
-        })
-    });
-
-    var option = {
-      title: {
-        text: 'ol3扩展Echarts3之多个饼图叠加',
-        subtext: 'Develop By FDD',
-        left: 'center',
-        textStyle: {
-          color: '#fff'
-        }
-      },
-      tooltip: {
-        trigger: 'item'
-      },
-      legend: {
-        orient: 'vertical',
-        top: 'bottom',
-        left: 'right',
-        data: ['北京 Top10', '上海 Top10', '广州 Top10'],
-        textStyle: {
-          color: '#fff'
-        },
-        selectedMode: 'single'
-      },
-      olMap: {},
-      series: series
-    };
     map.once('postrender', function (e) {
+      var geoCoordMap = {
+        '北京': [116.46, 39.92],
+        '乌鲁木齐': [87.68, 43.77],
+        '天津': [117.2, 39.13],
+        '洛阳': [112.44, 34.7],
+        '武汉': [114.31, 30.52]
+      };
+
+      var data = [
+        {
+          name: '北京',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '乌鲁木齐',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '天津',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '洛阳',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '武汉',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        }
+      ];
+
+      var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+          var geoCoord = geoCoordMap[data[i].name];
+          if (geoCoord) {
+            res.push({
+              name: data[i].name,
+              value: geoCoord.concat(data[i].value)
+            });
+          }
+        }
+        return res;
+      };
+      var series = [];
+      var meathData = function () {
+        series = [];
+        data.forEach(function (item, i) {
+          series.push(
+            {
+              name: item['name'],
+              type: 'pie',
+              coordinateSystem: 'olMap',
+              zlevel: 2,
+              center: map.getPixelFromCoordinate(geoCoordMap[item['name']]),
+              radius: [0, 15],
+              label: {
+                normal: {
+                  show: true,
+                  position: 'right',
+                  formatter: '{b}'
+                }
+              },
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              },
+              data: item['value']
+            })
+        });
+      }
+      meathData();
+      var option = {
+        title: {
+          text: 'ol3扩展Echarts3之多个饼图叠加',
+          subtext: 'Develop By FDD',
+          left: 'center',
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          orient: 'vertical',
+          top: 'bottom',
+          left: 'right',
+          data: ['北京', '乌鲁木齐', '天津', '洛阳', '武汉'],
+          textStyle: {
+            color: '#fff'
+          },
+          selectedMode: 'multiple'
+        },
+        olMap: {},
+        series: series
+      };
       if (echartslayer !== undefined)
         return;
       var echartslayer = new ol3Echarts(map);
       echartslayer.chart.setOption(option);
-    });
 
+      var changeHandler = function () {
+        var option = echartslayer.chart.getOption() || {};
+        meathData()
+        option.series = series || []
+        echartslayer.chart.clear();
+        echartslayer.chart.setOption(option)
+      }
+      map.getView().on('change:resolution', changeHandler);
+      map.getView().on('change:center', changeHandler);
+      map.on('moveend', changeHandler);
+    });
   });
 
 </script>
