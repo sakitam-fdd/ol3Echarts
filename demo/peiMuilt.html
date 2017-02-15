@@ -14,6 +14,7 @@
 </head>
 <body>
 <div id="map"></div>
+<button id="clickT">直接访问</button>
 <script type="text/javascript" src="public/ol-debug.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
@@ -122,13 +123,13 @@
               zlevel: 2,
               center: map.getPixelFromCoordinate(geoCoordMap[item['name']]),
               radius: [0, 15],
-              label: {
-                normal: {
-                  show: true,
-                  position: 'right',
-                  formatter: '{b}'
-                }
-              },
+//              label: {
+//                normal: {
+//                  show: true,
+//                  position: 'right',
+//                  formatter: '{b}'
+//                }
+//              },
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -149,7 +150,7 @@
           textStyle: {
             color: '#fff'
           }
-        },
+        },/*
         tooltip: {
           trigger: 'item'
         },
@@ -161,6 +162,12 @@
           textStyle: {
             color: '#fff'
           },
+          selectedMode: 'multiple'
+        },*/
+        legend: {
+          x: "left",
+          show: false,
+          data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
           selectedMode: 'multiple'
         },
         olMap: {},
@@ -176,11 +183,17 @@
         meathData()
         option.series = series || []
         echartslayer.chart.clear();
-        echartslayer.chart.setOption(option)
+        echartslayer.chart.setOption(option);
       }
       map.getView().on('change:resolution', changeHandler);
       map.getView().on('change:center', changeHandler);
       map.on('moveend', changeHandler);
+      $('#clickT').on('click', function () {
+        echartslayer.chart.dispatchAction({
+          type: 'legendToggleSelect',
+          name: '直接访问'
+        });
+      })
     });
   });
 
