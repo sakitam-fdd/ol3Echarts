@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ol3-Echarts</title>
+  <link rel="stylesheet" href="public/ol.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<button id="clickT">直接访问</button>
+<script type="text/javascript" src="public/ol-debug.js"></script>
+<script src="public/jquery.js"></script>
+<script src="public/echarts/echarts.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  $(document).ready(function () {
+    var projection = ol.proj.get('EPSG:4326');
+    var map = new ol.Map({
+      target: 'map',
+      controls: [],
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        })
+      ],
+      view: new ol.View({
+        center: [0, 0],
+        zoom: 2,
+        projection: projection
+      })
+    })
+    map.once('postrender', function (e) {
+      var geoCoordMap = {
+        '北京': [116.46, 39.92],
+        '乌鲁木齐': [87.68, 43.77],
+        '天津': [117.2, 39.13],
+        '洛阳': [112.44, 34.7],
+        '武汉': [114.31, 30.52]
+      };
+
+      var data = [
+        {
+          name: '北京',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '乌鲁木齐',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '天津',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '洛阳',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '武汉',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        }
+      ];
+
+      var series = [];
+      var meathData = function () {
+        series = [];
+        data.forEach(function (item, i) {
+          series.push(
+            {
+              name: item['name'],
+              type: 'bar',
+              coordinateSystem: 'olMap',
+              zlevel: 2,
+//              center: map.getPixelFromCoordinate(geoCoordMap[item['name']]),
+//              label: {
+//                normal: {
+//                  show: true,
+//                  position: 'right',
+//                  formatter: '{b}'
+//                }
+//              },
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              },
+              data: [335,310,234,135,1584]
+            })
+        });
+      }
+      meathData();
+      var option = {
+        title: {
+          text: 'ol3扩展Echarts3之多个饼图叠加',
+          subtext: 'Develop By FDD',
+          left: 'center',
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        xAxis: {
+          data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"]
+        },
+        yAxis: {},
+        legend: {
+          x: "left",
+          show: false,
+          data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
+          selectedMode: 'multiple'
+        },
+        olMap: {},
+        series: series
+      };
+      if (echartslayer !== undefined)
+        return;
+      var echartslayer = new ol3Echarts(map);
+      echartslayer.chart.setOption(option);
+
+      var changeHandler = function () {
+        var option = echartslayer.chart.getOption() || {};
+        meathData()
+        option.series = series || []
+        echartslayer.chart.clear();
+        echartslayer.chart.setOption(option);
+      }
+      map.getView().on('change:resolution', changeHandler);
+      map.getView().on('change:center', changeHandler);
+      map.on('moveend', changeHandler);
+      $('#clickT').on('click', function () {
+        echartslayer.chart.dispatchAction({
+          type: 'legendToggleSelect',
+          name: '直接访问'
+        });
+      })
+    });
+  });
+
+</script>
+</body>
+</html>
