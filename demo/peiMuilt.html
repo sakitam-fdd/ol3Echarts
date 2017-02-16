@@ -15,6 +15,7 @@
 <body>
 <div id="map"></div>
 <button id="clickT">直接访问</button>
+<button id="clickM">测试高亮</button>
 <script type="text/javascript" src="public/ol-debug.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
@@ -193,6 +194,18 @@
           type: 'legendToggleSelect',
           name: '直接访问'
         });
+      })
+      $('#clickM').on('click', function () {
+        echartslayer.chart.dispatchAction({
+          type: 'highlight',
+          seriesName: '北京'
+        });
+        setTimeout(function () {
+          echartslayer.chart.dispatchAction({
+            type: 'downplay',
+            seriesName: '北京'
+          })
+        },200)
       })
     });
   });

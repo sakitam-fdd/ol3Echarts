@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript" src="public/ol-debug.js"></script>
+<script src="public/jquery.js"></script>
+<script src="public/echarts/echarts.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  $(document).ready(function () {
+    var projection = ol.proj.get('EPSG:4326');
+    var map = new ol.Map({
+      target: 'map',
+      controls: [],
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        })
+      ],
+      view: new ol.View({
+        center: [0, 0],
+        zoom: 2,
+        projection: projection
+      })
+    })
+    map.once('postrender', function (e) {
+      var geoCoordMap = {
+        '北京': [116.46, 39.92],
+        '乌鲁木齐': [87.68, 43.77],
+        '天津': [117.2, 39.13],
+        '洛阳': [112.44, 34.7],
+        '武汉': [114.31, 30.52]
+      };
+      var grids = {
+        show: false,
+        containLabel: true,
+        borderWidth: 0,
+        borderColor:'#fff',
+        width: 100,
+        height: 100
+      }
+      var option = {
+        color: ['#3398DB'],
+        tooltip : {
+          trigger: 'axis',
+          axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: grids,
+        xAxis : [
+          {
+            type : 'category',
+            data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis : [
+          {
+            type : 'value'
+          }
+        ],
+        series : [
+          {
+            name:'直接访问',
+            type:'bar',
+            barWidth: '60%',
+            data:[10, 52, 200, 334, 390, 330, 220]
+          }
+        ]
+      };
+      var changeHandler = function () {
+        var coorPixel = map.getPixelFromCoordinate([112.44, 34.7])
+        grids.left = coorPixel[0];
+        grids.top = coorPixel[1];
+        var option = echartslayer.chart.getOption() || {};
+        option.grid = grids;
+        echartslayer.chart.clear();
+        echartslayer.chart.setOption(option);
+      }
+      if (echartslayer !== undefined)
+        return;
+      var echartslayer = new ol3Echarts(map);
+      changeHandler()
+      echartslayer.chart.setOption(option);
+
+      map.getView().on('change:resolution', changeHandler);
+      map.getView().on('change:center', changeHandler);
+      map.on('moveend', changeHandler);
+    });
+  });
+</script>
+</body>
+</html>
