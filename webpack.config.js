@@ -2,7 +2,7 @@ var PROD = process.argv.indexOf('-p') >= 0;
 
 module.exports = {
   entry: {
-    'ol3Echarts': __dirname + '/index.js',
+    'EchartsComponent': __dirname + '/src/index.js',
   },
   output: {
     libraryTarget: 'umd',

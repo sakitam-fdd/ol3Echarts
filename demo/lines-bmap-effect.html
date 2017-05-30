@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ol3-line</title>
+  <link rel="stylesheet" href="public/ol.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript" src="public/ol.js"></script>
+<script src="public/jquery.js"></script>
+<script src="public/echarts/echarts.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  $(document).ready(function () {
+    var projection = ol.proj.get('EPSG:4326');
+    $.get('data/lines-bus.json', function(data) {
+      var hStep = 300 / (data.length - 1);
+      var busLines = [].concat.apply([], data.map(function (busLine, idx) {
+        var prevPt;
+        var points = [];
+        for (var i = 0; i < busLine.length; i += 2) {
+          var pt = [busLine[i], busLine[i + 1]];
+          if (i > 0) {
+            pt = [
+              prevPt[0] + pt[0],
+              prevPt[1] + pt[1]
+            ];
+          }
+          prevPt = pt;
+          points.push([pt[0] / 1e4, pt[1] / 1e4]);
+        }
+        return {
+          coords: points,
+          lineStyle: {
+            normal: {
+              color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * idx))
+            }
+          }
+        };
+      }));
+      var map = new ol.Map({
+        target: 'map',
+        controls: [],
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          })
+        ],
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 2
+        })
+      })
+      var option = {
+        olMap: {},
+        series: [
+          {
+            type: 'lines',
+            coordinateSystem: 'olMap',
+            polyline: true,
+            data: busLines,
+            silent: true,
+            lineStyle: {
+              normal: {
+                // color: '#c23531',
+                // color: 'rgb(200, 35, 45)',
+                opacity: 0.2,
+                width: 1
+              }
+            },
+            progressiveThreshold: 500,
+            progressive: 200
+          },
+          {
+            type: 'lines',
+            coordinateSystem: 'olMap',
+            polyline: true,
+            data: busLines,
+            lineStyle: {
+              normal: {
+                width: 0
+              }
+            },
+            effect: {
+              constantSpeed: 20,
+              show: true,
+              trailLength: 0.1,
+              symbolSize: 1.5
+            },
+            zlevel: 1
+          }
+        ]
+      };
+      map.once('postrender', function (e) {
+        if (echartslayer !== undefined)
+          return;
+        var echartslayer = new ol3Echarts(map);
+        echartslayer.chart.setOption(option);
+      });
+    })
+  });
+
+</script>
+</body>
+</html>

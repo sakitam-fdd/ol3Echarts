@@ -1,13 +1,13 @@
 {
-  "name": "ol3Echarts",
+  "name": "EchartsComponent",
   "version": "1.0.0",
   "description": "ol3Echarts",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "webpack --env build"
+    "build": "webpack --progress --colors --watch --env build"
   },
   "author": "FDD",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "echarts": "^3.3.2",
     "webpack": "^2.2.0",

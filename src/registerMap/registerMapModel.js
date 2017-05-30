@@ -1,12 +1,11 @@
 define(function (require) {
   return require('echarts').extendComponentModel({
-    type: 'olMap',
+    type: 'HMap',
     getBMap: function () {
-      // __bmap is injected when creating BMapCoordSys
-      return this.__olMap;
+      return this.Map
     },
     defaultOption: {
       roam: false
     }
-  });
-});
+  })
+})

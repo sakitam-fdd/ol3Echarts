@@ -1,13 +1,12 @@
 define(function (require) {
-  return require('echarts').extendComponentView({
-    type: 'olMap',
-
-    render: function (olMapModel, ecModel, api) {
+  var echarts = require('echarts')
+  return echarts.extendComponentView({
+    type: 'HMap',
+    render: function (MapModel, echartModel, api) {
       var rendering = true
-
-      var olMap = echarts.olMap
+      var Map = echarts.Map
       var viewportRoot = api.getZr().painter.getViewportRoot()
-      var coordSys = olMapModel.coordinateSystem
+      var coordSys = MapModel.coordinateSystem
       var moveHandler = function (type, target) {
         if (rendering) {
           return
@@ -19,48 +18,35 @@ define(function (require) {
         ]
         viewportRoot.style.left = mapOffset[0] + 'px'
         viewportRoot.style.top = mapOffset[1] + 'px'
-
         coordSys.setMapOffset(mapOffset)
-        olMapModel.__mapOffset = mapOffset
-
+        MapModel.mapOffset = mapOffset
         api.dispatchAction({
-          type: 'olMapRoam'
+          type: 'MapRoam'
         })
       }
-
-      function zoomEndHandler () {
+      var zoomEndHandler = function () {
         if (rendering) {
           return
         }
         api.dispatchAction({
-          type: 'olMapRoam'
+          type: 'MapRoam'
         })
       }
-
-      // olMap.off('move', this._oldMoveHandler)
-      // // FIXME
-      // // Moveend may be triggered by centerAndZoom method when creating coordSys next time
-      // // olMap.removeEventListener('moveend', this._oldMoveHandler)
-      // olMap.off('zoomend', this._oldZoomEndHandler)
-      // olMap.on('move', moveHandler)
-      // // olMap.addEventListener('moveend', moveHandler)
-      // olMap.on('zoomend', zoomEndHandler)
-      olMap.getView().on('change:resolution', moveHandler);
-      olMap.getView().on('change:center', moveHandler);
-      olMap.on('moveend', moveHandler);
-
       this._oldMoveHandler = moveHandler
       this._oldZoomEndHandler = zoomEndHandler
-
-      var roam = olMapModel.get('roam')
+      Map.getView().on('change:resolution', moveHandler)
+      Map.getView().on('change:center', moveHandler)
+      Map.getView().on('change:rotation', moveHandler)
+      Map.on('moveend', moveHandler)
+      var roam = MapModel.get('roam')
       if (roam && roam !== 'scale') {
         // todo 允许拖拽
-      }else {
+      } else {
         // todo 不允许拖拽
       }
       if (roam && roam !== 'move') {
         // todo 允许移动
-      }else {
+      } else {
         // todo 不允许允许移动
       }
       rendering = false
