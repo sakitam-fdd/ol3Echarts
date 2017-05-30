@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ol3-line</title>
-  <link rel="stylesheet" href="public/ol.css">
+  <link rel="stylesheet" href="public/openlayer/ol.css">
   <style>
     html, body, #map {
       height: 100%;
@@ -14,10 +14,10 @@
 </head>
 <body>
 <div id="map"></div>
-<script type="text/javascript" src="public/ol.js"></script>
+<script type="text/javascript" src="public/openlayer/ol.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
-<script src="../dist/ol3Echarts.js"></script>
+<script src="../dist/EchartsComponent.js"></script>
 <script>
   $(document).ready(function () {
     var projection = ol.proj.get('EPSG:4326');
@@ -55,16 +55,17 @@
           })
         ],
         view: new ol.View({
-          center: [0, 0],
-          zoom: 2
+          center: [12955581.193756126, 4855625.714773314],
+          zoom: 10
+//          projection: projection
         })
       })
       var option = {
-        olMap: {},
+        HMap: {},
         series: [
           {
             type: 'lines',
-            coordinateSystem: 'olMap',
+            coordinateSystem: 'HMap',
             polyline: true,
             data: busLines,
             silent: true,
@@ -81,7 +82,7 @@
           },
           {
             type: 'lines',
-            coordinateSystem: 'olMap',
+            coordinateSystem: 'HMap',
             polyline: true,
             data: busLines,
             lineStyle: {
@@ -102,9 +103,12 @@
       map.once('postrender', function (e) {
         if (echartslayer !== undefined)
           return;
-        var echartslayer = new ol3Echarts(map);
+        var echartslayer = new EchartsComponent(map);
         echartslayer.chart.setOption(option);
       });
+      map.on('click', function (ev) {
+        console.log(ev.coordinate)
+      })
     })
   });
 

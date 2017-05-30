@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ol3-Echarts</title>
-  <link rel="stylesheet" href="public/ol.css">
+  <link rel="stylesheet" href="public/openlayer/ol.css">
   <style>
     html, body, #map {
       height: 100%;
@@ -16,10 +16,10 @@
 <div id="map"></div>
 <button id="clickT">直接访问</button>
 <button id="clickM">测试高亮</button>
-<script type="text/javascript" src="public/ol-debug.js"></script>
+<script type="text/javascript" src="public/openlayer/ol.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
-<script src="../dist/ol3Echarts.js"></script>
+<script src="../dist/EchartsComponent.js"></script>
 <script>
   $(document).ready(function () {
     var projection = ol.proj.get('EPSG:4326');
@@ -120,7 +120,7 @@
             {
               name: item['name'],
               type: 'pie',
-              coordinateSystem: 'olMap',
+              coordinateSystem: 'HMap',
               zlevel: 2,
               center: map.getPixelFromCoordinate(geoCoordMap[item['name']]),
               radius: [0, 15],
@@ -171,12 +171,12 @@
           data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
           selectedMode: 'multiple'
         },
-        olMap: {},
+        HMap: {},
         series: series
       };
       if (echartslayer !== undefined)
         return;
-      var echartslayer = new ol3Echarts(map);
+      var echartslayer = new EchartsComponent(map);
       echartslayer.chart.setOption(option);
 
       var changeHandler = function () {

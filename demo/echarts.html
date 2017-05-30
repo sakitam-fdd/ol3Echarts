@@ -899,14 +899,6 @@
       console.log('aa');
       if (echartslayer !== undefined)
         return;
-//      ol3EchartsVm = new ol.Observable.ol3Echarts({
-//        map: map,
-//        echartsOp: echarts
-//      });
-//      var container = ol3EchartsVm.getEchartsContainer();
-//      var myChart = ol3EchartsVm.initECharts(container);
-//      window.onresize = myChart.resize;
-//      ol3EchartsVm.setOption(option, true);
       var echartslayer = new EchartsComponent(map);
       echartslayer.chart.setOption(option);
     });
