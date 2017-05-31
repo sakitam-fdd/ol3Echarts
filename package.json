@@ -6,7 +6,17 @@
   "scripts": {
     "build": "webpack --progress --colors --watch --env build"
   },
-  "author": "FDD",
+  "keywords": [
+    "webgis",
+    "canvas",
+    "echarts3",
+    "openlayers"
+  ],
+  "author": "FDD <smileFDD@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sakitam-fdd/ol3Echarts.git"
+  },
   "license": "MIT",
   "dependencies": {
     "echarts": "^3.3.2",
