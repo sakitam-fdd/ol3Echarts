@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>飞机航线</title>
+  <link rel="stylesheet" href="public/openlayer/ol.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript" src="public/openlayer/ol.js"></script>
+<script src="public/jquery.js"></script>
+<script src="public/echarts/echarts.js"></script>
+<script src="../dist/EchartsComponent.js"></script>
+<script>
+  $(document).ready(function () {
+    var map = new ol.Map({
+      target: 'map',
+      controls: [],
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        })
+      ],
+      view: new ol.View({
+        center: [0, 0],
+        zoom: 2
+      })
+    })
+    $.get('data/flights.json', function(data) {
+      function getAirportCoord(idx) {
+        return [data.airports[idx][3], data.airports[idx][4]];
+      }
+      var routes = data.routes.map(function (airline) {
+        return [
+          getAirportCoord(airline[1]),
+          getAirportCoord(airline[2])
+        ];
+      });
+      var option = {
+        title: {
+          text: '航线',
+          left: 'center',
+          textStyle: {
+            color: '#eee'
+          }
+        },
+        backgroundColor: 'transparent',
+        tooltip: {
+          formatter: function (param) {
+            var route = data.routes[param.dataIndex];
+            return data.airports[route[1]][1] + ' > ' + data.airports[route[2]][1];
+          }
+        },
+        HMap: {},
+        series: [{
+          type: 'lines',
+          coordinateSystem: 'HMap',
+          data: routes,
+          large: true,
+          largeThreshold: 100,
+          lineStyle: {
+            normal: {
+              opacity: 0.05,
+              width: 0.5,
+              curveness: 0.3
+            }
+          },
+          // 设置混合模式为叠加
+          blendMode: 'lighter'
+        }]
+      }
+      map.once('postrender', function (e) {
+        if (echartslayer !== undefined)
+          return;
+        var echartslayer = new EchartsComponent(map);
+        echartslayer.chart.setOption(option);
+      });
+    })
+  });
+</script>
+</body>
+</html>
