@@ -17,15 +17,15 @@ npm run build
 ### CDN引用
 
 ```bash
-https://unpkg.com/ol3Echarts@1.0.0/dist/ol3Echarts.js
-https://unpkg.com/ol3Echarts@1.0.0/dist/ol3Echarts.min.js
+https://unpkg.com/ol3-echarts@1.0.0/dist/ol3Echarts.js
+https://unpkg.com/ol3-echarts@1.0.0/dist/ol3Echarts.min.js
 ```
 
 ### NPM包管理
 
 ```bash
-npm install ol3Echarts --save
-import ol3Echarts from 'ol3Echarts'
+npm install ol3-echarts --save
+import ol3Echarts from 'ol3-echarts'
 ```
 
 ### AMD-模块加载器

@@ -1,5 +1,5 @@
 {
-  "name": "EchartsComponent",
+  "name": "ol3-echarts",
   "version": "1.0.0",
   "description": "ol3Echarts",
   "main": "src/index.js",
