@@ -3,7 +3,7 @@ var echarts = require('echarts')
  * 创建独立对象
  * @param map
  */
-var EchartsComponent = function (map) {
+var ol3Echarts = function (map) {
   this.map = map
   var size = this.map.getSize()
   var div = document.createElement('div')
@@ -24,7 +24,7 @@ var EchartsComponent = function (map) {
 /**
  * 移除echarts
  */
-EchartsComponent.prototype.remove = function () {
+ol3Echarts.prototype.remove = function () {
   this._echartsContainer.parentNode.removeChild(this._echartsContainer)
   this.map = undefined
   echarts.Map = undefined
@@ -32,7 +32,7 @@ EchartsComponent.prototype.remove = function () {
 /**
  * 响应地图尺寸变化
  */
-EchartsComponent.prototype.resize = function () {
+ol3Echarts.prototype.resize = function () {
   var that = this
   var size = this.map.getSize()
   that._echartsContainer.style.width = size[0] + 'px'
@@ -42,4 +42,4 @@ EchartsComponent.prototype.resize = function () {
   }
 }
 
-module.exports = EchartsComponent
+module.exports = ol3Echarts

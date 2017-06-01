@@ -18,7 +18,7 @@
 <script type="text/javascript" src="public/openlayer/ol.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
-<script src="../dist/EchartsComponent.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
 <script>
   $(document).ready(function () {
     var projection = ol.proj.get('EPSG:4326');
@@ -31,9 +31,9 @@
         })
       ],
       view: new ol.View({
-        center: [0, 0],
-        zoom: 2,
-        projection: projection
+        center: [108.32519531249997, 33.35449218750002],
+        zoom: 5,
+        projection: projection,
       })
     })
     map.once('postrender', function (e) {
@@ -152,7 +152,7 @@
       };
       if (echartslayer !== undefined)
         return;
-      var echartslayer = new EchartsComponent(map);
+      var echartslayer = new ol3Echarts(map);
       echartslayer.chart.setOption(option);
 
       var changeHandler = function () {

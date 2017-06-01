@@ -4,10 +4,57 @@
 
 ## 下载
 
+
 ```bash
-git clone https://github.com/sakitam-fdd/HMap.git
+git clone https://github.com/sakitam-fdd/ol3Echarts.git
 npm install
+npm run dev
 npm run build
+```
+
+## 引用方式
+
+### CDN引用
+
+```bash
+https://unpkg.com/ol3Echarts@1.0.0/dist/ol3Echarts.js
+https://unpkg.com/ol3Echarts@1.0.0/dist/ol3Echarts.min.js
+```
+
+### NPM包管理
+
+```bash
+npm install ol3Echarts --save
+import ol3Echarts from 'ol3Echarts'
+```
+
+### AMD-模块加载器
+
+> 独立下载版本已用 UMD 包装，因此它们可以直接用作 AMD 模块。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>test</title>
+</head>
+<body>
+<div id="map"></div>
+<script src="../dist/ol3Echarts.js"></script>
+<script >
+var option = '' // 标准echarts配置
+var echartslayer = new ol3Echarts(map);
+echartslayer.chart.setOption(option);
+</script>
+</body>
+</html>
+```
+
+### ES6方式引入
+
+```javascript
+import ol3Echarts from '../dist/ol3Echarts.js'
 ```
 
 ## 使用方法

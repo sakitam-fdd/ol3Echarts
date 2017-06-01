@@ -1,12 +1,13 @@
+/*! This file is created by FDD */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("echarts"));
 	else if(typeof define === 'function' && define.amd)
 		define(["echarts"], factory);
 	else if(typeof exports === 'object')
-		exports["EchartsComponent"] = factory(require("echarts"));
+		exports["ol3Echarts"] = factory(require("echarts"));
 	else
-		root["EchartsComponent"] = factory(root["echarts"]);
+		root["ol3Echarts"] = factory(root["echarts"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_0__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -91,7 +92,7 @@ var echarts = __webpack_require__(0)
  * 创建独立对象
  * @param map
  */
-var EchartsComponent = function (map) {
+var ol3Echarts = function (map) {
   this.map = map
   var size = this.map.getSize()
   var div = document.createElement('div')
@@ -112,7 +113,7 @@ var EchartsComponent = function (map) {
 /**
  * 移除echarts
  */
-EchartsComponent.prototype.remove = function () {
+ol3Echarts.prototype.remove = function () {
   this._echartsContainer.parentNode.removeChild(this._echartsContainer)
   this.map = undefined
   echarts.Map = undefined
@@ -120,7 +121,7 @@ EchartsComponent.prototype.remove = function () {
 /**
  * 响应地图尺寸变化
  */
-EchartsComponent.prototype.resize = function () {
+ol3Echarts.prototype.resize = function () {
   var that = this
   var size = this.map.getSize()
   that._echartsContainer.style.width = size[0] + 'px'
@@ -130,7 +131,7 @@ EchartsComponent.prototype.resize = function () {
   }
 }
 
-module.exports = EchartsComponent
+module.exports = ol3Echarts
 
 
 /***/ }),
@@ -360,3 +361,4 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (re
 /***/ })
 /******/ ]);
 });
+//# sourceMappingURL=ol3Echarts.js.map
