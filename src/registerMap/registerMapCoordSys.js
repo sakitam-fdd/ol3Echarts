@@ -47,7 +47,7 @@ define(function (require) {
    * @returns {ol.Pixel}
    */
   CoordSys.prototype.dataToPoint = function (coords) {
-    return this.Map.getPixelFromCoordinate(ol.proj.fromLonLat(coords))
+    return this.Map.getPixelFromCoordinate(coords)
   }
 
   /**
