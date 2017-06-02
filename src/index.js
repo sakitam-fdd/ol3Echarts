@@ -1,3 +1,3 @@
 require('./registerMap/registerMap.js')
-var EchartsComponent = require('./layer/echartsLayer.js')
-module.exports = EchartsComponent
+var ol3Echarts = require('./layer/echartsLayer.js')
+module.exports = ol3Echarts

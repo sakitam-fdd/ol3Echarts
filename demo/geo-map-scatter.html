@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>统计图</title>
-  <link rel="stylesheet" href="public/openlayer/ol.css">
+  <link rel="stylesheet" href="public/HMap/HMap.css">
   <style>
     html, body, #map {
       height: 100%;
@@ -14,27 +14,34 @@
 </head>
 <body>
 <div id="map"></div>
-<script type="text/javascript" src="public/openlayer/ol.js"></script>
+<script src="public/HMap/HMap.js"></script>
 <script src="public/jquery.js"></script>
 <script src="public/echarts/echarts.js"></script>
+<script src="./mapConfig.js"></script>
 <script src="../dist/ol3Echarts.js"></script>
 <script>
   $(document).ready(function () {
-    var projection = ol.proj.get('EPSG:4326');
-    var map = new ol.Map({
-      target: 'map',
-      controls: [],
-      layers: [
-        new ol.layer.Tile({
-          source: new ol.source.OSM()
-        })
-      ],
-      view: new ol.View({
-        center: [108.32519531249997, 33.35449218750002],
-        zoom: 5,
-        projection: projection,
-      })
-    })
+    var Maps = new HMap.Map();
+    Maps.initMap('map', {
+      view: {
+        center: [11464017.313439976, 3934744.6720247352],
+        resolutions: resolutions,
+        fullExtent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+        tileSize: 256,
+        origin: [-2.0037508342787E7, 2.0037508342787E7],
+        projection: 'EPSG:102100',
+        zoom: 5 // resolution
+      },
+      logo: {},
+      baseLayers: [  // 不传时默认加载OSM地图。
+        {
+          layerName: 'vector',
+          isDefault: true,
+          layerType: 'TileXYZ',
+          layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer'
+        }
+      ]
+    });
     var data = [
       {name: '海门', value: 9},
       {name: '鄂尔多斯', value: 12},
@@ -358,10 +365,10 @@
         }
       ]
     };
-    map.once('postrender', function (e) {
+    Maps.map.once('postrender', function (e) {
       if (echartslayer !== undefined)
         return;
-      var echartslayer = new ol3Echarts(map);
+      var echartslayer = new ol3Echarts(Maps.map);
       echartslayer.chart.setOption(option);
     });
 

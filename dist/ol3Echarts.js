@@ -165,8 +165,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(2)
-var EchartsComponent = __webpack_require__(1)
-module.exports = EchartsComponent
+var ol3Echarts = __webpack_require__(1)
+module.exports = ol3Echarts
 
 
 /***/ }),
@@ -222,7 +222,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {ol.Pixel}
    */
   CoordSys.prototype.dataToPoint = function (coords) {
-    return this.Map.getPixelFromCoordinate(coords)
+    return this.Map.getPixelFromCoordinate(ol.proj.fromLonLat(coords))
   }
 
   /**
