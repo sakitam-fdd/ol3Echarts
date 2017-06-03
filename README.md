@@ -68,7 +68,7 @@ import ol3Echarts from '../dist/ol3Echarts.js'
 
 ![春运](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/qxt-cn.gif)
 
-![公交路线](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/bus.gif)
+![公交路线](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/busLine.gif)
 
 ![路况](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/traffic.gif)
 
