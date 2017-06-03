@@ -904,7 +904,7 @@
         console.log('aa');
         if (echartslayer !== undefined)
           return;
-        var echartslayer = new ol3Echarts(Maps.map);
+        var echartslayer = new ol3Echarts(Maps.map, '.ol-overlaycontainer');
         echartslayer.chart.setOption(option);
       });
     }

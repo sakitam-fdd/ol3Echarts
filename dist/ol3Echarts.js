@@ -266,6 +266,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {ol.Pixel}
    */
   CoordSys.prototype.dataToPoint = function (coords) {
+    if (coords && Array.isArray(coords) && coords.length > 0) {
+      coords = coords.map(function (item) {
+        if (typeof item === 'string') {
+          item = Number(item)
+        }
+        return item
+      })
+    }
     return this.Map.getPixelFromCoordinate(ol.proj.fromLonLat(coords))
   }
 

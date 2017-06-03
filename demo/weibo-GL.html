@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>微博签到数据点亮中国</title>
+  <link rel="stylesheet" href="public/HMap/HMap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="public/HMap/HMap.js"></script>
+<script src="public/jquery.js"></script>
+<script src="public/echarts/echarts.js"></script>
+<script src="./mapConfig.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  document.onreadystatechange = function () {
+    if (document.readyState === 'complete') {
+      var Maps = new HMap.Map();
+      Maps.initMap('map', {
+        view: {
+          center: [13442207.605459828, 3600600.2028761804],
+          resolutions: resolutions,
+          fullExtent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+          tileSize: 256,
+          origin: [-2.0037508342787E7, 2.0037508342787E7],
+          projection: 'EPSG:102100',
+          zoom: 12 // resolution
+        },
+        logo: {},
+        baseLayers: [  // 不传时默认加载OSM地图。
+          {
+            layerName: 'vector',
+            isDefault: true,
+            layerType: 'TileXYZ',
+            layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer'
+          }
+        ]
+      });
+      // 创建图表实例
+      var echartslayer = undefined
+      if (echartslayer !== undefined) {
+        return false
+      } else {
+        echartslayer = new ol3Echarts(Maps.map, '.ol-overlaycontainer');
+      }
+      echartslayer.chart.showLoading()
+      $.get('data/weibo-gl.json', function (rawData) {
+        echartslayer.chart.hideLoading()
+        var weiboData = rawData.map(function (serieData, idx) {
+          var px = serieData[0] / 1000;
+          var py = serieData[1] / 1000;
+          var res = [[px, py]];
+          for (var i = 2; i < serieData.length; i += 2) {
+            var dx = serieData[i] / 1000;
+            var dy = serieData[i + 1] / 1000;
+            var x = px + dx;
+            var y = py + dy;
+            res.push([x.toFixed(2), y.toFixed(2), 1]);
+            px = x;
+            py = y;
+          }
+          return res;
+        });
+        var option = {
+          title: {
+            text: '微博签到数据点亮中国',
+            left: 'center',
+            top: 'top',
+            textStyle: {
+              color: '#fff'
+            }
+          },
+          tooltip: {},
+          legend: {
+            left: 'right',
+            data: ['强', '中', '弱'],
+            textStyle: {
+              color: '#ccc'
+            }
+          },
+          HMap: {},
+          series: [
+            {
+              name: '弱',
+              type: 'scatterGL',
+              coordinateSystem: 'HMap',
+              symbolSize: 1,
+              itemStyle: {
+                shadowBlur: 2,
+                shadowColor: 'rgba(37, 140, 249, 0.8)',
+                color: 'rgba(37, 140, 249, 0.8)'
+              },
+              data: weiboData[0]
+            },
+            {
+              name: '中',
+              type: 'scatterGL',
+              coordinateSystem: 'HMap',
+              symbolSize: 1,
+              itemStyle: {
+                shadowBlur: 2,
+                shadowColor: 'rgba(14, 241, 242, 0.8)',
+                color: 'rgba(14, 241, 242, 0.8)'
+              },
+              data: weiboData[1]
+            },
+            {
+              name: '强',
+              type: 'scatterGL',
+              coordinateSystem: 'HMap',
+              symbolSize: 1,
+              itemStyle: {
+                shadowBlur: 2,
+                shadowColor: 'rgba(255, 255, 255, 0.8)',
+                color: 'rgba(255, 255, 255, 0.8)'
+              },
+              data: weiboData[2]
+            }
+          ]
+        };
+        echartslayer.chart.setOption(option)
+      });
+    }
+  }
+</script>
+</body>
+</html>
