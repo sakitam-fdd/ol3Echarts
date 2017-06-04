@@ -4,13 +4,17 @@
 
 body, html {
   -webkit-user-select: none;
-  background: #153874;
+  /*background: #153874;*/
   color: #323232;
   width: 100%;
   height: 100%;
   margin: 0;
   /*overflow: hidden;*/
   padding: 0;
+  background-image: url("../../asset/images/bg.jpg");
+  background-position: center center;
+  /*overflow: hidden;*/
+  background-size: cover;
 }
 
 a {
