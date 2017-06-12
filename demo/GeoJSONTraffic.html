@@ -31,7 +31,7 @@
           tileSize: 256,
           origin: [-2.0037508342787E7, 2.0037508342787E7],
           projection: 'EPSG:102100',
-          zoom: 12 // resolution
+          zoom: 2 // resolution
         },
         logo: {},
         baseLayers: [  // 不传时默认加载OSM地图。
@@ -43,29 +43,6 @@
           }
         ]
       });
-      // 处理数据
-      function convertData (sourceData) {
-        return [].concat.apply([], $.map(sourceData, function (busLine, index) {
-          var prevPoint = null;
-          var points = [];
-          var value = busLine.shift();
-          for (var i = 0; i < busLine.length; i += 2) {
-            var point = [busLine[i], busLine[i + 1]];
-            if (i > 0) {
-              point = [
-                prevPoint[0] + point[0],
-                prevPoint[1] + point[1]
-              ];
-            }
-            prevPoint = point;
-            points.push([point[0] / 1e5, point[1] / 1e5]);
-          }
-          return {
-            value: value,
-            coords: points
-          };
-        }));
-      }
       // 创建图表实例
       var echartslayer = undefined
       if (echartslayer !== undefined) {
@@ -123,11 +100,21 @@
         ]
       };
       echartslayer.chart.showLoading()
-      $.get('https://www.easy-mock.com/mock/593aabdf8ac26d795fc563b1/echarts/traffic', function (res) {
+      $.get('https://www.easy-mock.com/mock/593e9f628ac26d795fea412c/ol3Echarts/trafficData', function (res) {
         if (res && res['success']) {
           echartslayer.chart.hideLoading()
-          option.series[0].data = convertData(res['data']);
-          echartslayer.chart.setOption(option);
+          var data = res.data
+          if (data && Array.isArray(data) && data.length > 0) {
+            var lines = []
+            data.forEach(function (item, index) {
+              lines.push({
+                coords: item['geometry']['coordinates'],
+                value: item['properties']['value']
+              })
+            })
+            option.series[0].data = lines
+            echartslayer.chart.setOption(option);
+          }
         }
       });
     }

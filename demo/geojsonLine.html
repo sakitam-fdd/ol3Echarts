@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>苏州工业园区部分道路动态展示</title>
+  <title>geojson</title>
   <link rel="stylesheet" href="public/HMap/HMap.css">
   <style>
     html, body, #map {
@@ -47,26 +47,16 @@
         var busLines = [];
         var data = res.data;
         var hStep = 300 / (data.length - 1);
-        var i = 0;
-        var CoordsTransform = new HMap.CoordsTransform()
-        for (var x in data) {
-          var line = data[x];
-          var pointString = line.ROAD_LINE;
-          var pointArr = pointString.split(';');
-          var lnglats = [];
-          for (var j in pointArr) {
-            var _coords = pointArr[j].split(',')
-            var coords = CoordsTransform.bdtogcj02(Number(_coords[0]), Number(_coords[1]))
-            var coords_ = CoordsTransform.gcj02towgs84(coords[0], coords[1])
-            lnglats.push(_coords)
-          }
-          busLines.push({
-            coords: lnglats,
-            lineStyle: {
-              normal: {
-                color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * x))
+        if (data && Array.isArray(data) && data.length > 0) {
+          data.forEach(function (item, index) {
+            busLines.push({
+              coords: item['geometry']['coordinates'],
+              lineStyle: {
+                normal: {
+                  color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * index))
+                }
               }
-            }
+            })
           })
         }
         var options = {
