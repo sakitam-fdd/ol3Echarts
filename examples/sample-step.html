@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>简单迁徙图</title>
+  <link rel="stylesheet" href="https://unpkg.com/hmap-js@1.5.0/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/hmap-js@1.5.0/dist/hmap.js"></script>
+<script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
+<script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
+<script src="https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js"></script>
+<script>
+  $(document).ready(function () {
+    var Maps = new HMap('map', {
+      controls: {
+        loading: true,
+        zoomSlider: true,
+        fullScreen: false
+      },
+      view: {
+        center: [11464017.313439976, 3934744.6720247352],
+        extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+        projection: 'EPSG:102100',
+        tileSize: 256,
+        zoom: 5, // resolution
+      },
+      baseLayers: [
+        {
+          layerName: 'vector',
+          isDefault: true,
+          layerType: 'TileXYZ',
+          tileGrid: {
+            tileSize: 256,
+            extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+            origin: [-2.0037508342787E7, 2.0037508342787E7],
+            resolutions: [
+              156543.03392800014,
+              78271.51696399994,
+              39135.75848200009,
+              19567.87924099992,
+              9783.93962049996,
+              4891.96981024998,
+              2445.98490512499,
+              1222.992452562495,
+              611.4962262813797,
+              305.74811314055756,
+              152.87405657041106,
+              76.43702828507324,
+              38.21851414253662,
+              19.10925707126831,
+              9.554628535634155,
+              4.77731426794937,
+              2.388657133974685
+            ]
+          },
+          layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+        }
+      ]
+    });
+    var geoCoordMap = {
+      '长春': [125.8154, 44.2584],
+      '长沙': [113.0823, 28.2568],
+      '贵阳': [106.6992, 26.7682],
+      '西安': [109.1162, 34.2004],
+      '深圳': [114.5435, 22.5439],
+      '济南': [117.1582, 36.8701],
+      '海口': [110.3893, 19.8516],
+      '沈阳': [123.1238, 42.1216],
+      '武汉': [114.3896, 30.6628],
+      '昆明': [102.9199, 25.4663],
+      '杭州': [119.5313, 29.8773],
+      '成都': [103.9526, 30.7617],
+      '拉萨': [91.1865, 30.1465],
+      '天津': [117.4219, 39.4189],
+      '合肥': [117.29, 32.0581],
+      '呼和浩特': [111.4124, 40.4901],
+      '哈尔滨': [127.9688, 45.368],
+      '北京': [116.4551, 40.2539],
+      '南京': [118.8062, 31.9208],
+      '南宁': [108.479, 23.1152],
+      '南昌': [116.0046, 28.6633],
+      '乌鲁木齐': [87.9236, 43.5883],
+      '上海': [121.4648, 31.2891]
+    };
+    var data = [{
+      name: '长春',
+      value: 90
+    }, {
+      name: '长沙',
+      value: 10
+    }, {
+      name: '贵阳',
+      value: 20
+    }, {
+      name: '西安',
+      value: 20
+    }, {
+      name: '深圳',
+      value: 20
+    }, {
+      name: '济南',
+      value: 50
+    }, {
+      name: '海口',
+      value: 58
+    }, {
+      name: '沈阳',
+      value: 64
+    }, {
+      name: '武汉',
+      value: 68
+    }, {
+      name: '昆明',
+      value: 45
+    }, {
+      name: '杭州',
+      value: 68
+    }, {
+      name: '成都',
+      value: 49
+    }, {
+      name: '拉萨',
+      value: 66
+    }, {
+      name: '天津',
+      value: 86
+    }, {
+      name: '合肥',
+      value: 58
+    }, {
+      name: '呼和浩特',
+      value: 59
+    }, {
+      name: '哈尔滨',
+      value: 95
+    }, {
+      name: '北京',
+      value: 68
+    }, {
+      name: '南京',
+      value: 56
+    }, {
+      name: '南宁',
+      value: 89
+    }, {
+      name: '南昌',
+      value: 48
+    }, {
+      name: '乌鲁木齐',
+      value: 49
+    }, {
+      name: '上海',
+      value: 78
+    }];
+
+    function formtGCData (geoData, data, srcNam, dest) {
+      var tGeoDt = [];
+      if (dest) {
+        for (var i = 0, len = data.length; i < len; i++) {
+          if (srcNam != data[i].name) {
+            tGeoDt.push({
+              coords: [geoData[srcNam], geoData[data[i].name]]
+            });
+          }
+        }
+      } else {
+        for (var i = 0, len = data.length; i < len; i++) {
+          if (srcNam != data[i].name) {
+            tGeoDt.push({
+              coords: [geoData[data[i].name], geoData[srcNam]]
+            });
+          }
+        }
+      }
+      return tGeoDt;
+    }
+
+    function formtVData (geoData, data, srcNam) {
+      var tGeoDt = [];
+      for (var i = 0, len = data.length; i < len; i++) {
+        var tNam = data[i].name
+        if (srcNam != tNam) {
+          tGeoDt.push({
+            name: tNam,
+            value: geoData[tNam]
+          });
+        }
+
+      }
+      tGeoDt.push({
+        name: srcNam,
+        value: geoData[srcNam],
+        symbolSize: 8,
+        itemStyle: {
+          normal: {
+            color: 'red',
+            borderColor: '#000'
+          }
+        }
+      });
+      return tGeoDt;
+    }
+
+    var planePath = 'arrow';
+    var option = {
+      backgroundColor: 'transparent',
+      title: {
+        text: '格式化数据的简单迁徙图',
+        left: '50%',
+        top: '10px',
+        itemStyle: {
+          normal: {
+            borderColor: 'rgba(100,149,237,1)',
+            borderWidth: 0.5,
+            areaStyle: {
+              color: '#1b1b1b'
+            }
+          }
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+      },
+      HMap: {},
+      series: [
+        {
+          type: 'lines',
+          coordinateSystem: 'HMap',
+          polyline: true,
+          zlevel: 2,
+          effect: {
+            show: true,
+            period: 6,
+            trailLength: 0.1,
+            color: '#db9982',
+            symbol: planePath,
+            symbolSize: 8
+          },
+          lineStyle: {
+            normal: {
+              color: '#a6c84c',
+              width: 1,
+              opacity: 0.4,
+              curveness: 0.2
+            }
+          },
+          data: formtGCData(geoCoordMap, data, '长沙', true)
+        },
+        {
+
+          type: 'lines',
+          zlevel: 2,
+          coordinateSystem: 'HMap',
+          polyline: true,
+          effect: {
+            show: true,
+            period: 6,
+            trailLength: 0.1,
+            color: 'maroon',
+            symbol: planePath,
+            symbolSize: 8
+          },
+          lineStyle: {
+            normal: {
+              color: '#a6c84c',
+              width: 1,
+              opacity: 0.4,
+              curveness: 0.2
+            }
+          },
+          data: formtGCData(geoCoordMap, data, '长沙', false)
+        },
+        {
+
+          type: 'effectScatter',
+          coordinateSystem: 'HMap',
+          zlevel: 2,
+          rippleEffect: {
+            period: 4,
+            scale: 2.5,
+            brushType: 'stroke'
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'right',
+              formatter: '{b}'
+            }
+          },
+          symbolSize: 5,
+          itemStyle: {
+            normal: {
+              color: '#0D6695',
+              borderColor: 'gold'
+            }
+          },
+
+          data: formtVData(geoCoordMap, data, '长沙')
+        }]
+    };
+    Maps.map.once('postrender', function (e) {
+      if (echartslayer !== undefined)
+        return;
+      var echartslayer = new ol3Echarts(Maps.map, '.ol-overlaycontainer');
+      echartslayer.chart.setOption(option);
+    });
+  });
+</script>
+</body>
+</html>

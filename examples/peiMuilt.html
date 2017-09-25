@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ol3-Echarts</title>
+  <link rel="stylesheet" href="https://unpkg.com/hmap-js@1.5.0/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<button id="clickT">直接访问</button>
+<button id="clickM">测试高亮</button>
+<script src="https://unpkg.com/hmap-js@1.5.0/dist/hmap.js"></script>
+<script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
+<script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
+<script src="https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js"></script>
+<script>
+  $(document).ready(function () {
+    var Maps = new HMap('map', {
+      controls: {
+        loading: true,
+        zoomSlider: true,
+        fullScreen: false
+      },
+      view: {
+        center: [11464017.313439976, 3934744.6720247352],
+        extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+        projection: 'EPSG:102100',
+        tileSize: 256,
+        zoom: 5, // resolution
+      },
+      baseLayers: [
+        {
+          layerName: 'vector',
+          isDefault: true,
+          layerType: 'TileXYZ',
+          tileGrid: {
+            tileSize: 256,
+            extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+            origin: [-2.0037508342787E7, 2.0037508342787E7],
+            resolutions: [
+              156543.03392800014,
+              78271.51696399994,
+              39135.75848200009,
+              19567.87924099992,
+              9783.93962049996,
+              4891.96981024998,
+              2445.98490512499,
+              1222.992452562495,
+              611.4962262813797,
+              305.74811314055756,
+              152.87405657041106,
+              76.43702828507324,
+              38.21851414253662,
+              19.10925707126831,
+              9.554628535634155,
+              4.77731426794937,
+              2.388657133974685
+            ]
+          },
+          layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+        }
+      ]
+    });
+    Maps.map.once('postrender', function (e) {
+      var geoCoordMap = {
+        '北京': [116.46, 39.92],
+        '乌鲁木齐': [87.68, 43.77],
+        '天津': [117.2, 39.13],
+        '洛阳': [112.44, 34.7],
+        '武汉': [114.31, 30.52]
+      };
+
+      var data = [
+        {
+          name: '北京',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '乌鲁木齐',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '天津',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '洛阳',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        },
+        {
+          name: '武汉',
+          value: [
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'}
+          ]
+        }
+      ];
+
+      var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+          var geoCoord = geoCoordMap[data[i].name];
+          if (geoCoord) {
+            res.push({
+              name: data[i].name,
+              value: geoCoord.concat(data[i].value)
+            });
+          }
+        }
+        return res;
+      };
+      var series = [];
+      var meathData = function () {
+        series = [];
+        data.forEach(function (item, i) {
+          series.push(
+            {
+              name: item['name'],
+              type: 'pie',
+              coordinateSystem: 'HMap',
+              zlevel: 2,
+              center: Maps.map.getPixelFromCoordinate(ol.proj.fromLonLat(geoCoordMap[item['name']])),
+              radius: [0, 15],
+//              label: {
+//                normal: {
+//                  show: true,
+//                  position: 'right',
+//                  formatter: '{b}'
+//                }
+//              },
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              },
+              data: item['value']
+            })
+        });
+      }
+      meathData();
+      var option = {
+        title: {
+          text: 'ol3扩展Echarts3之多个饼图叠加',
+          subtext: 'Develop By FDD',
+          left: 'center',
+          textStyle: {
+            color: '#fff'
+          }
+        },/*
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          orient: 'vertical',
+          top: 'bottom',
+          left: 'right',
+          data: ['北京', '乌鲁木齐', '天津', '洛阳', '武汉'],
+          textStyle: {
+            color: '#fff'
+          },
+          selectedMode: 'multiple'
+        },*/
+        legend: {
+          x: "left",
+          show: false,
+          data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
+          selectedMode: 'multiple'
+        },
+        HMap: {},
+        series: series
+      };
+      if (echartslayer !== undefined)
+        return;
+      var echartslayer = new ol3Echarts(Maps.map, '.ol-overlaycontainer');
+      echartslayer.chart.setOption(option);
+
+      var changeHandler = function () {
+        var option = echartslayer.chart.getOption() || {};
+        meathData()
+        option.series = series || []
+        echartslayer.chart.clear();
+        echartslayer.chart.setOption(option);
+      }
+      Maps.map.getView().on('change:resolution', changeHandler);
+      Maps.map.getView().on('change:center', changeHandler);
+      Maps.map.on('moveend', changeHandler);
+      $('#clickT').on('click', function () {
+        echartslayer.chart.dispatchAction({
+          type: 'legendToggleSelect',
+          name: '直接访问'
+        });
+      })
+      $('#clickM').on('click', function () {
+        echartslayer.chart.dispatchAction({
+          type: 'highlight',
+          seriesName: '北京'
+        });
+        setTimeout(function () {
+          echartslayer.chart.dispatchAction({
+            type: 'downplay',
+            seriesName: '北京'
+          })
+        },200)
+      })
+    });
+  });
+
+</script>
+</body>
+</html>

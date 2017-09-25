@@ -2,10 +2,13 @@
   "name": "ol3-echarts",
   "version": "1.1.0",
   "description": "ol3Echarts",
-  "main": "src/index.js",
+  "main": "dist/ol3Echarts.js",
   "scripts": {
-    "dev": "webpack --progress --colors --watch --env dev",
-    "build": "webpack --env build"
+    "dev": "node build/development.js",
+    "travisDev": "node build/development.js --env nowatch",
+    "build": "node build/build.js",
+    "server": "node build/server.js",
+    "start": "npm run travisDev && npm run build && npm run server"
   },
   "keywords": [
     "webgis",
@@ -18,17 +21,37 @@
     "type": "git",
     "url": "https://github.com/sakitam-fdd/ol3Echarts.git"
   },
-  "license": "MIT",
   "dependencies": {
     "echarts": "^3.3.2"
   },
   "devDependencies": {
-    "webpack": "^2.2.0",
-    "webpack-dev-middleware": "^1.8.3",
-    "webpack-hot-middleware": "^2.12.2",
-    "webpack-merge": "^0.14.1",
-    "zrender": "^3.2.2",
-    "yargs": "^6.0.0",
-    "friendly-errors-webpack-plugin": "^1.6.1"
-  }
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "compression-webpack-plugin": "^1.0.0",
+    "eslint": "^4.6.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "friendly-errors-webpack-plugin": "^1.6.1",
+    "ora": "^1.3.0",
+    "webpack": "^3.5.6",
+    "copy-webpack-plugin": "^4.0.1",
+    "webpack-bundle-analyzer": "^2.9.0",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-hot-middleware": "^2.19.1",
+    "webpack-merge": "^4.1.0"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "license": "MIT"
 }

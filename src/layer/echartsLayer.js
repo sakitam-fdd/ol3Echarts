@@ -16,7 +16,7 @@ var ol3Echarts = function (map, container) {
     var _container = this.getElementsByClassName(container, window)
     _container.appendChild(div)
   } else if (container && container.indexOf('#') === 0) {
-    var _con = (typeof id === 'string' ? document.getElementById(id) : id);
+    var _con = (typeof container === 'string' ? document.getElementById(container) : container)
     _con.appendChild(div)
   } else {
     this.map.getViewport().appendChild(div)
@@ -60,29 +60,29 @@ ol3Echarts.prototype.resize = function () {
   that._echartsContainer.style.width = size[0] + 'px'
   that._echartsContainer.style.height = size[1] + 'px'
   var resizeEvt = (('orientationchange' in window) ? 'orientationchange' : 'resize')
-  var doc = window.document;
-  window.addEventListener(resizeEvt, function() {
+  var doc = window.document
+  window.addEventListener(resizeEvt, function () {
     setTimeout(function () {
       that.chart.resize()
     }, 50)
-  }, false);
-  window.addEventListener('pageshow', function(e) {
+  }, false)
+  window.addEventListener('pageshow', function (e) {
     if (e.persisted) {
       setTimeout(function () {
         that.chart.resize()
       }, 50)
     }
-  }, false);
+  }, false)
   if (doc.readyState === 'complete') {
     setTimeout(function () {
       that.chart.resize()
     }, 50)
   } else {
-    doc.addEventListener('DOMContentLoaded', function(e) {
+    doc.addEventListener('DOMContentLoaded', function (e) {
       setTimeout(function () {
         that.chart.resize()
       }, 50)
-    }, false);
+    }, false)
   }
 }
 

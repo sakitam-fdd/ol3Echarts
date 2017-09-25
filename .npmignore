@@ -1,3 +1,8 @@
-# Created by .ignore support plugin (hsz.mobi)
-demo/
+build/
+example/
+config/
+docs/
 node_modules/
+test/
+.editorconfig
+.babelrc

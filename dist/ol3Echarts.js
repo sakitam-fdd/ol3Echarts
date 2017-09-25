@@ -1,9 +1,9 @@
-/*! This file is created by FDD */
+/*! this file creat by FDD */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("echarts"));
 	else if(typeof define === 'function' && define.amd)
-		define(["echarts"], factory);
+		define("ol3Echarts", ["echarts"], factory);
 	else if(typeof exports === 'object')
 		exports["ol3Echarts"] = factory(require("echarts"));
 	else
@@ -44,9 +44,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -74,7 +71,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -87,328 +84,271 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(0)
-/**
- * 创建独立对象
- * @param map
- */
-var ol3Echarts = function (map, container) {
-  this.map = map
-  var size = this.map.getSize()
-  var div = document.createElement('div')
-  div.style.position = 'absolute'
-  div.style.height = size[1] + 'px'
-  div.style.width = size[0] + 'px'
-  div.style.top = 0
-  div.style.left = 0
-  if (container && container.indexOf('.') === 0) {
-    var _container = this.getElementsByClassName(container, window)
-    _container.appendChild(div)
-  } else if (container && container.indexOf('#') === 0) {
-    var _con = (typeof id === 'string' ? document.getElementById(id) : id);
-    _con.appendChild(div)
-  } else {
-    this.map.getViewport().appendChild(div)
-  }
-  this._echartsContainer = div
-  this.chart = echarts.init(div)
-  if (!echarts) {
-    throw new Error('请先引入echarts3！')
-  }
-  echarts.Map = map
-  this.resize()
-}
+"use strict";
 
-/**
- * 通过类名获取元素
- * @param str
- * @param root
- * @returns {HTMLElement}
- */
-ol3Echarts.prototype.getElementsByClassName = function (str, root) {
-  var _root = root || window
-  var $ = _root.document.querySelector.bind(_root.document)
-  var target = $(str)
-  return target
-}
 
-/**
- * 移除echarts
- */
-ol3Echarts.prototype.remove = function () {
-  this._echartsContainer.parentNode.removeChild(this._echartsContainer)
-  this.map = undefined
-  echarts.Map = undefined
-}
-/**
- * 响应地图尺寸变化
- */
-ol3Echarts.prototype.resize = function () {
-  var that = this
-  var size = this.map.getSize()
-  that._echartsContainer.style.width = size[0] + 'px'
-  that._echartsContainer.style.height = size[1] + 'px'
-  var resizeEvt = (('orientationchange' in window) ? 'orientationchange' : 'resize')
-  var doc = window.document;
-  window.addEventListener(resizeEvt, function() {
-    setTimeout(function () {
-      that.chart.resize()
-    }, 50)
-  }, false);
-  window.addEventListener('pageshow', function(e) {
-    if (e.persisted) {
-      setTimeout(function () {
-        that.chart.resize()
-      }, 50)
-    }
-  }, false);
-  if (doc.readyState === 'complete') {
-    setTimeout(function () {
-      that.chart.resize()
-    }, 50)
-  } else {
-    doc.addEventListener('DOMContentLoaded', function(e) {
-      setTimeout(function () {
-        that.chart.resize()
-      }, 50)
-    }, false);
-  }
-}
-
-module.exports = ol3Echarts
-
+__webpack_require__(2);
+var ol3Echarts = __webpack_require__(6);
+module.exports = ol3Echarts;
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Created by FDD on 2017/5/30.
- * @desc 注册当前地图的坐标系统,事件，模块和视图
- */
+"use strict";
+var __WEBPACK_AMD_DEFINE_RESULT__;
+
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-  __webpack_require__(0).registerCoordinateSystem(
-    'HMap', __webpack_require__(4)
-  )
-  __webpack_require__(5)
-  __webpack_require__(6)
+  __webpack_require__(0).registerCoordinateSystem('HMap', __webpack_require__(3));
+  __webpack_require__(4);
+  __webpack_require__(5);
   __webpack_require__(0).registerAction({
     type: 'MapRoam',
     event: 'MapRoam',
     update: 'updateLayout'
-  }, function (payload, ecModel) {})
+  }, function (payload, ecModel) {});
   return {
     version: '1.2.0'
-  }
+  };
 }.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(2)
-var ol3Echarts = __webpack_require__(1)
-module.exports = ol3Echarts
+"use strict";
+var __WEBPACK_AMD_DEFINE_RESULT__;
 
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+  var echarts = __webpack_require__(0);
+  var CoordSys = function CoordSys(mapInstance, api) {
+    this.Map = mapInstance;
+    this.dimensions = ['lng', 'lat'];
+    this._mapOffset = [0, 0];
+    this._api = api;
+  };
+
+  CoordSys.prototype.dimensions = ['lng', 'lat'];
+
+  CoordSys.prototype.setMapOffset = function (mapOffset) {
+    this._mapOffset = mapOffset;
+  };
+
+  CoordSys.prototype.getBMap = function () {
+    return this.Map;
+  };
+
+  CoordSys.prototype.setMap = function (map) {
+    if (map && map instanceof ol.Map) {
+      this.Map = map;
+    } else {
+      throw new Error('传入的不是地图对象！');
+    }
+  };
+
+  CoordSys.prototype.dataToPoint = function (coords) {
+    if (coords && Array.isArray(coords) && coords.length > 0) {
+      coords = coords.map(function (item) {
+        if (typeof item === 'string') {
+          item = Number(item);
+        }
+        return item;
+      });
+    }
+    return this.Map.getPixelFromCoordinate(ol.proj.fromLonLat(coords));
+  };
+
+  CoordSys.prototype.pointToData = function (pixel) {
+    return this.Map.getCoordinateFromPixel(pixel);
+  };
+
+  CoordSys.prototype.getViewRect = function () {
+    var api = this._api;
+    return new echarts.graphic.BoundingRect(0, 0, api.getWidth(), api.getHeight());
+  };
+
+  CoordSys.prototype.getRoamTransform = function () {
+    return echarts.matrix.create();
+  };
+
+  CoordSys.dimensions = CoordSys.prototype.dimensions;
+
+  CoordSys.create = function (echartModel, api) {
+    var _coordSys = null;
+    echartModel.eachComponent('HMap', function (MapModel) {
+      var _HMap = echarts.Map;
+      _coordSys = new CoordSys(_HMap, api);
+      _coordSys.setMapOffset(MapModel.mapOffset || [0, 0]);
+      MapModel.coordinateSystem = _coordSys;
+    });
+
+    echartModel.eachSeries(function (seriesModel) {
+      if (seriesModel.get('coordinateSystem') === 'HMap') {
+        seriesModel.coordinateSystem = _coordSys;
+      }
+    });
+  };
+
+  return CoordSys;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Created by FDD on 2017/5/30.
- * @desc 坐标系统
- */
+"use strict";
+var __WEBPACK_AMD_DEFINE_RESULT__;
+
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-  var echarts = __webpack_require__(0)
-  var CoordSys = function (mapInstance, api) {
-    this.Map = mapInstance
-    this.dimensions = ['lng', 'lat']
-    this._mapOffset = [0, 0]
-    this._api = api
-  }
-
-  CoordSys.prototype.dimensions = ['lng', 'lat']
-
-  /**
-   * 设置地图窗口的偏移
-   * @param mapOffset
-   */
-  CoordSys.prototype.setMapOffset = function (mapOffset) {
-    this._mapOffset = mapOffset
-  }
-
-  /**
-   * 获取地图对象
-   * @returns {*|ol.Map}
-   */
-  CoordSys.prototype.getBMap = function () {
-    return this.Map
-  }
-
-  /**
-   * 设置当前地图
-   * @param map
-   */
-  CoordSys.prototype.setMap = function (map) {
-    if (map && map instanceof ol.Map) {
-      this.Map = map
-    } else {
-      throw new Error('传入的不是地图对象！')
+  return __webpack_require__(0).extendComponentModel({
+    type: 'HMap',
+    getBMap: function getBMap() {
+      return this.Map;
+    },
+    defaultOption: {
+      roam: false
     }
-  }
-
-  /**
-   * 跟据坐标转换成屏幕像素
-   * @param coords
-   * @returns {ol.Pixel}
-   */
-  CoordSys.prototype.dataToPoint = function (coords) {
-    if (coords && Array.isArray(coords) && coords.length > 0) {
-      coords = coords.map(function (item) {
-        if (typeof item === 'string') {
-          item = Number(item)
-        }
-        return item
-      })
-    }
-    return this.Map.getPixelFromCoordinate(ol.proj.fromLonLat(coords))
-  }
-
-  /**
-   * 跟据屏幕像素转换成坐标
-   * @param pixel
-   * @returns {ol.Coordinate}
-   */
-  CoordSys.prototype.pointToData = function (pixel) {
-    return this.Map.getCoordinateFromPixel(pixel)
-  }
-
-  /**
-   * 获取视图矩形范围
-   * @returns {*}
-   */
-  CoordSys.prototype.getViewRect = function () {
-    var api = this._api
-    return new echarts.graphic.BoundingRect(0, 0, api.getWidth(), api.getHeight())
-  }
-
-  /**
-   * 移动转换
-   */
-  CoordSys.prototype.getRoamTransform = function () {
-    return echarts.matrix.create()
-  }
-
-  CoordSys.dimensions = CoordSys.prototype.dimensions
-
-  /**
-   * 注册实例
-   * @param echartModel
-   * @param api
-   */
-  CoordSys.create = function (echartModel, api) {
-    var _coordSys = null
-    echartModel.eachComponent('HMap', function (MapModel) {
-      var _HMap = echarts.Map
-      _coordSys = new CoordSys(_HMap, api)
-      _coordSys.setMapOffset(MapModel.mapOffset || [0, 0])
-      MapModel.coordinateSystem = _coordSys
-    })
-
-    echartModel.eachSeries(function (seriesModel) {
-      if (seriesModel.get('coordinateSystem') === 'HMap') {
-        seriesModel.coordinateSystem = _coordSys
-      }
-    })
-  }
-
-  return CoordSys
+  });
 }.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-  return __webpack_require__(0).extendComponentModel({
-    type: 'HMap',
-    getBMap: function () {
-      return this.Map
-    },
-    defaultOption: {
-      roam: false
-    }
-  })
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+"use strict";
+var __WEBPACK_AMD_DEFINE_RESULT__;
 
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+  var echarts = __webpack_require__(0);
+  return echarts.extendComponentView({
+    type: 'HMap',
+    render: function render(MapModel, echartModel, api) {
+      var rendering = true;
+      var Map = echarts.Map;
+      var viewportRoot = api.getZr().painter.getViewportRoot();
+      var coordSys = MapModel.coordinateSystem;
+      var moveHandler = function moveHandler(type, target) {
+        if (rendering) {
+          return;
+        }
+        var offsetEl = viewportRoot.parentNode.parentNode.parentNode;
+        var mapOffset = [-parseInt(offsetEl.style.left, 10) || 0, -parseInt(offsetEl.style.top, 10) || 0];
+        viewportRoot.style.left = mapOffset[0] + 'px';
+        viewportRoot.style.top = mapOffset[1] + 'px';
+        coordSys.setMapOffset(mapOffset);
+        MapModel.mapOffset = mapOffset;
+        api.dispatchAction({
+          type: 'MapRoam'
+        });
+      };
+      var zoomEndHandler = function zoomEndHandler() {
+        if (rendering) {
+          return;
+        }
+        api.dispatchAction({
+          type: 'MapRoam'
+        });
+      };
+      this._oldMoveHandler = moveHandler;
+      this._oldZoomEndHandler = zoomEndHandler;
+      Map.getView().on('change:resolution', moveHandler);
+      Map.getView().on('change:center', moveHandler);
+      Map.getView().on('change:rotation', moveHandler);
+      Map.on('moveend', moveHandler);
+      var roam = MapModel.get('roam');
+      if (roam && roam !== 'scale') {} else {}
+      if (roam && roam !== 'move') {} else {}
+      rendering = false;
+    }
+  });
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-  var echarts = __webpack_require__(0)
-  return echarts.extendComponentView({
-    type: 'HMap',
-    render: function (MapModel, echartModel, api) {
-      var rendering = true
-      var Map = echarts.Map
-      var viewportRoot = api.getZr().painter.getViewportRoot()
-      var coordSys = MapModel.coordinateSystem
-      var moveHandler = function (type, target) {
-        if (rendering) {
-          return
-        }
-        var offsetEl = viewportRoot.parentNode.parentNode.parentNode
-        var mapOffset = [
-          -parseInt(offsetEl.style.left, 10) || 0,
-          -parseInt(offsetEl.style.top, 10) || 0
-        ]
-        viewportRoot.style.left = mapOffset[0] + 'px'
-        viewportRoot.style.top = mapOffset[1] + 'px'
-        coordSys.setMapOffset(mapOffset)
-        MapModel.mapOffset = mapOffset
-        api.dispatchAction({
-          type: 'MapRoam'
-        })
-      }
-      var zoomEndHandler = function () {
-        if (rendering) {
-          return
-        }
-        api.dispatchAction({
-          type: 'MapRoam'
-        })
-      }
-      this._oldMoveHandler = moveHandler
-      this._oldZoomEndHandler = zoomEndHandler
-      Map.getView().on('change:resolution', moveHandler)
-      Map.getView().on('change:center', moveHandler)
-      Map.getView().on('change:rotation', moveHandler)
-      Map.on('moveend', moveHandler)
-      var roam = MapModel.get('roam')
-      if (roam && roam !== 'scale') {
-        // todo 允许拖拽
-      } else {
-        // todo 不允许拖拽
-      }
-      if (roam && roam !== 'move') {
-        // todo 允许移动
-      } else {
-        // todo 不允许允许移动
-      }
-      rendering = false
-    }
-  })
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+"use strict";
 
+
+var echarts = __webpack_require__(0);
+
+var ol3Echarts = function ol3Echarts(map, container) {
+  this.map = map;
+  var size = this.map.getSize();
+  var div = document.createElement('div');
+  div.style.position = 'absolute';
+  div.style.height = size[1] + 'px';
+  div.style.width = size[0] + 'px';
+  div.style.top = 0;
+  div.style.left = 0;
+  if (container && container.indexOf('.') === 0) {
+    var _container = this.getElementsByClassName(container, window);
+    _container.appendChild(div);
+  } else if (container && container.indexOf('#') === 0) {
+    var _con = typeof container === 'string' ? document.getElementById(container) : container;
+    _con.appendChild(div);
+  } else {
+    this.map.getViewport().appendChild(div);
+  }
+  this._echartsContainer = div;
+  this.chart = echarts.init(div);
+  if (!echarts) {
+    throw new Error('请先引入echarts3！');
+  }
+  echarts.Map = map;
+  this.resize();
+};
+
+ol3Echarts.prototype.getElementsByClassName = function (str, root) {
+  var _root = root || window;
+  var $ = _root.document.querySelector.bind(_root.document);
+  var target = $(str);
+  return target;
+};
+
+ol3Echarts.prototype.remove = function () {
+  this._echartsContainer.parentNode.removeChild(this._echartsContainer);
+  this.map = undefined;
+  echarts.Map = undefined;
+};
+
+ol3Echarts.prototype.resize = function () {
+  var that = this;
+  var size = this.map.getSize();
+  that._echartsContainer.style.width = size[0] + 'px';
+  that._echartsContainer.style.height = size[1] + 'px';
+  var resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize';
+  var doc = window.document;
+  window.addEventListener(resizeEvt, function () {
+    setTimeout(function () {
+      that.chart.resize();
+    }, 50);
+  }, false);
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      setTimeout(function () {
+        that.chart.resize();
+      }, 50);
+    }
+  }, false);
+  if (doc.readyState === 'complete') {
+    setTimeout(function () {
+      that.chart.resize();
+    }, 50);
+  } else {
+    doc.addEventListener('DOMContentLoaded', function (e) {
+      setTimeout(function () {
+        that.chart.resize();
+      }, 50);
+    }, false);
+  }
+};
+
+module.exports = ol3Echarts;
 
 /***/ })
 /******/ ]);
