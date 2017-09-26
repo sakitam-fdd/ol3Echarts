@@ -20,7 +20,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../examples'),
-        to: config.build.docs
+        to: config.base.docs
       }
     ])
   ]

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>openlayers扩展</title>
+  <link rel="stylesheet" href="https://unpkg.com/openlayers@4.3.3/dist/ol.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/openlayers@4.3.3/dist/ol.js"></script>
+<script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
+<script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  $(document).ready(function () {
+    var _map = new ol.Map({
+      target: 'map',
+      layers: [
+        new ol.layer.Tile({
+          preload: 4,
+          source: new ol.source.OSM()
+        })
+      ],
+      loadTilesWhileAnimating: true,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+//        center: [13442207.605459828, 3600600.2028761804],
+        center: [120.74758724751435, 30.760422266949334],
+        zoom: 12
+      })
+    });
+    _map.on('click', function (event) {
+      console.log(event.coordinate)
+    })
+    // 处理数据
+    function convertData (sourceData) {
+      return [].concat.apply([], $.map(sourceData, function (busLine, index) {
+        var prevPoint = null;
+        var points = [];
+        var value = busLine.shift();
+        for (var i = 0; i < busLine.length; i += 2) {
+          var point = [busLine[i], busLine[i + 1]];
+          if (i > 0) {
+            point = [
+              prevPoint[0] + point[0],
+              prevPoint[1] + point[1]
+            ];
+          }
+          prevPoint = point;
+          points.push([point[0] / 1e5, point[1] / 1e5]);
+        }
+        return {
+          value: value,
+          coords: points
+        };
+      }));
+    }
+    // 创建图表实例
+    var echartslayer = undefined
+    if (echartslayer !== undefined) {
+      return false
+    } else {
+      echartslayer = new ol3Echarts(_map, {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
+    }
+    // 配置项
+    var option = {
+      openlayers: {},
+      visualMap: {
+        type: "piecewise",
+        left: 'right',
+        top: 'top',
+        /*            pieces: [
+         {min: 15}, // 不指定 max，表示 max 为无限大（Infinity）。
+         {min: 12, max: 15},
+         {min: 9, max: 12},
+         {min: 6, max: 9},
+         {min: 3, max: 6},
+         {max: 3}     // 不指定 min，表示 min 为无限大（-Infinity）。
+         ],*/
+        min: 0,
+        max: 15,
+        splitNumber: 5,
+        maxOpen: true,
+        color: ['red', 'yellow', 'green']
+      },
+      tooltip: {
+        formatter: function (params, ticket, callback) {
+          return "拥堵指数:" + params.value;
+        },
+        trigger: 'item'
+      },
+      series: [
+        {
+          type: 'lines',
+          coordinateSystem: 'openlayers',
+          polyline: true,
+          lineStyle: {
+            normal: {
+              opacity: 1,
+              width: 4
+            },
+            emphasis: {
+              width: 6
+            }
+          },
+          effect: {
+            show: true,
+            symbolSize: 2,
+            color: "white"
+          }
+        }
+      ]
+    };
+    echartslayer.chart.showLoading()
+    $.get('https://www.easy-mock.com/mock/593aabdf8ac26d795fc563b1/echarts/traffic', function (res) {
+      if (res && res['success']) {
+        echartslayer.chart.hideLoading()
+        option.series[0].data = convertData(res['data']);
+        echartslayer.chart.setOption(option);
+      }
+    });
+  })
+</script>
+</body>
+</html>

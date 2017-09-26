@@ -1,49 +1,38 @@
-# ol3Echarts *[查看在线示例](https://sakitam-fdd.github.io/ol3Echarts/examples)*
+## 快速开始
 
-> 基于openlayers3+新版扩展的echarts3的图表插件，暂时支持echarts的所有map组件类型，对普通不支持坐标系的图表正在兼容（饼图，柱状图，折线图已兼容）
+这里假设你已了解openlayers和echarts的使用方法
 
-[![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts)
-[![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts)
-![JS gzip size](http://img.badgesize.io/https://unpkg.com/ol3-echarts/dist/hmap.js?compression=gzip&label=gzip%20size:%20JS)
-[![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts)
-[![GitHub stars](https://img.shields.io/github/stars/sakitam-fdd/ol3Echarts.svg)](https://github.com/sakitam-fdd/ol3Echarts/stargazers)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/LICENSE)
+## 说明
 
-## 下载
+> 因为ol3Echarts是基于openlayers和Echarts开发而来，所以必须引入ol和echarts类库。
+  同时需要拿到 `ol.Map` 的地图对象实例，因为HMap是基于openlayers的二次开发，所以
+  可以看做是ol的增强，并未改变其内置对象，以下地图实例全部基于HMap。
 
+## 第一个示例
 
-```bash
-git clone https://github.com/sakitam-fdd/ol3Echarts.git
-npm install
-npm run dev
-npm run build
-```
-
-### 安装
-
-#### npm安装
-
-```bash
-npm install ol3-echarts --save
-import ol3Echarts from 'ol3-echarts'
-```
-
-#### cdn
-
-目前可通过 [unpkg.com](https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js) 获取最新版本的资源。
-
-```bash
-https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js
-https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.min.js
-```
-
-#### 示例
-
-*[查看在线示例](https://sakitam-fdd.github.io/ol3Echarts/examples)*
-
-```javascript
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>ol3-Echarts</title>
+  <link rel="stylesheet" href="https://unpkg.com/hmap-js@1.5.0/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
 <div id="map"></div>
 <script src="https://unpkg.com/hmap-js@1.5.0/dist/hmap.js"></script>
+<script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
 <script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
 <script src="https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js"></script>
 <script>
@@ -96,9 +85,9 @@ https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.min.js
         ]
       });
       var data = [{
-          name: '菏泽',
-          value: 194
-        }];
+        name: '菏泽',
+        value: 194
+      }];
       var geoCoordMap = {
         '菏泽': [115.480656, 35.23375]
       };
@@ -208,23 +197,10 @@ https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.min.js
     }
   }
 </script>
+</body>
+</html>
 ```
 
-> 示例目录demo
-
-## 截图示例
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/sdt.gif)
-
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/qxt.gif)
-
-![春运](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/qxt-cn.gif)
-
-![公交路线](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/busLine.gif)
-
-![路况](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/traffic.gif)
-
-其他示例请自己挖掘
-
-## 参考
-
->[https://github.com/ecomfe/echarts](https://github.com/ecomfe/echarts)
+### 尝试编辑它
+---
+<iframe width="100%" height="430" src="//jsfiddle.net/sakitamfdd/pjz8cuxw/embedded/result,html,js/?bodyColor=fff" allowfullscreen="allowfullscreen" frameborder="0"></iframe>

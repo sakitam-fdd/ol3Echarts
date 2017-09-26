@@ -16,6 +16,6 @@ module.exports = {
     fileName: 'ol3Echarts',
     libraryName: 'ol3Echarts',
     distDirectory: path.resolve(__dirname, '../dist'),
-    docs: path.resolve(__dirname, '../docs')
+    docs: path.resolve(__dirname, '../docs/examples')
   }
 }
