@@ -30,11 +30,11 @@ import ol3Echarts from 'ol3-echarts'
 
 #### cdn
 
-目前可通过 [unpkg.com](https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js) 获取最新版本的资源。
+目前可通过 [unpkg.com](https://unpkg.com/ol3-echarts@1.2.0/dist/ol3Echarts.js) 获取最新版本的资源。
 
 ```bash
-https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js
-https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.min.js
+https://unpkg.com/ol3-echarts@1.2.0/dist/ol3Echarts.js
+https://unpkg.com/ol3-echarts@1.2.0/dist/ol3Echarts.min.js
 ```
 
 #### 示例
@@ -45,7 +45,7 @@ https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.min.js
 <div id="map"></div>
 <script src="https://unpkg.com/hmap-js@1.5.0/dist/hmap.js"></script>
 <script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
-<script src="https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js"></script>
+<script src="https://unpkg.com/ol3-echarts@1.2.0/dist/ol3Echarts.js"></script>
 <script>
   document.onreadystatechange = function () {
     if (document.readyState === 'complete') {

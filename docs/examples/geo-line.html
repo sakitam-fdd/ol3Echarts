@@ -21,7 +21,7 @@
 <script src="https://unpkg.com/hmap-js@1.5.0/dist/hmap.js"></script>
 <script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
 <script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
-<script src="https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js"></script>
+<script src="https://unpkg.com/ol3-echarts@1.2.0/dist/ol3Echarts.js"></script>
 <script>
   $(document).ready(function () {
     var Maps = new HMap('map', {
@@ -246,7 +246,7 @@
         {
           name: item[0] + ' Top10',
           type: 'lines',
-          coordinateSystem: 'HMap',
+          coordinateSystem: 'openlayers',
           zlevel: 1,
           effect: {
             show: true,
@@ -267,7 +267,7 @@
         {
           name: item[0] + ' Top10',
           type: 'lines',
-          coordinateSystem: 'HMap',
+          coordinateSystem: 'openlayers',
           zlevel: 2,
           effect: {
             show: true,
@@ -289,7 +289,7 @@
         {
           name: item[0] + ' Top10',
           type: 'effectScatter',
-          coordinateSystem: 'HMap',
+          coordinateSystem: 'openlayers',
           zlevel: 2,
           rippleEffect: {
             brushType: 'stroke'
@@ -339,13 +339,17 @@
         },
         selectedMode: 'single'
       },
-      HMap: {},
+      openlayers: {},
       series: series
     };
     Maps.map.once('postrender', function (e) {
       if (echartslayer !== undefined)
         return;
-      var echartslayer = new ol3Echarts(Maps.map, '.ol-overlaycontainer');
+      var echartslayer = new ol3Echarts(Maps.map, {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
       echartslayer.chart.setOption(option);
     });
 

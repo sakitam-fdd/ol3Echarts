@@ -21,7 +21,7 @@
 <script src="https://unpkg.com/hmap-js@1.5.0/dist/hmap.js"></script>
 <script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
 <script src="https://unpkg.com/echarts@3.7.1/dist/echarts.js"></script>
-<script src="https://unpkg.com/ol3-echarts@1.1.0/dist/ol3Echarts.js"></script>
+<script src="https://unpkg.com/ol3-echarts@1.2.0/dist/ol3Echarts.js"></script>
 <script>
   document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
@@ -99,11 +99,15 @@
       if (echartslayer !== undefined) {
         return false
       } else {
-        echartslayer = new ol3Echarts(Maps.map, '.ol-overlaycontainer');
+        echartslayer = new ol3Echarts(Maps.map, {
+          target: '.ol-overlaycontainer',
+          source: '',
+          destination: ''
+        });
       }
       // 配置项
       var option = {
-        HMap: {},
+        openlayers: {},
         visualMap: {
           type: "piecewise",
           left: 'right',
@@ -131,7 +135,7 @@
         series: [
           {
             type: 'lines',
-            coordinateSystem: 'HMap',
+            coordinateSystem: 'openlayers',
             polyline: true,
             lineStyle: {
               normal: {
