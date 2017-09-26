@@ -62,15 +62,15 @@ import ol3Echarts from '../dist/ol3Echarts.js'
 > 示例目录demo
 
 ## 截图示例
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/sdt.gif)
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/sdt.gif)
 
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/qxt.gif)
+![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/qxt.gif)
 
-![春运](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/qxt-cn.gif)
+![春运](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/qxt-cn.gif)
 
-![公交路线](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/busLine.gif)
+![公交路线](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/busLine.gif)
 
-![路况](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/asset/images/traffic.gif)
+![路况](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/traffic.gif)
 
 其他示例请自己挖掘
 
