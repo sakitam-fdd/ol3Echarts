@@ -1,23 +1,22 @@
-var echarts = require('echarts')
+import echarts from 'echarts'
+
 /**
- * 创建独立对象
+ * 创建echarts图层
  * @param map
+ * @param params
  */
-var ol3Echarts = function (map, container) {
+const ol3Echarts = function (map, params = {}) {
   this.map = map
-  var size = this.map.getSize()
-  var div = document.createElement('div')
+  let size = this.map.getSize()
+  let div = document.createElement('div')
   div.style.position = 'absolute'
   div.style.height = size[1] + 'px'
   div.style.width = size[0] + 'px'
   div.style.top = 0
   div.style.left = 0
-  if (container && container.indexOf('.') === 0) {
-    var _container = this.getElementsByClassName(container, window)
-    _container.appendChild(div)
-  } else if (container && container.indexOf('#') === 0) {
-    var _con = (typeof container === 'string' ? document.getElementById(container) : container)
-    _con.appendChild(div)
+  let _target = this.getTarget(params['target'])
+  if (_target && _target[0] && _target[0] instanceof Element) {
+    _target[0].appendChild(div)
   } else {
     this.map.getViewport().appendChild(div)
   }
@@ -26,21 +25,27 @@ var ol3Echarts = function (map, container) {
   if (!echarts) {
     throw new Error('请先引入echarts3！')
   }
-  echarts.Map = map
+  echarts.Map_ = map
+  echarts.MapParams_ = params
   this.resize()
 }
 
 /**
- * 通过类名获取元素
- * @param str
- * @param root
- * @returns {HTMLElement}
+ * 获取dom的父元素
+ * @param selector
  */
-ol3Echarts.prototype.getElementsByClassName = function (str, root) {
-  var _root = root || window
-  var $ = _root.document.querySelector.bind(_root.document)
-  var target = $(str)
-  return target
+ol3Echarts.prototype.getTarget = function (selector) {
+  let dom = (function () {
+    let found
+    return (document && /^#([\w-]+)$/.test(selector))
+      ? ((found = document.getElementById(RegExp.$1)) ? [found] : [])
+      : Array.prototype.slice.call(/^\.([\w-]+)$/.test(selector)
+        ? document.getElementsByClassName(RegExp.$1)
+        : /^[\w-]+$/.test(selector) ? document.getElementsByTagName(selector)
+          : document.querySelectorAll(selector)
+      )
+  })()
+  return dom
 }
 
 /**
@@ -49,18 +54,20 @@ ol3Echarts.prototype.getElementsByClassName = function (str, root) {
 ol3Echarts.prototype.remove = function () {
   this._echartsContainer.parentNode.removeChild(this._echartsContainer)
   this.map = undefined
-  echarts.Map = undefined
+  echarts.Map_ = undefined
+  echarts.MapParams_ = undefined
 }
+
 /**
  * 响应地图尺寸变化
  */
 ol3Echarts.prototype.resize = function () {
-  var that = this
-  var size = this.map.getSize()
-  that._echartsContainer.style.width = size[0] + 'px'
-  that._echartsContainer.style.height = size[1] + 'px'
-  var resizeEvt = (('orientationchange' in window) ? 'orientationchange' : 'resize')
-  var doc = window.document
+  let that = this
+  let size = this.map.getSize()
+  let resizeEvt = (('orientationchange' in window) ? 'orientationchange' : 'resize')
+  let doc = window.document
+  this._echartsContainer.style.width = size[0] + 'px'
+  this._echartsContainer.style.height = size[1] + 'px'
   window.addEventListener(resizeEvt, function () {
     setTimeout(function () {
       that.chart.resize()
@@ -86,4 +93,4 @@ ol3Echarts.prototype.resize = function () {
   }
 }
 
-module.exports = ol3Echarts
+export default ol3Echarts

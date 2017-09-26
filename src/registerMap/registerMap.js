@@ -2,18 +2,22 @@
  * Created by FDD on 2017/5/30.
  * @desc 注册当前地图的坐标系统,事件，模块和视图
  */
-define(function (require) {
-  require('echarts').registerCoordinateSystem(
-    'HMap', require('./registerMapCoordSys')
-  )
-  require('./registerMapModel')
-  require('./registerMapView')
-  require('echarts').registerAction({
-    type: 'MapRoam',
-    event: 'MapRoam',
-    update: 'updateLayout'
-  }, function (payload, ecModel) {})
-  return {
-    version: '1.2.0'
-  }
+
+import echarts from 'echarts'
+import './registerMapModel'
+import './registerMapView'
+import registerMapCoordSys from './registerMapCoordSys'
+echarts.registerCoordinateSystem('openlayers', registerMapCoordSys)
+echarts.registerAction({
+  type: 'MapRoam',
+  event: 'MapRoam',
+  update: 'updateLayout'
+}, function (payload, ecModel) {
+  ecModel.eachComponent('openlayers', function (mapModel) {
+    // let _map = mapModel.getMap()
+    // let _view = _map.getView()
+    // let center = _view.getCenter()
+    // let _zoom = _view.getZoom()
+    // _view.animate({zoom: _zoom}, {center: center})
+  })
 })
