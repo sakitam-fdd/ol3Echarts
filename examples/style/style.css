@@ -11,7 +11,7 @@ body, html {
   margin: 0;
   /*overflow: hidden;*/
   padding: 0;
-  background-image: url("../../asset/images/bg.jpg");
+  background-image: url("../asset/images/bg.jpg");
   background-position: center center;
   /*overflow: hidden;*/
   background-size: cover;
