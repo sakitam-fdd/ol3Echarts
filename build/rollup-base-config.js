@@ -3,7 +3,8 @@
 const path = require('path');
 const buble = require('rollup-plugin-buble'); // ES2015 tran
 const cjs = require('rollup-plugin-commonjs');
-const node = require('rollup-plugin-node-resolve');
+const localResolve = require('rollup-plugin-local-resolve');
+const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const _package = require('../package.json')
 const year = new Date().getFullYear();
@@ -16,13 +17,23 @@ const genConfig = (opts) => {
     input: {
       input: resolve('src/index.js'),
       plugins: [
-        node(),
         cjs(),
-        buble()
+        buble(),
+        localResolve(),
+        nodeResolve({
+          module: true,
+          jsnext: true,
+          main: true
+        })
       ],
-      external: [
-        'echarts'
-      ]
+      external: id => {
+        console.log(id)
+        if (/echarts/.test(id)) {
+          return 'echarts'
+        } else if (/ol\/layer\/layer/) {
+          return 'ol.layer.Layer'
+        }
+      }
     },
     output: {
       file: opts.file,
