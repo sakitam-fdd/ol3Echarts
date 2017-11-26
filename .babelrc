@@ -4,7 +4,6 @@
   ],
   "plugins": [
     "external-helpers",
-    "transform-proto-to-assign",
     "syntax-dynamic-import"
   ],
   "ignore": [

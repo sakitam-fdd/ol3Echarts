@@ -1,12 +1,14 @@
 // Config file for running Rollup in "normal" mode (non-watch)
 
 const path = require('path');
-const buble = require('rollup-plugin-buble'); // ES2015 tran
+const babel = require('rollup-plugin-babel'); // ES2015 tran
 const cjs = require('rollup-plugin-commonjs');
-const localResolve = require('rollup-plugin-local-resolve');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
+const eslint = require('rollup-plugin-eslint');
+const friendlyFormatter = require("eslint-friendly-formatter");
 const _package = require('../package.json')
+const eslintConfig = require('../.eslintrc')
 const year = new Date().getFullYear();
 const banner = `/*!\n * ${_package.name} v${_package.version}\n * LICENSE : ${_package.license}\n * (c) 2017-${year} ${_package.homepage}\n */`;
 
@@ -17,23 +19,14 @@ const genConfig = (opts) => {
     input: {
       input: resolve('src/index.js'),
       plugins: [
-        cjs(),
-        buble(),
-        localResolve(),
-        nodeResolve({
-          module: true,
-          jsnext: true,
-          main: true
-        })
+        eslint((eslintConfig => eslintConfig.formatter = friendlyFormatter)(eslintConfig)),
+        nodeResolve(),
+        babel({
+          exclude: 'node_modules/**' // only transpile our source code
+        }),
+        cjs()
       ],
-      external: id => {
-        console.log(id)
-        if (/echarts/.test(id)) {
-          return 'echarts'
-        } else if (/ol\/layer\/layer/) {
-          return 'ol.layer.Layer'
-        }
-      }
+      // external: [require('echarts')]
     },
     output: {
       file: opts.file,

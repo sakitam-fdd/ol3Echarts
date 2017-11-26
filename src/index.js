@@ -1,6 +1,6 @@
 import $Layer from './Layer'
 export class EchartsLayer extends $Layer {
-  constructor(chartOptions, options) {
+  constructor (chartOptions, options) {
     super(options)
     this.$chartOptions = chartOptions
   }
@@ -31,10 +31,10 @@ export class EchartsLayer extends $Layer {
    * @type {{container: string, renderer: string, hideOnZooming: boolean, hideOnMoving: boolean, hideOnRotating: boolean}}
    */
   static options = {
-    'container' : 'front',
-    'renderer' : 'dom',
-    'hideOnZooming' : false,
-    'hideOnMoving' : false,
-    'hideOnRotating' : false
+    'container': 'front',
+    'renderer': 'dom',
+    'hideOnZooming': false,
+    'hideOnMoving': false,
+    'hideOnRotating': false
   }
 }
