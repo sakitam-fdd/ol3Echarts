@@ -20,13 +20,17 @@ const genConfig = (opts) => {
       input: resolve('src/index.js'),
       plugins: [
         eslint((eslintConfig => eslintConfig.formatter = friendlyFormatter)(eslintConfig)),
-        nodeResolve(),
         babel({
           exclude: 'node_modules/**' // only transpile our source code
         }),
+        nodeResolve({
+          jsnext: true,
+          main: true,
+          browser: true
+        }),
         cjs()
       ],
-      // external: [require('echarts')]
+      external: ['echarts', 'openlayers']
     },
     output: {
       file: opts.file,

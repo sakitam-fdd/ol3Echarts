@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "echarts": "^3.3.2",
-    "ol": "^4.5.0"
+    "openlayers": "^4.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
