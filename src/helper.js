@@ -4,33 +4,31 @@
  */
 
 /**
- * Merges the properties of sources into destination object.
- * @param dest
- * @returns {*}
+ * 判断是否为对象
+ * @param value
+ * @returns {boolean}
  */
-const extend = (dest) => { // (Object[, Object, ...]) ->
-  for (let i = 1; i < arguments.length; i++) {
-    const src = arguments[i]
-    for (const k in src) {
-      dest[k] = src[k]
-    }
-  }
-  return dest
+const isObject = value => {
+  const type = typeof value
+  return value !== null && (type === 'object' || type === 'function')
 }
 
 /**
- * Mixin options with the class's default options.
- * @param options
+ * merge
+ * @param a
+ * @param b
  * @returns {*}
  */
-const merge = (options) => {
-  const proto = this.prototype
-  const parentProto = Object.getPrototypeOf(proto)
-  if (!proto.options || proto.options === parentProto.options) {
-    proto.options = proto.options ? Object.create(proto.options) : {}
+const merge = (a, b) => {
+  for (let key in b) {
+    /* istanbul ignore else */
+    if (!a.hasOwnProperty(key)) {
+      a[key] = b[key]
+    } else if (isObject(b[key]) && isObject(a[key])) {
+      merge(a[key], b[key])
+    }
   }
-  extend(proto.options, options)
-  return this
+  return a
 }
 
 /**
@@ -53,6 +51,5 @@ const getTarget = (selector) => {
 
 export {
   getTarget,
-  merge,
-  extend
+  merge
 }

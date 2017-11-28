@@ -2,6 +2,7 @@
 // Generated on Wed Nov 22 2017 10:48:56 GMT+0800 (中国标准时间)
 const path = require('path');
 const _package = require('../package.json');
+const babel = require('rollup-plugin-babel');
 const resolve = _path => path.resolve(__dirname, '../', _path)
 module.exports = {
 
@@ -14,7 +15,10 @@ module.exports = {
 
   // list of files / patterns to load in the browser
   files: [
+    'node_modules/echarts/dist/echarts.js',
+    'node_modules/openlayers/dist/ol.js',
     'src/**/*.js',
+    // _package.unpkg,
     'test/**/*.js'
   ],
 
@@ -31,9 +35,10 @@ module.exports = {
   rollupPreprocessor: {
     name: _package.namespace,
     input: resolve('src/index.js'),
-    file: resolve('dist/aurora-rollup.js'),
+    file: resolve(_package.unpkg),
     format: 'umd',
     plugins: [
+      babel()
     ]
   },
 

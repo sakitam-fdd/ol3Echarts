@@ -1,6 +1,6 @@
 import ol from 'openlayers'
 import echarts from 'echarts'
-import { getTarget } from './helper'
+import { getTarget, merge } from './helper'
 import _getCoordinateSystem from './RegisterCoordinateSystem'
 
 const _options = {
@@ -10,12 +10,14 @@ const _options = {
 }
 
 class ol3Echarts {
+  static getTarget = getTarget
+  static merge = merge
   constructor (chartOptions, options = {}) {
     /**
      * layer options
      * @type {{}}
      */
-    this.$options = Object.assign(options, _options)
+    this.$options = Object.assign({}, _options, options)
 
     /**
      * chart options
@@ -186,16 +188,6 @@ class ol3Echarts {
   }
 
   /**
-   * handle zoom start events
-   */
-  onZoomStart () {
-    if (!this.$options['hideOnZooming']) {
-      return
-    }
-    this.hide()
-  }
-
-  /**
    * handle zoom end events
    */
   onZoomEnd () {
@@ -204,16 +196,6 @@ class ol3Echarts {
     // }
     this.show()
     this._clearAndRedraw()
-  }
-
-  /**
-   * handle rotate start
-   */
-  onDragRotateStart () {
-    if (!this.$options['hideOnRotating']) {
-      return
-    }
-    this.hide()
   }
 
   /**
@@ -315,5 +297,4 @@ class ol3Echarts {
     }
   }
 }
-
 export default ol3Echarts
