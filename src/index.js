@@ -1,6 +1,13 @@
 import ol from 'openlayers'
 import echarts from 'echarts'
-import RegisterCoordinateSystem from './RegisterCoordinateSystem'
+import { getTarget } from './helper'
+import _getCoordinateSystem from './RegisterCoordinateSystem'
+
+const _options = {
+  'hideOnZooming': false,
+  'hideOnMoving': false,
+  'hideOnRotating': false
+}
 
 class ol3Echarts {
   constructor (chartOptions, options = {}) {
@@ -8,7 +15,7 @@ class ol3Echarts {
      * layer options
      * @type {{}}
      */
-    this.$options = options
+    this.$options = Object.assign(options, _options)
 
     /**
      * chart options
@@ -36,31 +43,13 @@ class ol3Echarts {
   }
 
   /**
-   * get parent container
-   * @param selector
-   */
-  getTarget (selector) {
-    let dom = (function () {
-      let found
-      return (document && /^#([\w-]+)$/.test(selector))
-        ? ((found = document.getElementById(RegExp.$1)) ? [found] : [])
-        : Array.prototype.slice.call(/^\.([\w-]+)$/.test(selector)
-          ? document.getElementsByClassName(RegExp.$1)
-          : /^[\w-]+$/.test(selector) ? document.getElementsByTagName(selector)
-            : document.querySelectorAll(selector)
-        )
-    })()
-    return dom
-  }
-
-  /**
    * append layer to map
    * @param map
    */
   appendTo (map) {
     if (map && map instanceof ol.Map) {
       this.$Map = map
-      this._resizeContainer()
+      this.render()
       this._unRegisterEvents()
       this._registerEvents()
     } else {
@@ -83,6 +72,7 @@ class ol3Echarts {
    */
   setChartOptions (options = {}) {
     this.$chartOptions = options
+    this._clearAndRedraw()
     return this
   }
 
@@ -127,7 +117,7 @@ class ol3Echarts {
   remove () {
     this.$chart.clear()
     this.$chart.dispose()
-    this.$Map.un('change:size', this.onResize, this)
+    this._unRegisterEvents()
     delete this.$chart
     delete this.$Map
     this.$container.parentNode.removeChild(this.$container)
@@ -153,7 +143,7 @@ class ol3Echarts {
     container.style.left = 0
     container.style.right = 0
     container.style.buttom = 0
-    let _target = this.getTarget(options['target'])
+    let _target = getTarget(options['target'])
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container)
     } else {
@@ -181,8 +171,10 @@ class ol3Echarts {
     }
     this.$chart.clear()
     this.$chart.resize()
-    this._registerMap()
-    this.$chart.setOption(this.$chartOptions, false)
+    if (this.$chartOptions) {
+      this._registerMap()
+      this.$chart.setOption(this.$chartOptions, false)
+    }
   }
 
   /**
@@ -207,9 +199,9 @@ class ol3Echarts {
    * handle zoom end events
    */
   onZoomEnd () {
-    if (!this.$options['hideOnZooming']) {
-      return
-    }
+    // if (!this.$options['hideOnZooming']) {
+    //   return
+    // }
     this.show()
     this._clearAndRedraw()
   }
@@ -228,9 +220,9 @@ class ol3Echarts {
    * handle rotate end events
    */
   onDragRotateEnd () {
-    if (!this.$options['hideOnRotating']) {
-      return
-    }
+    // if (!this.$options['hideOnRotating']) {
+    //   return
+    // }
     this.show()
     this._clearAndRedraw()
   }
@@ -249,9 +241,9 @@ class ol3Echarts {
    * handle move end events
    */
   onMoveEnd () {
-    if (!this.$options['hideOnMoving']) {
-      return
-    }
+    // if (!this.$options['hideOnMoving']) {
+    //   return
+    // }
     this.show()
     this._clearAndRedraw()
   }
@@ -264,9 +256,9 @@ class ol3Echarts {
     const Map = this.$Map
     const view = Map.getView()
     Map.on('change:size', this.onResize, this)
-    view.on('change:resolution', this.onZoomStart, this)
-    view.on('change:center', this.onMoveStart, this)
-    view.on('change:rotation', this.onDragRotateStart, this)
+    view.on('change:resolution', this.onZoomEnd, this)
+    view.on('change:center', this.onMoveEnd, this)
+    view.on('change:rotation', this.onDragRotateEnd, this)
     Map.on('movestart', this.onMoveStart, this)
     Map.on('moveend', this.onMoveEnd, this)
   }
@@ -279,9 +271,9 @@ class ol3Echarts {
     const Map = this.$Map
     const view = Map.getView()
     Map.un('change:size', this.onResize, this)
-    view.un('change:resolution', this.onZoomStart, this)
-    view.un('change:center', this.onMoveStart, this)
-    view.un('change:rotation', this.onDragRotateStart, this)
+    view.un('change:resolution', this.onZoomEnd, this)
+    view.un('change:center', this.onMoveEnd, this)
+    view.un('change:rotation', this.onDragRotateEnd, this)
     Map.un('movestart', this.onMoveStart, this)
     Map.un('moveend', this.onMoveEnd, this)
   }
@@ -292,7 +284,7 @@ class ol3Echarts {
    */
   _registerMap () {
     if (!this._isRegistered) {
-      echarts.registerCoordinateSystem('openlayers', RegisterCoordinateSystem(this.getMap(), this.$options))
+      echarts.registerCoordinateSystem('openlayers', _getCoordinateSystem(this.getMap(), this.$options))
       this._isRegistered = true
     }
     const series = this.$chartOptions.series
@@ -309,12 +301,15 @@ class ol3Echarts {
    */
   render () {
     if (!this.$container) {
-      this._createLayerContainer()
+      this._createLayerContainer(this.$Map, this.$options)
+      this._resizeContainer()
     }
     if (!this.$chart) {
       this.$chart = echarts.init(this.$container)
-      this._registerMap()
-      this.$chart.setOption(this.$chartOptions, false)
+      if (this.$chartOptions) {
+        this._registerMap()
+        this.$chart.setOption(this.$chartOptions, false)
+      }
     } else if (this._isVisible()) {
       this.$chart.resize()
     }
