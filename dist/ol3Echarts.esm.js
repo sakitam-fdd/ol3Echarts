@@ -172,6 +172,10 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
     this.projCode_ = this._getProjectionCode();
   };
 
+  RegisterCoordinateSystem.prototype.dimensions = ['lng', 'lat'];
+
+  RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions;
+
   RegisterCoordinateSystem.prototype.setMapOffset = function (mapOffset) {
     this._mapOffset = mapOffset;
   };
@@ -212,8 +216,6 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
   RegisterCoordinateSystem.prototype.getRoamTransform = function () {
     return echarts.matrix.create();
   };
-
-  RegisterCoordinateSystem.dimensions = ['lng', 'lat'];
 
   RegisterCoordinateSystem.getDimensionsInfo = function () {
     return RegisterCoordinateSystem.dimensions;

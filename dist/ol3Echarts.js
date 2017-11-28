@@ -169,10 +169,10 @@ var getTarget = function getTarget(selector) {
   return dom;
 };
 
-var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
+var _getCoordinateSystem = function _getCoordinateSystem(map) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
   var RegisterCoordinateSystem = function RegisterCoordinateSystem() {
-    this.$options = options;
-    this.$Map = map;
     this._mapOffset = [0, 0];
     this.dimensions = ['lng', 'lat'];
     this.projCode_ = this._getProjectionCode();
@@ -195,15 +195,18 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
         return item;
       });
     }
-    var source = this.$options['source'] || 'EPSG:4326';
-    var destination = this.$options['destination'] || this.projCode_;
-    return this.$Map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
+    var source = options['source'] || 'EPSG:4326';
+    var destination = options['destination'] || this.projCode_;
+
+    var pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
+    var mapOffset = this._mapOffset;
+    return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
   };
 
   RegisterCoordinateSystem.prototype._getProjectionCode = function () {
     var code = '';
-    if (this.$Map) {
-      code = this.$Map.getView() && this.$Map.getView().getProjection().getCode();
+    if (map) {
+      code = map.getView() && map.getView().getProjection().getCode();
     } else {
       code = 'EPSG:3857';
     }
@@ -211,11 +214,12 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
   };
 
   RegisterCoordinateSystem.prototype.pointToData = function (pixel) {
-    return this.$Map.getCoordinateFromPixel(pixel);
+    var mapOffset = this._mapOffset;
+    return map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
   };
 
   RegisterCoordinateSystem.prototype.getViewRect = function () {
-    var size = this.$Map.getSize();
+    var size = map.getSize();
     return new echarts.graphic.BoundingRect(0, 0, size[0], size[1]);
   };
 
@@ -228,10 +232,9 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
   };
 
   RegisterCoordinateSystem.create = function (echartModel) {
-    var that = this;
     echartModel.eachSeries(function (seriesModel) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
-        seriesModel.coordinateSystem = new RegisterCoordinateSystem(that.$Map);
+        seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);
       }
     });
   };
