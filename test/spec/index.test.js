@@ -1,72 +1,166 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>ol3-Echarts-4326</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
-  <style>
-    html, body, #map {
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
-    .hmap-control-zoom {
-      right: 30px;
-    }
-  </style>
-</head>
-<body>
-<div id="map"></div>
-<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="../dist/ol3Echarts.js"></script>
-<script>
-  var Maps = new HMap('map', {
-    controls: {
-      loading: true,
-      zoomSlider: true,
-      fullScreen: false
-    },
-    view: {
-      center: [113.53450137499999, 34.44104525],
-      projection: 'EPSG:4326',
-      zoom: 5, // resolution
-    },
-    baseLayers: [
-      {
-        layerName: 'vector',
-        isDefault: true,
-        layerType: 'TileXYZ',
-        projection: 'EPSG:3857',
-        tileGrid: {
-          tileSize: 256,
-          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
-          origin: [-2.0037508342787E7, 2.0037508342787E7],
-          resolutions: [
-            156543.03392800014,
-            78271.51696399994,
-            39135.75848200009,
-            19567.87924099992,
-            9783.93962049996,
-            4891.96981024998,
-            2445.98490512499,
-            1222.992452562495,
-            611.4962262813797,
-            305.74811314055756,
-            152.87405657041106,
-            76.43702828507324,
-            38.21851414253662,
-            19.10925707126831,
-            9.554628535634155,
-            4.77731426794937,
-            2.388657133974685
-          ]
-        },
-        layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
-      }
-    ]
+/* eslint-env es6 */
+describe('indexSpec', () => {
+  var container, Map;
+  beforeEach(function () {
+    container = document.createElement('div');
+    container.style.width = '400px';
+    container.style.height = '300px';
+    document.body.appendChild(container);
+    Map = new ol.Map({
+      target: container,
+      layers: [
+        new ol.layer.Tile({
+          preload: 4,
+          source: new ol.source.OSM()
+        })
+      ],
+      loadTilesWhileAnimating: true,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        center: [120.74758724751435, 30.760422266949334],
+        zoom: 8
+      })
+    })
   });
+
+  afterEach(function () {
+    container.parentNode.removeChild(container)
+  })
+
+  describe('creat echarts layer', () => {
+    it('creat dom content', () => {
+      const echartslayer = new ol3Echarts(null, {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
+      echartslayer.appendTo(Map)
+      expect(echartslayer instanceof ol3Echarts).to.be.ok();
+    });
+  });
+
+  describe('echarts layer state', () => {
+    let echartslayer
+    it('_isVisible', () => {
+      echartslayer = new ol3Echarts(getOptions(), {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
+      echartslayer.appendTo(Map)
+      let vis = echartslayer._isVisible();
+      expect(vis).to.be.eql(true);
+    });
+
+    it('action hide', () => {
+      echartslayer.hide();
+      let vis = echartslayer._isVisible();
+      expect(vis).to.be.eql(false);
+    });
+
+    it('action show', () => {
+      echartslayer.show();
+      let vis = echartslayer._isVisible();
+      expect(vis).to.be.eql(true);
+    });
+  });
+
+  describe('ol.Map', () => {
+    it('getMap', () => {
+      const echartslayer = new ol3Echarts(null, {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
+      echartslayer.appendTo(Map)
+      expect(echartslayer.getMap()).to.be.eql(Map);
+    });
+  });
+
+  describe('charts option', () => {
+    let echartslayer
+    it('setChartOptions', () => {
+      echartslayer = new ol3Echarts(getOptions(), {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
+      echartslayer.appendTo(Map);
+      expect(echartslayer._isVisible() && echartslayer._isRegistered).to.be.eql(true);
+    });
+
+    it('getChartOptions', () => {
+      let options = echartslayer.getChartOptions();
+      expect(options.series.length).to.be.eql((getOptions()).series.length);
+    })
+  });
+
+  describe('charts action', () => {
+    let echartslayer
+    it('onResize', () => {
+      echartslayer = new ol3Echarts(getOptions(), {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: '',
+        hideOnMoving: true
+      });
+      echartslayer.appendTo(Map);
+      let size = Map.getSize();
+      Map.setSize([size[0] + 100, size[1] + 100]);
+      expect(echartslayer.$container.style.width).to.be.eql(size[0] + 100 + 'px');
+      expect(echartslayer.$container.style.height).to.be.eql(size[1] + 100 + 'px');
+    });
+
+    it('onZoomEnd', () => {
+      Map.getView().setZoom(12);
+      expect(Map.getView().getZoom()).to.be.eql(12);
+    });
+
+    it('onDragRotateEnd', () => {
+      Map.getView().setRotation(90 / 180 * Math.PI);
+      expect(Map.getView().getRotation()).to.be.eql(90 / 180 * Math.PI);
+    });
+
+    it('onMoveStart', () => {
+      let center = Map.getView().getCenter();
+      Map.getView().animate({
+        center: [center[0] + 0.8, center[1] + 0.4],
+        duration: 1000
+      });
+      expect(echartslayer._isVisible()).to.be.eql(true);
+      setTimeout(function () {
+        expect(echartslayer._isVisible()).to.be.eql(true);
+      }, 1000)
+    });
+
+    it('onMoveEnd', () => {
+      let center = Map.getView().getCenter();
+      Map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
+      expect(Map.getView().getCenter()).to.be.eql([center[0] + 0.8, center[1] + 0.4]);
+    });
+  });
+
+  describe('remove charts', () => {
+    it('remove', () => {
+      const echartslayer = new ol3Echarts(null, {
+        target: '.ol-overlaycontainer',
+        source: '',
+        destination: ''
+      });
+      expect(echartslayer instanceof ol3Echarts).to.be.ok();
+      echartslayer.appendTo(Map)
+      expect(echartslayer.getMap()).to.be.eql(Map);
+      echartslayer.remove();
+      expect(echartslayer.getMap()).to.be.eql(undefined);
+    });
+  });
+
+  it('throws an error when creating without new operator', () => {
+    expect(() => { ol3Echarts.appendTo(); }).to.throwException();
+  });
+})
+
+function getOptions () {
   var data = [
     {
       name: '海门',
@@ -921,13 +1015,5 @@
         zlevel: 1
       }]
   };
-  var echartslayer = new ol3Echarts(option, {
-    target: '.ol-overlaycontainer',
-    source: '',
-    destination: '',
-    hideOnMoving: true
-  });
-  echartslayer.appendTo(Maps.getMap())
-</script>
-</body>
-</html>
+  return option
+}
