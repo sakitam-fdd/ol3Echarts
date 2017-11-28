@@ -178,6 +178,10 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
     this.projCode_ = this._getProjectionCode();
   };
 
+  RegisterCoordinateSystem.prototype.dimensions = ['lng', 'lat'];
+
+  RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions;
+
   RegisterCoordinateSystem.prototype.setMapOffset = function (mapOffset) {
     this._mapOffset = mapOffset;
   };
@@ -218,8 +222,6 @@ var _getCoordinateSystem = function _getCoordinateSystem(map, options) {
   RegisterCoordinateSystem.prototype.getRoamTransform = function () {
     return echarts.matrix.create();
   };
-
-  RegisterCoordinateSystem.dimensions = ['lng', 'lat'];
 
   RegisterCoordinateSystem.getDimensionsInfo = function () {
     return RegisterCoordinateSystem.dimensions;
@@ -315,6 +317,18 @@ var ol3Echarts = function () {
     this.$chart.clear();
   };
 
+  ol3Echarts.prototype.showLoading = function showLoading() {
+    if (this.$chart) {
+      this.$chart.showLoading();
+    }
+  };
+
+  ol3Echarts.prototype.hideLoading = function hideLoading() {
+    if (this.$chart) {
+      this.$chart.hideLoading();
+    }
+  };
+
   ol3Echarts.prototype._createLayerContainer = function _createLayerContainer(map, options) {
     var container = this.$container = document.createElement('div');
     container.style.position = 'absolute';
@@ -326,7 +340,12 @@ var ol3Echarts = function () {
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container);
     } else {
-      map.getViewport().appendChild(container);
+      var _target2 = getTarget('.ol-overlaycontainer');
+      if (_target2 && _target2[0] && _target2[0] instanceof Element) {
+        _target2[0].appendChild(container);
+      } else {
+        map.getViewport().appendChild(container);
+      }
     }
   };
 
@@ -436,3 +455,4 @@ ol3Echarts.merge = merge;
 return ol3Echarts;
 
 })));
+//# sourceMappingURL=ol3Echarts.js.map

@@ -70,15 +70,11 @@
       }
     ]
   });
-  var echartslayer = new ol3Echarts(null, {
-    target: '.ol-overlaycontainer',
-    source: '',
-    destination: ''
-  });
+  var echartslayer = new ol3Echarts(null);
   echartslayer.appendTo(Maps.getMap());
-  echartslayer.$chart.showLoading();
+  echartslayer.showLoading();
   axios.get('./data/weibo-gl.json').then(function (res) {
-    echartslayer.$chart.hideLoading()
+    echartslayer.hideLoading()
     var rawData = res.data;
     var weiboData = rawData.map(function (serieData, idx) {
       var px = serieData[0] / 1000;
@@ -153,7 +149,7 @@
       ]
     };
     echartslayer.setChartOptions(option);
-  })
+  });
 </script>
 </body>
 </html>

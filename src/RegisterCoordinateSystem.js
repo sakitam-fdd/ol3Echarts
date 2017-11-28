@@ -15,6 +15,10 @@ const _getCoordinateSystem = function (map, options) {
     this.projCode_ = this._getProjectionCode()
   }
 
+  RegisterCoordinateSystem.prototype.dimensions = ['lng', 'lat']
+
+  RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions
+
   /**
    * 设置地图窗口的偏移
    * @param mapOffset
@@ -81,8 +85,6 @@ const _getCoordinateSystem = function (map, options) {
   RegisterCoordinateSystem.prototype.getRoamTransform = function () {
     return echarts.matrix.create()
   }
-
-  RegisterCoordinateSystem.dimensions = ['lng', 'lat']
 
   /**
    * get dimensions info

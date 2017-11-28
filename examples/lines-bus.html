@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>lines-airline-china</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  var Maps = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [116.28245, 39.92121],
+      projection: 'EPSG:4326',
+      zoom: 9, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'TileXYZ',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/dark/all?x={x}&y={y}&z={z}&retina=&ak=MGUxMmI2ZTk4YTVhNDEzYmJhZDJkNDM3ZWI5ZDAwOGE'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null);
+  echartslayer.appendTo(Maps.getMap());
+  echartslayer.$chart.showLoading();
+  axios.get('./data/lines-bus.json').then(function (res) {
+    echartslayer.$chart.hideLoading()
+    var rawData = res.data;
+    var hStep = 300 / (rawData.length - 1);
+    var busLines = [].concat.apply([], rawData.map(function (busLine, idx) {
+      var prevPt;
+      var points = [];
+      for (var i = 0; i < busLine.length; i += 2) {
+        var pt = [busLine[i], busLine[i + 1]];
+        if (i > 0) {
+          pt = [
+            prevPt[0] + pt[0],
+            prevPt[1] + pt[1]
+          ];
+        }
+        prevPt = pt;
+
+        points.push([pt[0] / 1e4, pt[1] / 1e4]);
+      }
+      return {
+        'coords': points,
+        'lineStyle': {
+          'normal': {
+            'color': echarts.color.modifyHSL('#5A94DF', Math.round(hStep * idx))
+          }
+        }
+      };
+    }));
+    var option = {
+      'series': [
+        {
+          'type': 'lines',
+          'polyline': true,
+          'data': busLines,
+          'lineStyle': {
+            'normal': {
+              'width': 0
+            }
+          },
+          'effect': {
+            'constantSpeed': 20,
+            'show': true,
+            'trailLength': 0.5,
+            'symbolSize': 1.5
+          },
+          'zlevel': 1
+        }
+      ]
+    };
+    echartslayer.setChartOptions(option);
+  })
+</script>
+</body>
+</html>

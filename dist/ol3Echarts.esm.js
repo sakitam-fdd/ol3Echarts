@@ -309,6 +309,18 @@ var ol3Echarts = function () {
     this.$chart.clear();
   };
 
+  ol3Echarts.prototype.showLoading = function showLoading() {
+    if (this.$chart) {
+      this.$chart.showLoading();
+    }
+  };
+
+  ol3Echarts.prototype.hideLoading = function hideLoading() {
+    if (this.$chart) {
+      this.$chart.hideLoading();
+    }
+  };
+
   ol3Echarts.prototype._createLayerContainer = function _createLayerContainer(map, options) {
     var container = this.$container = document.createElement('div');
     container.style.position = 'absolute';
@@ -320,7 +332,12 @@ var ol3Echarts = function () {
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container);
     } else {
-      map.getViewport().appendChild(container);
+      var _target2 = getTarget('.ol-overlaycontainer');
+      if (_target2 && _target2[0] && _target2[0] instanceof Element) {
+        _target2[0].appendChild(container);
+      } else {
+        map.getViewport().appendChild(container);
+      }
     }
   };
 

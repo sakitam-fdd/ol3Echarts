@@ -133,6 +133,24 @@ class ol3Echarts {
   }
 
   /**
+   * show loading bar
+   */
+  showLoading () {
+    if (this.$chart) {
+      this.$chart.showLoading()
+    }
+  }
+
+  /**
+   * hide loading bar
+   */
+  hideLoading () {
+    if (this.$chart) {
+      this.$chart.hideLoading()
+    }
+  }
+
+  /**
    * creat eclayer container
    * @param map
    * @param options
@@ -149,7 +167,12 @@ class ol3Echarts {
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container)
     } else {
-      map.getViewport().appendChild(container)
+      let _target = getTarget('.ol-overlaycontainer')
+      if (_target && _target[0] && _target[0] instanceof Element) {
+        _target[0].appendChild(container)
+      } else {
+        map.getViewport().appendChild(container)
+      }
     }
   }
 
