@@ -47,9 +47,7 @@
   });
   var echartslayer = new ol3Echarts(null);
   echartslayer.appendTo(Maps.getMap());
-  echartslayer.$chart.showLoading();
   axios.get('./data/lines-bus.json').then(function (res) {
-    echartslayer.$chart.hideLoading()
     var rawData = res.data;
     var hStep = 300 / (rawData.length - 1);
     var busLines = [].concat.apply([], rawData.map(function (busLine, idx) {

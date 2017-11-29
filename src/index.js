@@ -12,7 +12,7 @@ const _options = {
 class ol3Echarts {
   static getTarget = getTarget
   static merge = merge
-  constructor (chartOptions, options = {}) {
+  constructor (chartOptions, options = {}, map) {
     /**
      * layer options
      * @type {{}}
@@ -42,6 +42,8 @@ class ol3Echarts {
      * @private
      */
     this._isRegistered = false
+
+    if (map) this.appendTo(map)
   }
 
   /**
@@ -51,7 +53,6 @@ class ol3Echarts {
   appendTo (map) {
     if (map && map instanceof ol.Map) {
       this.$Map = map
-      this.render()
       this._unRegisterEvents()
       this._registerEvents()
     } else {
@@ -70,11 +71,12 @@ class ol3Echarts {
   /**
    * set echarts options and reRender
    * @param options
-   * @returns {EchartsLayer}
+   * @returns {ol3Echarts}
    */
   setChartOptions (options = {}) {
     this.$chartOptions = options
-    this._clearAndRedraw()
+    this.render()
+    // this.$Map.once('postrender', this.render, this)
     return this
   }
 
@@ -194,7 +196,7 @@ class ol3Echarts {
     if (this.$container && this.$container.style.display === 'none') {
       return
     }
-    this.$chart.clear()
+    // this.$chart.clear()
     this.$chart.resize()
     if (this.$chartOptions) {
       this._registerMap()
@@ -259,13 +261,15 @@ class ol3Echarts {
    */
   _registerEvents () {
     const Map = this.$Map
-    const view = Map.getView()
+    // const view = Map.getView()
+    Map.on('precompose', this.onMoveEnd, this)
+    Map.once('postrender', this.render, this)
     Map.on('change:size', this.onResize, this)
-    view.on('change:resolution', this.onZoomEnd, this)
-    view.on('change:center', this.onMoveEnd, this)
-    view.on('change:rotation', this.onDragRotateEnd, this)
-    Map.on('movestart', this.onMoveStart, this)
-    Map.on('moveend', this.onMoveEnd, this)
+    // view.on('change:resolution', this.onZoomEnd, this)
+    // view.on('change:center', this.onMoveEnd, this)
+    // view.on('change:rotation', this.onDragRotateEnd, this)
+    // Map.on('movestart', this.onMoveStart, this)
+    // Map.on('moveend', this.onMoveEnd, this)
   }
 
   /**
@@ -274,13 +278,14 @@ class ol3Echarts {
    */
   _unRegisterEvents () {
     const Map = this.$Map
-    const view = Map.getView()
+    // const view = Map.getView()
     Map.un('change:size', this.onResize, this)
-    view.un('change:resolution', this.onZoomEnd, this)
-    view.un('change:center', this.onMoveEnd, this)
-    view.un('change:rotation', this.onDragRotateEnd, this)
-    Map.un('movestart', this.onMoveStart, this)
-    Map.un('moveend', this.onMoveEnd, this)
+    Map.un('precompose', this.onMoveEnd, this)
+    // view.un('change:resolution', this.onZoomEnd, this)
+    // view.un('change:center', this.onMoveEnd, this)
+    // view.un('change:rotation', this.onDragRotateEnd, this)
+    // Map.un('movestart', this.onMoveStart, this)
+    // Map.un('moveend', this.onMoveEnd, this)
   }
 
   /**

@@ -41,7 +41,6 @@ const _getCoordinateSystem = function (map, options = {}) {
     }
     let source = options['source'] || 'EPSG:4326'
     let destination = options['destination'] || this.projCode_
-    // FIXME pixel is null
     let pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination))
     const mapOffset = this._mapOffset
     return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]]

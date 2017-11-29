@@ -197,7 +197,6 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
     }
     var source = options['source'] || 'EPSG:4326';
     var destination = options['destination'] || this.projCode_;
-
     var pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
     var mapOffset = this._mapOffset;
     return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
@@ -251,6 +250,7 @@ var _options = {
 var ol3Echarts = function () {
   function ol3Echarts(chartOptions) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var map = arguments[2];
     classCallCheck(this, ol3Echarts);
 
     this.$options = Object.assign({}, _options, options);
@@ -262,12 +262,13 @@ var ol3Echarts = function () {
     this.$Map = null;
 
     this._isRegistered = false;
+
+    if (map) this.appendTo(map);
   }
 
   ol3Echarts.prototype.appendTo = function appendTo(map) {
     if (map && map instanceof ol.Map) {
       this.$Map = map;
-      this.render();
       this._unRegisterEvents();
       this._registerEvents();
     } else {
@@ -283,7 +284,8 @@ var ol3Echarts = function () {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     this.$chartOptions = options;
-    this._clearAndRedraw();
+    this.render();
+
     return this;
   };
 
@@ -362,7 +364,7 @@ var ol3Echarts = function () {
     if (this.$container && this.$container.style.display === 'none') {
       return;
     }
-    this.$chart.clear();
+
     this.$chart.resize();
     if (this.$chartOptions) {
       this._registerMap();
@@ -399,24 +401,17 @@ var ol3Echarts = function () {
 
   ol3Echarts.prototype._registerEvents = function _registerEvents() {
     var Map = this.$Map;
-    var view = Map.getView();
+
+    Map.on('precompose', this.onMoveEnd, this);
+    Map.once('postrender', this.render, this);
     Map.on('change:size', this.onResize, this);
-    view.on('change:resolution', this.onZoomEnd, this);
-    view.on('change:center', this.onMoveEnd, this);
-    view.on('change:rotation', this.onDragRotateEnd, this);
-    Map.on('movestart', this.onMoveStart, this);
-    Map.on('moveend', this.onMoveEnd, this);
   };
 
   ol3Echarts.prototype._unRegisterEvents = function _unRegisterEvents() {
     var Map = this.$Map;
-    var view = Map.getView();
+
     Map.un('change:size', this.onResize, this);
-    view.un('change:resolution', this.onZoomEnd, this);
-    view.un('change:center', this.onMoveEnd, this);
-    view.un('change:rotation', this.onDragRotateEnd, this);
-    Map.un('movestart', this.onMoveStart, this);
-    Map.un('moveend', this.onMoveEnd, this);
+    Map.un('precompose', this.onMoveEnd, this);
   };
 
   ol3Echarts.prototype._registerMap = function _registerMap() {
