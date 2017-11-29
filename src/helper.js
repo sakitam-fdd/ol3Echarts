@@ -51,5 +51,6 @@ const getTarget = (selector) => {
 
 export {
   getTarget,
-  merge
+  merge,
+  isObject
 }

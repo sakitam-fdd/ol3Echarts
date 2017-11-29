@@ -1,8 +1,8 @@
 import ol from 'openlayers'
 import echarts from 'echarts'
-import { getTarget, merge } from './helper'
+import { getTarget, merge, isObject } from './helper'
 import _getCoordinateSystem from './RegisterCoordinateSystem'
-
+// FIXME dom重绘时多次创建，地图相关事件的polyfill（事件触发的开始结束），参数定义（包含重绘，动画等）
 const _options = {
   'hideOnZooming': false,
   'hideOnMoving': false,
@@ -53,6 +53,8 @@ class ol3Echarts {
   appendTo (map) {
     if (map && map instanceof ol.Map) {
       this.$Map = map
+      this.$Map.once('postrender', this.render, this)
+      this.$Map.renderSync()
       this._unRegisterEvents()
       this._registerEvents()
     } else {
@@ -75,8 +77,8 @@ class ol3Echarts {
    */
   setChartOptions (options = {}) {
     this.$chartOptions = options
-    this.render()
-    // this.$Map.once('postrender', this.render, this)
+    this.$Map.once('postrender', this.render, this)
+    this.$Map.renderSync()
     return this
   }
 
@@ -193,10 +195,10 @@ class ol3Echarts {
    * @private
    */
   _clearAndRedraw () {
-    if (this.$container && this.$container.style.display === 'none') {
+    if (!this.$chart || (this.$container && this.$container.style.display === 'none')) {
       return
     }
-    // this.$chart.clear()
+    this.$chart.clear()
     this.$chart.resize()
     if (this.$chartOptions) {
       this._registerMap()
@@ -263,7 +265,6 @@ class ol3Echarts {
     const Map = this.$Map
     // const view = Map.getView()
     Map.on('precompose', this.onMoveEnd, this)
-    Map.once('postrender', this.render, this)
     Map.on('change:size', this.onResize, this)
     // view.on('change:resolution', this.onZoomEnd, this)
     // view.on('change:center', this.onMoveEnd, this)
@@ -298,7 +299,7 @@ class ol3Echarts {
       this._isRegistered = true
     }
     const series = this.$chartOptions.series
-    if (series) {
+    if (series && isObject(series)) {
       for (let i = series.length - 1; i >= 0; i--) {
         series[i]['coordinateSystem'] = 'openlayers'
         series[i]['animation'] = false

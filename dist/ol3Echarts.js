@@ -269,6 +269,8 @@ var ol3Echarts = function () {
   ol3Echarts.prototype.appendTo = function appendTo(map) {
     if (map && map instanceof ol.Map) {
       this.$Map = map;
+      this.$Map.once('postrender', this.render, this);
+      this.$Map.renderSync();
       this._unRegisterEvents();
       this._registerEvents();
     } else {
@@ -284,8 +286,8 @@ var ol3Echarts = function () {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     this.$chartOptions = options;
-    this.render();
-
+    this.$Map.once('postrender', this.render, this);
+    this.$Map.renderSync();
     return this;
   };
 
@@ -361,10 +363,10 @@ var ol3Echarts = function () {
   };
 
   ol3Echarts.prototype._clearAndRedraw = function _clearAndRedraw() {
-    if (this.$container && this.$container.style.display === 'none') {
+    if (!this.$chart || this.$container && this.$container.style.display === 'none') {
       return;
     }
-
+    this.$chart.clear();
     this.$chart.resize();
     if (this.$chartOptions) {
       this._registerMap();
@@ -403,7 +405,6 @@ var ol3Echarts = function () {
     var Map = this.$Map;
 
     Map.on('precompose', this.onMoveEnd, this);
-    Map.once('postrender', this.render, this);
     Map.on('change:size', this.onResize, this);
   };
 
@@ -420,7 +421,7 @@ var ol3Echarts = function () {
       this._isRegistered = true;
     }
     var series = this.$chartOptions.series;
-    if (series) {
+    if (series && isObject(series)) {
       for (var i = series.length - 1; i >= 0; i--) {
         series[i]['coordinateSystem'] = 'openlayers';
         series[i]['animation'] = false;
