@@ -1,0 +1,44 @@
+body, html {
+  -webkit-user-select: none;
+  color: #323232;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-image: url("../images/bg.jpg");
+  background-position: center center;
+  background-size: cover;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0
+}
+ul, li {
+  list-style: none;
+}
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+:focus {
+  outline: none;
+}
+a {
+  text-decoration: none;
+  outline: none;
+}
+
+.main {
+  margin: 50px auto;
+  padding: 0px 15px;
+  text-align: center;
+}
+
