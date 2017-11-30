@@ -342,7 +342,6 @@ var ol3Echarts = function () {
     container.style.right = 0;
     container.style.bottom = 0;
     var _target = getTarget(options['target']);
-
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container);
     } else {
@@ -455,7 +454,6 @@ var ol3Echarts = function () {
       this._createLayerContainer(this.$Map, this.$options);
       this._resizeContainer();
     }
-
     if (!this.$chart) {
       this.$chart = echarts.init(this.$container);
       if (this.$chartOptions) {
