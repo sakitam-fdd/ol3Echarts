@@ -29,11 +29,7 @@ describe('indexSpec', () => {
 
   describe('creat echarts layer', () => {
     it('creat dom content', () => {
-      const echartslayer = new ol3Echarts(null, {
-        target: '.ol-overlaycontainer',
-        source: '',
-        destination: ''
-      });
+      const echartslayer = new ol3Echarts(getOptions());
       echartslayer.appendTo(Map)
       expect(echartslayer instanceof ol3Echarts).to.be.ok();
     });
@@ -42,11 +38,7 @@ describe('indexSpec', () => {
   describe('echarts layer state', () => {
     let echartslayer
     it('_isVisible', () => {
-      echartslayer = new ol3Echarts(getOptions(), {
-        target: '.ol-overlaycontainer',
-        source: '',
-        destination: ''
-      });
+      echartslayer = new ol3Echarts(getOptions());
       echartslayer.appendTo(Map)
       let vis = echartslayer._isVisible();
       expect(vis).to.be.eql(true);
@@ -67,11 +59,7 @@ describe('indexSpec', () => {
 
   describe('ol.Map', () => {
     it('getMap', () => {
-      const echartslayer = new ol3Echarts(null, {
-        target: '.ol-overlaycontainer',
-        source: '',
-        destination: ''
-      });
+      const echartslayer = new ol3Echarts(getOptions());
       echartslayer.appendTo(Map)
       expect(echartslayer.getMap()).to.be.eql(Map);
     });
@@ -80,11 +68,7 @@ describe('indexSpec', () => {
   describe('charts option', () => {
     let echartslayer
     it('setChartOptions', () => {
-      echartslayer = new ol3Echarts(getOptions(), {
-        target: '.ol-overlaycontainer',
-        source: '',
-        destination: ''
-      });
+      echartslayer = new ol3Echarts(getOptions());
       echartslayer.appendTo(Map);
       expect(echartslayer._isVisible() && echartslayer._isRegistered).to.be.eql(true);
     });
@@ -98,12 +82,7 @@ describe('indexSpec', () => {
   describe('charts action', () => {
     let echartslayer
     it('onResize', () => {
-      echartslayer = new ol3Echarts(getOptions(), {
-        target: '.ol-overlaycontainer',
-        source: '',
-        destination: '',
-        hideOnMoving: true
-      });
+      echartslayer = new ol3Echarts(getOptions());
       echartslayer.appendTo(Map);
       let size = Map.getSize();
       Map.setSize([size[0] + 100, size[1] + 100]);
@@ -142,13 +121,9 @@ describe('indexSpec', () => {
 
   describe('remove charts', () => {
     it('remove', () => {
-      const echartslayer = new ol3Echarts(null, {
-        target: '.ol-overlaycontainer',
-        source: '',
-        destination: ''
-      });
-      expect(echartslayer instanceof ol3Echarts).to.be.ok();
+      const echartslayer = new ol3Echarts(getOptions());
       echartslayer.appendTo(Map)
+      expect(echartslayer instanceof ol3Echarts).to.be.ok();
       expect(echartslayer.getMap()).to.be.eql(Map);
       echartslayer.remove();
       expect(echartslayer.getMap()).to.be.eql(undefined);

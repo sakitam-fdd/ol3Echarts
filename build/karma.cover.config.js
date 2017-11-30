@@ -27,11 +27,7 @@ module.exports = function (config) {
   if (idx >= 0) {
     const babel = require('rollup-plugin-babel');
     plugins.splice(idx, 1, babel({
-      plugins: [['istanbul', {
-        exclude: [
-          'test/**/*.js'
-        ]
-      }]]
+      plugins: [['istanbul']]
     }));
   }
   config.set(options);

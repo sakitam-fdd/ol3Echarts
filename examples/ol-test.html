@@ -29,9 +29,7 @@
     layers: [
       new ol.layer.Tile({
         preload: 4,
-        source: new ol.source.OSM({
-          url: 'https://s{1-5}.geohey.com/s/mapping/dark/all?x={x}&y={y}&z={z}&retina=&ak=MGUxMmI2ZTk4YTVhNDEzYmJhZDJkNDM3ZWI5ZDAwOGE'
-        })
+        source: new ol.source.OSM()
       })
     ],
     loadTilesWhileInteracting:true,
@@ -896,9 +894,10 @@
         zlevel: 1
       }]
   };
-  var echartslayer = new ol3Echarts(option);
+  var echartslayer = new ol3Echarts(option, {
+    hideOnMoving: true
+  });
   echartslayer.appendTo(Maps)
-//  echartslayer.setChartOptions(option)
 </script>
 </body>
 </html>

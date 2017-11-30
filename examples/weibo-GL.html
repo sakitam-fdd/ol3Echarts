@@ -70,11 +70,12 @@
       }
     ]
   });
-  var echartslayer = new ol3Echarts(null);
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
   echartslayer.appendTo(Maps.getMap());
-  echartslayer.showLoading();
   axios.get('./data/weibo-gl.json').then(function (res) {
-    echartslayer.hideLoading()
     var rawData = res.data;
     var weiboData = rawData.map(function (serieData, idx) {
       var px = serieData[0] / 1000;

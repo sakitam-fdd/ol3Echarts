@@ -20,12 +20,11 @@ const isObject = value => {
  * @returns {*}
  */
 const merge = (a, b) => {
-  for (let key in b) {
-    /* istanbul ignore else */
-    if (!a.hasOwnProperty(key)) {
-      a[key] = b[key]
-    } else if (isObject(b[key]) && isObject(a[key])) {
+  for (const key in b) {
+    if (isObject(b[key]) && isObject(a[key])) {
       merge(a[key], b[key])
+    } else {
+      a[key] = b[key]
     }
   }
   return a

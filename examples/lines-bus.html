@@ -69,7 +69,10 @@
       }
     ]
   });
-  var echartslayer = new ol3Echarts(null);
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
   echartslayer.appendTo(Maps.getMap());
   axios.get('./data/lines-bus.json').then(function (res) {
     var rawData = res.data;

@@ -150,10 +150,10 @@ var isObject = function isObject(value) {
 
 var merge = function merge(a, b) {
   for (var key in b) {
-    if (!a.hasOwnProperty(key)) {
-      a[key] = b[key];
-    } else if (isObject(b[key]) && isObject(a[key])) {
+    if (isObject(b[key]) && isObject(a[key])) {
       merge(a[key], b[key]);
+    } else {
+      a[key] = b[key];
     }
   }
   return a;
@@ -195,7 +195,6 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
     }
     var source = options['source'] || 'EPSG:4326';
     var destination = options['destination'] || this.projCode_;
-
     var pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
     var mapOffset = this._mapOffset;
     return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
@@ -241,17 +240,18 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
 };
 
 var _options = {
-  'hideOnZooming': false,
-  'hideOnMoving': false,
-  'hideOnRotating': false
-};
+  forcedRerender: false,
+  hideOnZooming: false,
+  hideOnMoving: false,
+  hideOnRotating: false };
 
 var ol3Echarts = function () {
   function ol3Echarts(chartOptions) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var map = arguments[2];
     classCallCheck(this, ol3Echarts);
 
-    this.$options = Object.assign({}, _options, options);
+    this.$options = merge(_options, options);
 
     this.$chartOptions = chartOptions;
 
@@ -260,12 +260,15 @@ var ol3Echarts = function () {
     this.$Map = null;
 
     this._isRegistered = false;
+
+    if (map) this.appendTo(map);
   }
 
   ol3Echarts.prototype.appendTo = function appendTo(map) {
     if (map && map instanceof ol.Map) {
       this.$Map = map;
-      this.render();
+      this.$Map.once('postrender', this.render, this);
+      this.$Map.renderSync();
       this._unRegisterEvents();
       this._registerEvents();
     } else {
@@ -281,7 +284,8 @@ var ol3Echarts = function () {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     this.$chartOptions = options;
-    this._clearAndRedraw();
+    this.$Map.once('postrender', this.render, this);
+    this.$Map.renderSync();
     return this;
   };
 
@@ -336,8 +340,9 @@ var ol3Echarts = function () {
     container.style.top = 0;
     container.style.left = 0;
     container.style.right = 0;
-    container.style.buttom = 0;
+    container.style.bottom = 0;
     var _target = getTarget(options['target']);
+
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container);
     } else {
@@ -357,10 +362,12 @@ var ol3Echarts = function () {
   };
 
   ol3Echarts.prototype._clearAndRedraw = function _clearAndRedraw() {
-    if (this.$container && this.$container.style.display === 'none') {
+    if (!this.$chart || this.$container && this.$container.style.display === 'none') {
       return;
     }
-    this.$chart.clear();
+    if (this.$options.forcedRerender) {
+      this.$chart.clear();
+    }
     this.$chart.resize();
     if (this.$chartOptions) {
       this._registerMap();
@@ -374,33 +381,44 @@ var ol3Echarts = function () {
   };
 
   ol3Echarts.prototype.onZoomEnd = function onZoomEnd() {
+    if (!this.$options['hideOnZooming']) {
+      return;
+    }
     this.show();
     this._clearAndRedraw();
   };
 
   ol3Echarts.prototype.onDragRotateEnd = function onDragRotateEnd() {
+    if (!this.$options['hideOnRotating']) {
+      return;
+    }
     this.show();
     this._clearAndRedraw();
   };
 
   ol3Echarts.prototype.onMoveStart = function onMoveStart() {
-    if (!this.$options['hideOnMoving']) {
-      return;
+    if (this.$options['hideOnMoving']) {
+      this.hide();
     }
-    this.hide();
   };
 
   ol3Echarts.prototype.onMoveEnd = function onMoveEnd() {
+    if (!this.$options['hideOnMoving']) {
+      return;
+    }
     this.show();
     this._clearAndRedraw();
   };
 
+  ol3Echarts.prototype.onCenterChange = function onCenterChange() {};
+
   ol3Echarts.prototype._registerEvents = function _registerEvents() {
     var Map = this.$Map;
     var view = Map.getView();
+    Map.on('precompose', this.reRender, this);
     Map.on('change:size', this.onResize, this);
     view.on('change:resolution', this.onZoomEnd, this);
-    view.on('change:center', this.onMoveEnd, this);
+    view.on('change:center', this.onCenterChange, this);
     view.on('change:rotation', this.onDragRotateEnd, this);
     Map.on('movestart', this.onMoveStart, this);
     Map.on('moveend', this.onMoveEnd, this);
@@ -410,8 +428,9 @@ var ol3Echarts = function () {
     var Map = this.$Map;
     var view = Map.getView();
     Map.un('change:size', this.onResize, this);
+    Map.un('precompose', this.reRender, this);
     view.un('change:resolution', this.onZoomEnd, this);
-    view.un('change:center', this.onMoveEnd, this);
+    view.un('change:center', this.onCenterChange, this);
     view.un('change:rotation', this.onDragRotateEnd, this);
     Map.un('movestart', this.onMoveStart, this);
     Map.un('moveend', this.onMoveEnd, this);
@@ -423,7 +442,7 @@ var ol3Echarts = function () {
       this._isRegistered = true;
     }
     var series = this.$chartOptions.series;
-    if (series) {
+    if (series && isObject(series)) {
       for (var i = series.length - 1; i >= 0; i--) {
         series[i]['coordinateSystem'] = 'openlayers';
         series[i]['animation'] = false;
@@ -436,6 +455,7 @@ var ol3Echarts = function () {
       this._createLayerContainer(this.$Map, this.$options);
       this._resizeContainer();
     }
+
     if (!this.$chart) {
       this.$chart = echarts.init(this.$container);
       if (this.$chartOptions) {
@@ -445,6 +465,10 @@ var ol3Echarts = function () {
     } else if (this._isVisible()) {
       this.$chart.resize();
     }
+  };
+
+  ol3Echarts.prototype.reRender = function reRender() {
+    this._clearAndRedraw();
   };
 
   return ol3Echarts;

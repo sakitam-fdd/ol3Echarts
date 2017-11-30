@@ -15,8 +15,8 @@ module.exports = {
 
   // list of files / patterns to load in the browser
   files: [
-    'node_modules/echarts/dist/echarts.js',
     'node_modules/openlayers/dist/ol.js',
+    'node_modules/echarts/dist/echarts.js',
     'src/**/*.js',
     // _package.unpkg,
     'test/**/*.js'
