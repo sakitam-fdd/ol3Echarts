@@ -6,14 +6,16 @@
 import echarts from 'echarts'
 import ol from 'openlayers'
 
-const _getCoordinateSystem = function (map, options) {
+const _getCoordinateSystem = function (map, options = {}) {
   const RegisterCoordinateSystem = function () {
-    this.$options = options
-    this.$Map = map
     this._mapOffset = [0, 0]
     this.dimensions = ['lng', 'lat']
     this.projCode_ = this._getProjectionCode()
   }
+
+  RegisterCoordinateSystem.prototype.dimensions = ['lng', 'lat']
+
+  RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions
 
   /**
    * 设置地图窗口的偏移
@@ -37,9 +39,11 @@ const _getCoordinateSystem = function (map, options) {
         return item
       })
     }
-    let source = this.$options['source'] || 'EPSG:4326'
-    let destination = this.$options['destination'] || this.projCode_
-    return this.$Map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination))
+    let source = options['source'] || 'EPSG:4326'
+    let destination = options['destination'] || this.projCode_
+    let pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination))
+    const mapOffset = this._mapOffset
+    return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]]
   }
 
   /**
@@ -49,8 +53,8 @@ const _getCoordinateSystem = function (map, options) {
    */
   RegisterCoordinateSystem.prototype._getProjectionCode = function () {
     let code = ''
-    if (this.$Map) {
-      code = this.$Map.getView() && this.$Map.getView().getProjection().getCode()
+    if (map) {
+      code = map.getView() && map.getView().getProjection().getCode()
     } else {
       code = 'EPSG:3857'
     }
@@ -63,7 +67,8 @@ const _getCoordinateSystem = function (map, options) {
    * @returns {ol.Coordinate}
    */
   RegisterCoordinateSystem.prototype.pointToData = function (pixel) {
-    return this.$Map.getCoordinateFromPixel(pixel)
+    const mapOffset = this._mapOffset
+    return map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]])
   }
 
   /**
@@ -71,7 +76,7 @@ const _getCoordinateSystem = function (map, options) {
    * @returns {*}
    */
   RegisterCoordinateSystem.prototype.getViewRect = function () {
-    const size = this.$Map.getSize()
+    const size = map.getSize()
     return new echarts.graphic.BoundingRect(0, 0, size[0], size[1])
   }
 
@@ -81,8 +86,6 @@ const _getCoordinateSystem = function (map, options) {
   RegisterCoordinateSystem.prototype.getRoamTransform = function () {
     return echarts.matrix.create()
   }
-
-  RegisterCoordinateSystem.dimensions = ['lng', 'lat']
 
   /**
    * get dimensions info
@@ -97,10 +100,9 @@ const _getCoordinateSystem = function (map, options) {
    * @param echartModel
    */
   RegisterCoordinateSystem.create = function (echartModel) {
-    const that = this
     echartModel.eachSeries(function (seriesModel) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
-        seriesModel.coordinateSystem = new RegisterCoordinateSystem(that.$Map)
+        seriesModel.coordinateSystem = new RegisterCoordinateSystem(map)
       }
     })
   }

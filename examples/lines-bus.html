@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>lines-airline-china</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  var Maps = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [116.28245, 39.92121],
+      projection: 'EPSG:4326',
+      zoom: 9, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'vector',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        tileGrid: {
+          tileSize: 256,
+          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+          origin: [-2.0037508342787E7, 2.0037508342787E7],
+          resolutions: [
+            156543.03392800014,
+            78271.51696399994,
+            39135.75848200009,
+            19567.87924099992,
+            9783.93962049996,
+            4891.96981024998,
+            2445.98490512499,
+            1222.992452562495,
+            611.4962262813797,
+            305.74811314055756,
+            152.87405657041106,
+            76.43702828507324,
+            38.21851414253662,
+            19.10925707126831,
+            9.554628535634155,
+            4.77731426794937,
+            2.388657133974685
+          ]
+        },
+        layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
+  echartslayer.appendTo(Maps.getMap());
+  axios.get('./data/lines-bus.json').then(function (res) {
+    var rawData = res.data;
+    var hStep = 300 / (rawData.length - 1);
+    var busLines = [].concat.apply([], rawData.map(function (busLine, idx) {
+      var prevPt;
+      var points = [];
+      for (var i = 0; i < busLine.length; i += 2) {
+        var pt = [busLine[i], busLine[i + 1]];
+        if (i > 0) {
+          pt = [
+            prevPt[0] + pt[0],
+            prevPt[1] + pt[1]
+          ];
+        }
+        prevPt = pt;
+
+        points.push([pt[0] / 1e4, pt[1] / 1e4]);
+      }
+      return {
+        'coords': points,
+        'lineStyle': {
+          'normal': {
+            'color': echarts.color.modifyHSL('#5A94DF', Math.round(hStep * idx))
+          }
+        }
+      };
+    }));
+    var option = {
+      'series': [
+        {
+          'type': 'lines',
+          'polyline': true,
+          'data': busLines,
+          'lineStyle': {
+            'normal': {
+              'width': 0
+            }
+          },
+          'effect': {
+            'constantSpeed': 20,
+            'show': true,
+            'trailLength': 0.5,
+            'symbolSize': 1.5
+          },
+          'zlevel': 1
+        }
+      ]
+    };
+    echartslayer.setChartOptions(option);
+  })
+</script>
+</body>
+</html>

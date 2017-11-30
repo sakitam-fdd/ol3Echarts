@@ -13,8 +13,6 @@ describe('helperSpec', () => {
     const a = {'a': 1, 'b': 2};
     const b = {'c': 3};
     const c = ol3Echarts.merge(a, b)
-    expect(c).to.be.eql({
-      'a': 1, 'b': 2, 'c': 3
-    });
+    expect(c.c).to.be.eql(3);
   })
 })
