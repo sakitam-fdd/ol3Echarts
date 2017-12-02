@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>lines-airline</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../../assets/scripts/common.js"></script>
+<script src="../../../dist/ol3Echarts.js"></script>
+<script>
+  var Maps = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [113.53450137499999, 34.44104525],
+      projection: 'EPSG:4326',
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'vector',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        tileGrid: {
+          tileSize: 256,
+          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+          origin: [-2.0037508342787E7, 2.0037508342787E7],
+          resolutions: [
+            156543.03392800014,
+            78271.51696399994,
+            39135.75848200009,
+            19567.87924099992,
+            9783.93962049996,
+            4891.96981024998,
+            2445.98490512499,
+            1222.992452562495,
+            611.4962262813797,
+            305.74811314055756,
+            152.87405657041106,
+            76.43702828507324,
+            38.21851414253662,
+            19.10925707126831,
+            9.554628535634155,
+            4.77731426794937,
+            2.388657133974685
+          ]
+        },
+        layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true
+  });
+  echartslayer.appendTo(Maps.getMap());
+  $fetch.get('../../data/flights.json').then(function (res) {
+    var data = res.data;
+    function getAirportCoord (idx) {
+      return [data.airports[idx][3], data.airports[idx][4]];
+    }
+    var routes = data.routes.map(function (airline) {
+      return [
+        getAirportCoord(airline[1]),
+        getAirportCoord(airline[2])
+      ];
+    });
+    var option = {
+      title: {
+        text: '航线',
+        left: 'center',
+        textStyle: {
+          color: '#eee'
+        }
+      },
+      backgroundColor: 'transparent',
+      tooltip: {
+        formatter: function (param) {
+          var route = data.routes[param.dataIndex];
+          return data.airports[route[1]][1] + ' > ' + data.airports[route[2]][1];
+        }
+      },
+      series: [{
+        type: 'lines',
+        data: routes,
+        large: true,
+        largeThreshold: 100,
+        lineStyle: {
+          normal: {
+            opacity: 0.05,
+            width: 0.5,
+            curveness: 0.3
+          }
+        },
+        // 设置混合模式为叠加
+        blendMode: 'lighter'
+      }]
+    };
+    echartslayer.setChartOptions(option);
+  });
+</script>
+</body>
+</html>

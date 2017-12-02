@@ -1,26 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HMap</title>
-  <meta name="description" content="Description">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="shortcut icon" href="./assets/logo.png" type="image/png">
-  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
-  <link rel="stylesheet" href="./assets/css/style.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="./assets/images/logo.png"/>
+  <title>ol3Echarts</title>
+  <meta name="keywords" content="openlayers，echarts"/>
+  <link rel="stylesheet" href="assets/style/style.css">
 </head>
 <body>
-<div id="app"></div>
-<script>
-  window.$docsify = {
-    name: 'ol3Echarts',
-    repo: 'https://github.com/sakitam-fdd/ol3Echarts',
-    search: 'auto', // 默认值
-    loadSidebar: true,
-    auto2top: true
-  }
+<div class="header clearfix">
+  <div class="navbar-header">
+    <a href="" class="navbar-brand">
+      <img src="./assets/images/logo.png" alt="logo" class="navbar-logo">
+    </a>
+  </div>
+  <div class="navbar-collapse clearfix">
+    <ul class="nav navbar-nav navbar-left clearfix">
+      <li id="nav-index">
+        <a href="https://sakitam-fdd.github.io/ol3Echarts">首页</a>
+      </li>
+      <li id="nav-doc" class="dropdown">
+        <a href="https://sakitam-fdd.github.io/ol3Echarts/docs/" target="_blank">文档</a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li id="nav-github">
+        <a href="https://github.com/sakitam-fdd/ol3Echarts" target="_blank">
+          <img src="./assets/images/github.png" width="18"></a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="main">
+  <div class="charts-list">
+    <ul id="charts-list-ul" class="charts-list-ul clearfix"></ul>
+  </div>
+</div>
+<script src="//cdn.jsdelivr.net/npm/three/build/three.min.js"></script>
+<script src="//cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+<script src="./assets/scripts/threeEarth.js"></script>
+<script src="./assets/scripts/common.js"></script>
+<script type="text/javascript">
+  // var threeEarth = new ThreeEarth();
+  // threeEarth.init();
+  // threeEarth.animate();
+  var render = Tpl(String(function(){/*
+   <% for(var i = 0; i < charts.length; i++){ %>
+   <li class="chart">
+   <div class="chart_wrap">
+   <a class="chart_bg" target="_blank" href="<%= charts[i].url %>" style="background-image:url('<%= charts[i].imgSrc %>');">
+   <div class="chart_hover animation">
+   <div class="chart_magnifier">
+   <img src="./assets/images/magnifier.png">
+   </div>
+   <span>点击查看</span>
+   </div>
+   </a>
+   <div class="chart_info">
+   <div class="chart_name"><%= charts[i].chart_name %></div>
+   <div class="chart_detail clearfix">
+   <div class="chart_author pull-left">
+   <span class="chart_icon chart_author_icon"></span>
+   <span class="chart_icontxt"><%= charts[i].chart_author %></span>
+   </div>
+   <div class="chart_time pull-right">
+   <span class="chart_icon chart_time_icon"></span>
+   <span class="chart_icontxt"><%= charts[i].chart_time %></span>
+   </div>
+   </div>
+   </div>
+   </div>
+   </li>
+   <% } %>
+   */}).match(/^.*?\*([\s\S]*)\*/)[1]);
+  $fetch.get('./config.json').then(function (res) {
+    var template = render({
+      charts: res.data
+    });
+    $('#charts-list-ul').append($(template));
+  });
 </script>
-<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
-<script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
 </body>
 </html>
