@@ -141,9 +141,11 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 ## 截图示例
 
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/sdt.gif)
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/scatter.jpg)
 
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/qxt.gif)
+![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/mock-migration.jpg)
+
+![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/wchart-gl.jpg)
 
 其他示例请自己挖掘
 
