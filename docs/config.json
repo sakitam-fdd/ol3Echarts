@@ -56,7 +56,7 @@
     "chart_time": "2017.11.29"
   },
   {
-    "imgSrc": "./assets/images/lines-airline.jpg",
+    "imgSrc": "./assets/images/fly.jpg",
     "url": "./examples/mixin/lines-airline.html",
     "chart_name": "全球飞机航线",
     "chart_author": "FDD",
