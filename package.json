@@ -4,7 +4,7 @@
   "description": "a openlayers extension to echarts",
   "author": "FDD <smileFDD@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
-  "private": true,
+  "private": false,
   "main": "dist/ol3Echarts.common.js",
   "module": "dist/ol3Echarts.esm.js",
   "unpkg": "dist/ol3Echarts.js",
