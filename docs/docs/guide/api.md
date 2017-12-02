@@ -1,7 +1,8 @@
 ### 如何使用
 
-> 注意：现有echarts扩展是独立于openlayers图层的，所以不可以用
-  openlayers图层的方式操作。
+> 注意：现有echarts扩展是独立于openlayers图层的
+
+#### 初始化echarts图层并添加到地图
 
 ```javascript
 var option = {} // echarts标准配置

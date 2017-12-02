@@ -147,6 +147,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 其他示例请自己挖掘
 
-## 参考
+## 致谢
 
->[https://github.com/ecomfe/echarts](https://github.com/ecomfe/echarts)
+> [echarts](https://github.com/ecomfe/echarts)
+> [openlayers](https://github.com/openlayers/openlayers)

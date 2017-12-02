@@ -480,4 +480,3 @@ ol3Echarts.merge = merge;
 return ol3Echarts;
 
 })));
-//# sourceMappingURL=ol3Echarts.js.map
