@@ -75,5 +75,12 @@
     "chart_name": "微博签到数据点亮中国-WEBGL",
     "chart_author": "FDD",
     "chart_time": "2017.12.01"
+  },
+  {
+    "imgSrc": "./assets/images/wind.jpg",
+    "url": "./examples/webgl/flowgl.html",
+    "chart_name": "全球风向",
+    "chart_author": "FDD",
+    "chart_time": "2017.12.04"
   }
 ]

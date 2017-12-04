@@ -227,10 +227,10 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
   };
 
   RegisterCoordinateSystem.getDimensionsInfo = function () {
-    return RegisterCoordinateSystem.dimensions;
+    return ['lng', 'lat'];
   };
 
-  RegisterCoordinateSystem.create = function (echartModel) {
+  RegisterCoordinateSystem.create = function (echartModel, api) {
     echartModel.eachSeries(function (seriesModel) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
         seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);

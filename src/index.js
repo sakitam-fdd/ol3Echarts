@@ -1,7 +1,7 @@
 import ol from 'openlayers'
 import echarts from 'echarts'
 import { getTarget, merge, isObject } from './helper'
-import _getCoordinateSystem from './RegisterCoordinateSystem'
+import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem'
 // FIXME 地图相关事件的polyfill（事件触发的开始结束），参数定义（包含重绘，动画等）
 const _options = {
   forcedRerender: false, // Force re-rendering

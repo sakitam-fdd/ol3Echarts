@@ -92,14 +92,14 @@ const _getCoordinateSystem = function (map, options = {}) {
    * @returns {Array|[string,string]}
    */
   RegisterCoordinateSystem.getDimensionsInfo = function () {
-    return RegisterCoordinateSystem.dimensions
+    return ['lng', 'lat']
   }
 
   /**
    * 注册实例
    * @param echartModel
    */
-  RegisterCoordinateSystem.create = function (echartModel) {
+  RegisterCoordinateSystem.create = function (echartModel, api) {
     echartModel.eachSeries(function (seriesModel) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
         seriesModel.coordinateSystem = new RegisterCoordinateSystem(map)
