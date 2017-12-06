@@ -48,8 +48,39 @@ const getTarget = (selector) => {
   return dom
 }
 
+/**
+ * 数组映射
+ * @param {Array} obj
+ * @param {Function} cb
+ * @param {*} [context]
+ * @return {Array}
+ */
+const map = function (obj, cb, context) {
+  if (!(obj && cb)) {
+    return
+  }
+  if (obj.map && obj.map === Array.prototype.map) {
+    return obj.map(cb, context)
+  } else {
+    let result = []
+    for (let i = 0, len = obj.length; i < len; i++) {
+      result.push(cb.call(context, obj[i], i, obj))
+    }
+    return result
+  }
+}
+
+const bind = function (func, context) {
+  let args = Array.prototype.slice.call(arguments, 2)
+  return function () {
+    return func.apply(context, args.concat(Array.prototype.slice.call(arguments)))
+  }
+}
+
 export {
   getTarget,
   merge,
-  isObject
+  isObject,
+  map,
+  bind
 }

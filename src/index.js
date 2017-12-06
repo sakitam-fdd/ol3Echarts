@@ -1,18 +1,22 @@
 import ol from 'openlayers'
 import echarts from 'echarts'
-import { getTarget, merge, isObject } from './helper'
+import { getTarget, merge, isObject, map, bind } from './helper'
 import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem'
+import * as charts from './charts/index'
 // FIXME 地图相关事件的polyfill（事件触发的开始结束），参数定义（包含重绘，动画等）
 const _options = {
   forcedRerender: false, // Force re-rendering
   hideOnZooming: false, // when zooming hide chart
   hideOnMoving: false, // when moving hide chart
-  hideOnRotating: false // // when Rotating hide chart
+  hideOnRotating: false, // // when Rotating hide chart
+  convertTypes: ['pie', 'line', 'bar']
 }
 
 class ol3Echarts {
   static getTarget = getTarget
   static merge = merge
+  static map = map
+  static bind = bind
   constructor (chartOptions, options = {}, map) {
     /**
      * layer options
@@ -43,6 +47,13 @@ class ol3Echarts {
      * @private
      */
     this._isRegistered = false
+
+    /**
+     * coordinate system
+     * @type {null}
+     * @private
+     */
+    this._coordinateSystem = null
 
     if (map) this.appendTo(map)
   }
@@ -205,7 +216,7 @@ class ol3Echarts {
     this.$chart.resize()
     if (this.$chartOptions) {
       this._registerMap()
-      this.$chart.setOption(this.$chartOptions, false)
+      this.$chart.setOption(this.reConverData(this.$chartOptions), false)
     }
   }
 
@@ -314,6 +325,34 @@ class ol3Echarts {
   }
 
   /**
+   * 重新处理数据
+   * @param options
+   * @returns {*}
+   */
+  reConverData (options) {
+    let series = options['series']
+    if (series && series.length > 0) {
+      if (!this._coordinateSystem) {
+        let _cs = _getCoordinateSystem(this.getMap(), this.$options)
+        this._coordinateSystem = new _cs()
+      }
+      if (series && isObject(series)) {
+        for (let i = series.length - 1; i >= 0; i--) {
+          if (this.$options.convertTypes.indexOf(series[i]['type']) > -1) {
+            if (series[i] && series[i].hasOwnProperty('coordinates')) {
+              charts[series[i]['type']](options, series[i], this._coordinateSystem)
+            }
+            if (series[i] && series[i].hasOwnProperty('coordinateSystem')) {
+              delete series[i]['coordinateSystem']
+            }
+          }
+        }
+      }
+    }
+    return options
+  }
+
+  /**
    * render
    */
   render () {
@@ -325,7 +364,7 @@ class ol3Echarts {
       this.$chart = echarts.init(this.$container)
       if (this.$chartOptions) {
         this._registerMap()
-        this.$chart.setOption(this.$chartOptions, false)
+        this.$chart.setOption(this.reConverData(this.$chartOptions), false)
       }
     } else if (this._isVisible()) {
       this.$chart.resize()

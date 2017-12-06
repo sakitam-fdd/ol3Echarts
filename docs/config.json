@@ -82,5 +82,12 @@
     "chart_name": "全球风向",
     "chart_author": "FDD",
     "chart_time": "2017.12.04"
+  },
+  {
+    "imgSrc": "./assets/images/map-bin.jpg",
+    "url": "./examples/point/map-bin.html",
+    "chart_name": "自定义网格图层",
+    "chart_author": "FDD",
+    "chart_time": "2017.12.06"
   }
 ]
