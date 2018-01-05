@@ -56,23 +56,130 @@
     },
     grid: [
       {
-        width: 300,
-        height: 150,
-        containLabel: true
+        show: false,
+        containLabel: true,
+        borderWidth: 0,
+        borderColor: '#fff',
+        width: 150,
+        height: 80
+      },
+      {
+        show: false,
+        containLabel: true,
+        borderWidth: 0,
+        borderColor: '#fff',
+        width: 150,
+        height: 80
       }
     ],
     xAxis : [
       {
         type : 'category',
-        data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        show: true,
+        name: '',
+        nameGap: '1',
+        nameTextStyle: {
+          color: '#3c3c3c'
+        },
+        axisLine: {
+          show: false,
+          onZero: false
+        },
+        axisLabel: {
+          show: false,
+          interval: 0,
+          rotate: -45,
+          textStyle: {
+            color: '#3c3c3c',
+            fontSize: 10
+          }
+        },
         axisTick: {
-          alignWithLabel: true
-        }
+          show: false
+        },
+        data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      {
+        type : 'category',
+        show: true,
+        name: '',
+        nameGap: '1',
+        nameTextStyle: {
+          color: '#3c3c3c'
+        },
+        axisLine: {
+          show: false,
+          onZero: false
+        },
+        axisLabel: {
+          show: false,
+          interval: 0,
+          rotate: -45,
+          textStyle: {
+            color: '#3c3c3c',
+            fontSize: 10
+          }
+        },
+        axisTick: {
+          show: false
+        },
+        data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       }
     ],
     yAxis : [
       {
-        type : 'value'
+        type: 'value',
+        show: true,
+        min: 0.001,
+        axisLabel: {
+          show: false
+        },
+        axisLine: {
+          show: false,
+          onZero: false
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            width: 0.2
+          }
+        },
+        nameGap: '1',
+        axisTick: {
+          show: false
+        },
+        name: '',
+        nameTextStyle: {
+          color: '#3c3c3c',
+          fontSize: 14
+        }
+      },
+      {
+        type: 'value',
+        show: true,
+        min: 0.001,
+        axisLabel: {
+          show: false
+        },
+        axisLine: {
+          show: false,
+          onZero: false
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            width: 0.2
+          }
+        },
+        nameGap: '1',
+        axisTick: {
+          show: false
+        },
+        name: '',
+        nameTextStyle: {
+          color: '#3c3c3c',
+          fontSize: 14
+        }
       }
     ],
     series: [
@@ -81,6 +188,13 @@
         type:'bar',
         barWidth: '15',
         coordinates: [110.53450137499999, 33.44104525],
+        data:[10, 52, 200, 334, 390, 330, 220]
+      },
+      {
+        name:'直接访问',
+        type:'bar',
+        barWidth: '15',
+        coordinates: [113.53450137499999, 34.44104525],
         data:[10, 52, 200, 334, 390, 330, 220]
       }
     ]

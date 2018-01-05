@@ -89,5 +89,12 @@
     "chart_name": "自定义网格图层",
     "chart_author": "FDD",
     "chart_time": "2017.12.06"
+  },
+  {
+    "imgSrc": "./assets/images/pie.jpg",
+    "url": "./examples/pie/pie.html",
+    "chart_name": "饼图",
+    "chart_author": "FDD",
+    "chart_time": "2018.01.01"
   }
 ]

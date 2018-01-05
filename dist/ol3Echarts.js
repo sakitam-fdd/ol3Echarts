@@ -1,7 +1,7 @@
 /*!
  * ol3-echarts v1.3.0
  * LICENSE : MIT
- * (c) 2017-2017 https://sakitam-fdd.github.io/ol3Echarts
+ * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('openlayers'), require('echarts')) :
@@ -296,12 +296,14 @@ var pie = function pie(options, serie, coordinateSystem) {
 };
 
 var bar = function bar(options, serie, coordinateSystem) {
-  options.grid = options.grid.map(function (gri, index) {
-    var coorPixel = coordinateSystem.dataToPoint(serie.coordinates);
-    gri.left = coorPixel[0];
-    gri.top = coorPixel[1];
-    return gri;
-  });
+  if (isObject(options.grid)) {} else if (Array.isArray(options.grid)) {
+    options.grid = options.grid.map(function (gri, index) {
+      var coorPixel = coordinateSystem.dataToPoint(serie.coordinates);
+      gri.left = coorPixel[0];
+      gri.top = coorPixel[1];
+      return gri;
+    });
+  }
 };
 
 
@@ -579,3 +581,4 @@ ol3Echarts.bind = bind;
 return ol3Echarts;
 
 })));
+//# sourceMappingURL=ol3Echarts.js.map
