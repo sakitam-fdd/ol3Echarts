@@ -36,7 +36,7 @@
   },
   {
     "imgSrc": "./assets/images/openlayers.jpg",
-    "url": "./examples/line/openlayers.html",
+    "url": "./examples/openlayers/openlayers.html",
     "chart_name": "openlayers原生实现",
     "chart_author": "FDD",
     "chart_time": "2017.11.29"

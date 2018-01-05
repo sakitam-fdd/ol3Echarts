@@ -1,5 +1,5 @@
 /*!
- * ol3-echarts v1.3.0
+ * ol3-echarts v1.3.1
  * LICENSE : MIT
  * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
@@ -584,4 +584,3 @@ ol3Echarts.bind = bind;
 return ol3Echarts;
 
 })));
-//# sourceMappingURL=ol3Echarts.js.map
