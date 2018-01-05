@@ -36,7 +36,7 @@
   },
   {
     "imgSrc": "./assets/images/openlayers.jpg",
-    "url": "./examples/line/openlayers.html",
+    "url": "./examples/openlayers/openlayers.html",
     "chart_name": "openlayers原生实现",
     "chart_author": "FDD",
     "chart_time": "2017.11.29"
@@ -75,5 +75,33 @@
     "chart_name": "微博签到数据点亮中国-WEBGL",
     "chart_author": "FDD",
     "chart_time": "2017.12.01"
+  },
+  {
+    "imgSrc": "./assets/images/wind.jpg",
+    "url": "./examples/webgl/flowgl.html",
+    "chart_name": "全球风向",
+    "chart_author": "FDD",
+    "chart_time": "2017.12.04"
+  },
+  {
+    "imgSrc": "./assets/images/map-bin.jpg",
+    "url": "./examples/point/map-bin.html",
+    "chart_name": "自定义网格图层",
+    "chart_author": "FDD",
+    "chart_time": "2017.12.06"
+  },
+  {
+    "imgSrc": "./assets/images/pie.jpg",
+    "url": "./examples/pie/pie.html",
+    "chart_name": "饼图",
+    "chart_author": "FDD",
+    "chart_time": "2018.01.01"
+  },
+  {
+    "imgSrc": "./assets/images/bar.jpg",
+    "url": "./examples/bar/bar.html",
+    "chart_name": "柱状图",
+    "chart_author": "FDD",
+    "chart_time": "2018.01.01"
   }
 ]

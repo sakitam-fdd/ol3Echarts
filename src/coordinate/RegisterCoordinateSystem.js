@@ -5,6 +5,7 @@
 
 import echarts from 'echarts'
 import ol from 'openlayers'
+import { map as $map, bind } from '../helper'
 
 const _getCoordinateSystem = function (map, options = {}) {
   const RegisterCoordinateSystem = function () {
@@ -88,18 +89,51 @@ const _getCoordinateSystem = function (map, options = {}) {
   }
 
   /**
-   * get dimensions info
-   * @returns {Array|[string,string]}
+   * 处理自定义图表类型
+   * @param data
+   * @returns {{coordSys: {type: string, x, y, width, height}, api: {coord, size}}}
    */
-  RegisterCoordinateSystem.getDimensionsInfo = function () {
-    return RegisterCoordinateSystem.dimensions
+  RegisterCoordinateSystem.prototype.prepareCustoms = function (data) {
+    const rect = this.getViewRect()
+    return {
+      coordSys: {
+        // The name exposed to user is always 'cartesian2d' but not 'grid'.
+        type: 'openlayers',
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+      },
+      api: {
+        coord: bind(this.dataToPoint, this),
+        size: bind(RegisterCoordinateSystem.dataToCoordSize, this)
+      }
+    }
+  }
+
+  /**
+   * math coord size
+   * @param dataSize
+   * @param dataItem
+   */
+  RegisterCoordinateSystem.dataToCoordSize = function (dataSize, dataItem) {
+    dataItem = dataItem || [0, 0]
+    return $map([0, 1], function (dimIdx) {
+      let val = dataItem[dimIdx]
+      let halfSize = dataSize[dimIdx] / 2
+      let [p1, p2] = [[], []]
+      p1[dimIdx] = val - halfSize
+      p2[dimIdx] = val + halfSize
+      p1[1 - dimIdx] = p2[1 - dimIdx] = dataItem[1 - dimIdx]
+      return Math.abs(this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx])
+    }, this)
   }
 
   /**
    * 注册实例
    * @param echartModel
    */
-  RegisterCoordinateSystem.create = function (echartModel) {
+  RegisterCoordinateSystem.create = function (echartModel, api) {
     echartModel.eachSeries(function (seriesModel) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
         seriesModel.coordinateSystem = new RegisterCoordinateSystem(map)

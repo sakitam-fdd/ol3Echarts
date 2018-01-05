@@ -1,7 +1,7 @@
 /*!
- * ol3-echarts v1.3.0
+ * ol3-echarts v1.3.1
  * LICENSE : MIT
- * (c) 2017-2017 https://sakitam-fdd.github.io/ol3Echarts
+ * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
 import ol from 'openlayers';
 import echarts from 'echarts';
@@ -163,7 +163,29 @@ var getTarget = function getTarget(selector) {
   return dom;
 };
 
-var _getCoordinateSystem = function _getCoordinateSystem(map) {
+var map = function map(obj, cb, context) {
+  if (!(obj && cb)) {
+    return;
+  }
+  if (obj.map && obj.map === Array.prototype.map) {
+    return obj.map(cb, context);
+  } else {
+    var result = [];
+    for (var i = 0, len = obj.length; i < len; i++) {
+      result.push(cb.call(context, obj[i], i, obj));
+    }
+    return result;
+  }
+};
+
+var bind = function bind(func, context) {
+  var args = Array.prototype.slice.call(arguments, 2);
+  return function () {
+    return func.apply(context, args.concat(Array.prototype.slice.call(arguments)));
+  };
+};
+
+var _getCoordinateSystem = function _getCoordinateSystem(map$$1) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   var RegisterCoordinateSystem = function RegisterCoordinateSystem() {
@@ -191,15 +213,15 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
     }
     var source = options['source'] || 'EPSG:4326';
     var destination = options['destination'] || this.projCode_;
-    var pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
+    var pixel = map$$1.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
     var mapOffset = this._mapOffset;
     return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
   };
 
   RegisterCoordinateSystem.prototype._getProjectionCode = function () {
     var code = '';
-    if (map) {
-      code = map.getView() && map.getView().getProjection().getCode();
+    if (map$$1) {
+      code = map$$1.getView() && map$$1.getView().getProjection().getCode();
     } else {
       code = 'EPSG:3857';
     }
@@ -208,11 +230,11 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
 
   RegisterCoordinateSystem.prototype.pointToData = function (pixel) {
     var mapOffset = this._mapOffset;
-    return map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
+    return map$$1.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
   };
 
   RegisterCoordinateSystem.prototype.getViewRect = function () {
-    var size = map.getSize();
+    var size = map$$1.getSize();
     return new echarts.graphic.BoundingRect(0, 0, size[0], size[1]);
   };
 
@@ -220,14 +242,42 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
     return echarts.matrix.create();
   };
 
-  RegisterCoordinateSystem.getDimensionsInfo = function () {
-    return RegisterCoordinateSystem.dimensions;
+  RegisterCoordinateSystem.prototype.prepareCustoms = function (data) {
+    var rect = this.getViewRect();
+    return {
+      coordSys: {
+        type: 'openlayers',
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+      },
+      api: {
+        coord: bind(this.dataToPoint, this),
+        size: bind(RegisterCoordinateSystem.dataToCoordSize, this)
+      }
+    };
   };
 
-  RegisterCoordinateSystem.create = function (echartModel) {
+  RegisterCoordinateSystem.dataToCoordSize = function (dataSize, dataItem) {
+    dataItem = dataItem || [0, 0];
+    return map([0, 1], function (dimIdx) {
+      var val = dataItem[dimIdx];
+      var halfSize = dataSize[dimIdx] / 2;
+      var p1 = [],
+          p2 = [];
+
+      p1[dimIdx] = val - halfSize;
+      p2[dimIdx] = val + halfSize;
+      p1[1 - dimIdx] = p2[1 - dimIdx] = dataItem[1 - dimIdx];
+      return Math.abs(this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx]);
+    }, this);
+  };
+
+  RegisterCoordinateSystem.create = function (echartModel, api) {
     echartModel.eachSeries(function (seriesModel) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
-        seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);
+        seriesModel.coordinateSystem = new RegisterCoordinateSystem(map$$1);
       }
     });
   };
@@ -235,16 +285,44 @@ var _getCoordinateSystem = function _getCoordinateSystem(map) {
   return RegisterCoordinateSystem;
 };
 
+var pie = function pie(options, serie, coordinateSystem) {
+  serie.center = coordinateSystem.dataToPoint(serie.coordinates);
+  return serie;
+};
+
+var bar = function bar(options, serie, coordinateSystem) {
+  if (isObject(options.grid) && !Array.isArray(options.grid)) {
+    console.log(options);
+  } else if (Array.isArray(options.grid)) {
+    options.grid = options.grid.map(function (gri, index) {
+      var coorPixel = coordinateSystem.dataToPoint(options.series[index].coordinates);
+      gri.left = coorPixel[0] - parseFloat(gri.width) / 2;
+      gri.top = coorPixel[1] - parseFloat(gri.height) / 2;
+      return gri;
+    });
+  }
+  return serie;
+};
+
+
+
+var charts = Object.freeze({
+	pie: pie,
+	bar: bar
+});
+
 var _options = {
   forcedRerender: false,
   hideOnZooming: false,
   hideOnMoving: false,
-  hideOnRotating: false };
+  hideOnRotating: false,
+  convertTypes: ['pie', 'line', 'bar']
+};
 
 var ol3Echarts = function () {
   function ol3Echarts(chartOptions) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var map = arguments[2];
+    var map$$1 = arguments[2];
     classCallCheck(this, ol3Echarts);
 
     this.$options = merge(_options, options);
@@ -257,12 +335,14 @@ var ol3Echarts = function () {
 
     this._isRegistered = false;
 
-    if (map) this.appendTo(map);
+    this._coordinateSystem = null;
+
+    if (map$$1) this.appendTo(map$$1);
   }
 
-  ol3Echarts.prototype.appendTo = function appendTo(map) {
-    if (map && map instanceof ol.Map) {
-      this.$Map = map;
+  ol3Echarts.prototype.appendTo = function appendTo(map$$1) {
+    if (map$$1 && map$$1 instanceof ol.Map) {
+      this.$Map = map$$1;
       this.$Map.once('postrender', this.render, this);
       this.$Map.renderSync();
       this._unRegisterEvents();
@@ -330,7 +410,7 @@ var ol3Echarts = function () {
     }
   };
 
-  ol3Echarts.prototype._createLayerContainer = function _createLayerContainer(map, options) {
+  ol3Echarts.prototype._createLayerContainer = function _createLayerContainer(map$$1, options) {
     var container = this.$container = document.createElement('div');
     container.style.position = 'absolute';
     container.style.top = 0;
@@ -345,7 +425,7 @@ var ol3Echarts = function () {
       if (_target2 && _target2[0] && _target2[0] instanceof Element) {
         _target2[0].appendChild(container);
       } else {
-        map.getViewport().appendChild(container);
+        map$$1.getViewport().appendChild(container);
       }
     }
   };
@@ -366,7 +446,7 @@ var ol3Echarts = function () {
     this.$chart.resize();
     if (this.$chartOptions) {
       this._registerMap();
-      this.$chart.setOption(this.$chartOptions, false);
+      this.$chart.setOption(this.reConverData(this.$chartOptions), false);
     }
   };
 
@@ -439,10 +519,32 @@ var ol3Echarts = function () {
     var series = this.$chartOptions.series;
     if (series && isObject(series)) {
       for (var i = series.length - 1; i >= 0; i--) {
-        series[i]['coordinateSystem'] = 'openlayers';
+        if (!(this.$options.convertTypes.indexOf(series[i]['type']) > -1)) {
+          series[i]['coordinateSystem'] = 'openlayers';
+        }
         series[i]['animation'] = false;
       }
     }
+  };
+
+  ol3Echarts.prototype.reConverData = function reConverData(options) {
+    var series = options['series'];
+    if (series && series.length > 0) {
+      if (!this._coordinateSystem) {
+        var _cs = _getCoordinateSystem(this.getMap(), this.$options);
+        this._coordinateSystem = new _cs();
+      }
+      if (series && isObject(series)) {
+        for (var i = series.length - 1; i >= 0; i--) {
+          if (this.$options.convertTypes.indexOf(series[i]['type']) > -1) {
+            if (series[i] && series[i].hasOwnProperty('coordinates')) {
+              series[i] = charts[series[i]['type']](options, series[i], this._coordinateSystem);
+            }
+          }
+        }
+      }
+    }
+    return options;
   };
 
   ol3Echarts.prototype.render = function render() {
@@ -454,7 +556,7 @@ var ol3Echarts = function () {
       this.$chart = echarts.init(this.$container);
       if (this.$chartOptions) {
         this._registerMap();
-        this.$chart.setOption(this.$chartOptions, false);
+        this.$chart.setOption(this.reConverData(this.$chartOptions), false);
       }
     } else if (this._isVisible()) {
       this.$chart.resize();
@@ -470,5 +572,7 @@ var ol3Echarts = function () {
 
 ol3Echarts.getTarget = getTarget;
 ol3Echarts.merge = merge;
+ol3Echarts.map = map;
+ol3Echarts.bind = bind;
 
 export default ol3Echarts;

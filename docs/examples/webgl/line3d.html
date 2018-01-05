@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>Global wind visualization</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.js"></script>
+<script src="../../assets/scripts/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.min.js"></script>
+<!--<script src="../../../dist/ol3Echarts.js"></script>-->
+<script>
+  var Maps = new HMap('map', {
+    target: 'map',
+    view: {
+      center: [113.53450137499999, 34.44104525],
+      projection: 'EPSG:4326',
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'TileXYZ',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
+  echartslayer.appendTo(Maps.getMap());
+  $fetch.get('../../data/bus.json').then(function (res) {
+    var windData = res.data;
+    var taxiRoutes = [];
+    var data = windData.data;
+    for (var x in data) {
+      var line = data[x];
+      var pointString = line.ROAD_LINE;
+      var pointArr = pointString.split(';');
+      var lnglats = [];
+      for (var j in pointArr) {
+        lnglats.push(pointArr[j].split(','))
+      }
+      taxiRoutes.push({
+        coords: lnglats,
+        lineStyle: {
+          // color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * x))
+        }
+      })
+    }
+    var option = {
+      title: {
+        text: '风场',
+        left: 'center',
+        top: 'top',
+        textStyle: {
+          color: '#fff'
+        }
+      },
+      series: [
+        {
+          type: 'lines3D',
+          effect: {
+            show: true,
+            constantSpeed: 5,
+            trailWidth: 2,
+            trailLength: 0.4,
+            trailOpacity: 1,
+            spotIntensity: 10
+          },
+          blendMode: 'lighter',
+          polyline: true,
+          lineStyle: {
+            width: 0.1,
+            color: 'rgb(200, 40, 0)',
+            opacity: 0.
+          },
+          data: {
+            count: function () {
+              return taxiRoutes.length;
+            },
+            getItem: function (idx) {
+              return taxiRoutes[idx]
+            }
+          }
+        }
+      ]
+    };
+    echartslayer.setChartOptions(option);
+  });
+</script>
+</body>
+</html>
