@@ -96,5 +96,12 @@
     "chart_name": "饼图",
     "chart_author": "FDD",
     "chart_time": "2018.01.01"
+  },
+  {
+    "imgSrc": "./assets/images/bar.jpg",
+    "url": "./examples/bar/bar.html",
+    "chart_name": "柱状图",
+    "chart_author": "FDD",
+    "chart_time": "2018.01.01"
   }
 ]

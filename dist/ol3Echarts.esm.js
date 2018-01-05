@@ -1,7 +1,7 @@
 /*!
  * ol3-echarts v1.3.0
  * LICENSE : MIT
- * (c) 2017-2017 https://sakitam-fdd.github.io/ol3Echarts
+ * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
 import ol from 'openlayers';
 import echarts from 'echarts';
@@ -287,15 +287,21 @@ var _getCoordinateSystem = function _getCoordinateSystem(map$$1) {
 
 var pie = function pie(options, serie, coordinateSystem) {
   serie.center = coordinateSystem.dataToPoint(serie.coordinates);
+  return serie;
 };
 
 var bar = function bar(options, serie, coordinateSystem) {
-  options.grid = options.grid.map(function (gri, index) {
-    var coorPixel = coordinateSystem.dataToPoint(serie.coordinates);
-    gri.left = coorPixel[0];
-    gri.top = coorPixel[1];
-    return gri;
-  });
+  if (isObject(options.grid) && !Array.isArray(options.grid)) {
+    console.log(options);
+  } else if (Array.isArray(options.grid)) {
+    options.grid = options.grid.map(function (gri, index) {
+      var coorPixel = coordinateSystem.dataToPoint(options.series[index].coordinates);
+      gri.left = coorPixel[0] - parseFloat(gri.width) / 2;
+      gri.top = coorPixel[1] - parseFloat(gri.height) / 2;
+      return gri;
+    });
+  }
+  return serie;
 };
 
 
@@ -513,7 +519,9 @@ var ol3Echarts = function () {
     var series = this.$chartOptions.series;
     if (series && isObject(series)) {
       for (var i = series.length - 1; i >= 0; i--) {
-        series[i]['coordinateSystem'] = 'openlayers';
+        if (!(this.$options.convertTypes.indexOf(series[i]['type']) > -1)) {
+          series[i]['coordinateSystem'] = 'openlayers';
+        }
         series[i]['animation'] = false;
       }
     }
@@ -530,10 +538,7 @@ var ol3Echarts = function () {
         for (var i = series.length - 1; i >= 0; i--) {
           if (this.$options.convertTypes.indexOf(series[i]['type']) > -1) {
             if (series[i] && series[i].hasOwnProperty('coordinates')) {
-              charts[series[i]['type']](options, series[i], this._coordinateSystem);
-            }
-            if (series[i] && series[i].hasOwnProperty('coordinateSystem')) {
-              delete series[i]['coordinateSystem'];
+              series[i] = charts[series[i]['type']](options, series[i], this._coordinateSystem);
             }
           }
         }

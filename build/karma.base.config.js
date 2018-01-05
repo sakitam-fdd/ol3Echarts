@@ -18,7 +18,6 @@ module.exports = {
     'node_modules/openlayers/dist/ol.js',
     'node_modules/echarts/dist/echarts.js',
     'src/**/*.js',
-    // _package.unpkg,
     'test/**/*.js'
   ],
 

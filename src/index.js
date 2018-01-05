@@ -318,7 +318,9 @@ class ol3Echarts {
     const series = this.$chartOptions.series
     if (series && isObject(series)) {
       for (let i = series.length - 1; i >= 0; i--) {
-        series[i]['coordinateSystem'] = 'openlayers'
+        if (!(this.$options.convertTypes.indexOf(series[i]['type']) > -1)) {
+          series[i]['coordinateSystem'] = 'openlayers'
+        }
         series[i]['animation'] = false
       }
     }
@@ -340,10 +342,7 @@ class ol3Echarts {
         for (let i = series.length - 1; i >= 0; i--) {
           if (this.$options.convertTypes.indexOf(series[i]['type']) > -1) {
             if (series[i] && series[i].hasOwnProperty('coordinates')) {
-              charts[series[i]['type']](options, series[i], this._coordinateSystem)
-            }
-            if (series[i] && series[i].hasOwnProperty('coordinateSystem')) {
-              delete series[i]['coordinateSystem']
+              series[i] = charts[series[i]['type']](options, series[i], this._coordinateSystem)
             }
           }
         }
