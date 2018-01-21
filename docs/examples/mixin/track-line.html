@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>lines-airline</title>
+  <title>杭州热门步行路线</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
   <style>
     html, body, #map {
@@ -35,24 +35,17 @@
       attribution: false
     },
     view: {
-      center: [113.53450137499999, 34.44104525],
+      center: [120.13066322374, 30.240018034923],
       projection: 'EPSG:4326',
-      zoom: 5, // resolution
+      zoom: 14, // resolution
     },
     baseLayers: [
       {
-        layerName: 'ArcGIS',
+        layerName: 'TileXYZ',
         isDefault: true,
         layerType: 'TileXYZ',
         projection: 'EPSG:3857',
-        label: {
-          layerName: 'Label',
-          isDefault: true,
-          layerType: 'TileXYZ',
-          projection: 'EPSG:3857',
-          layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
-        },
-        layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
       }
     ]
   });
@@ -60,46 +53,35 @@
     hideOnMoving: false
   });
   echartslayer.appendTo(Maps.getMap());
-  $fetch.get('../../data/flights.json').then(function (res) {
+  $fetch.get('../../data/tracks.json').then(function (res) {
     var data = res.data;
-    function getAirportCoord (idx) {
-      return [data.airports[idx][3], data.airports[idx][4]];
-    }
-    var routes = data.routes.map(function (airline) {
-      return [
-        getAirportCoord(airline[1]),
-        getAirportCoord(airline[2])
-      ];
-    });
+    var lines = data.map(function (track) {
+      return {
+        coords: track.map(function (seg, idx) {
+          return seg.coord;
+        })
+      };
+    })
     var option = {
       title: {
-        text: '航线',
+        text: '杭州热门步行路线',
         left: 'center',
         textStyle: {
           color: '#eee'
         }
       },
       backgroundColor: 'transparent',
-      tooltip: {
-        formatter: function (param) {
-          var route = data.routes[param.dataIndex];
-          return data.airports[route[1]][1] + ' > ' + data.airports[route[2]][1];
-        }
-      },
       series: [{
         type: 'lines',
-        data: routes,
-        large: true,
-        largeThreshold: 100,
+        data: lines,
+        polyline: true,
         lineStyle: {
           normal: {
-            opacity: 0.05,
-            width: 0.5,
-            curveness: 0.3
+            color: '#ddb926',
+            opacity: 0.6,
+            width: 1
           }
-        },
-        // 设置混合模式为叠加
-        blendMode: 'lighter'
+        }
       }]
     };
     echartslayer.setChartOptions(option);

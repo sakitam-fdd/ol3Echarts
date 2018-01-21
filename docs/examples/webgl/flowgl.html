@@ -19,8 +19,8 @@
 <body>
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.0.2/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl@1.0.0/dist/echarts-gl.js"></script>
 <script src="../../assets/scripts/common.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
@@ -33,12 +33,26 @@
       zoom: 5, // resolution
     },
     baseLayers: [
+      // {
+      //   layerName: 'TileXYZ',
+      //   isDefault: true,
+      //   layerType: 'TileXYZ',
+      //   projection: 'EPSG:3857',
+      //   layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
+      // },
       {
-        layerName: 'TileXYZ',
+        layerName: 'ArcGIS',
         isDefault: true,
         layerType: 'TileXYZ',
         projection: 'EPSG:3857',
-        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
+        label: {
+          layerName: 'Label',
+          isDefault: true,
+          layerType: 'TileXYZ',
+          projection: 'EPSG:3857',
+          layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
+        },
+        layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
       }
     ]
   });
