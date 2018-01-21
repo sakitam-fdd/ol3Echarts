@@ -28,6 +28,13 @@
     "chart_time": "2017.11.28"
   },
   {
+    "imgSrc": "./assets/images/track.jpg",
+    "url": "./examples/mixin/track-line.html",
+    "chart_name": "杭州热门步行路线",
+    "chart_author": "FDD",
+    "chart_time": "2017.11.28"
+  },
+  {
     "imgSrc": "./assets/images/china-migration.jpg",
     "url": "./examples/line/china-migration.html",
     "chart_name": "春节人口迁徙",
