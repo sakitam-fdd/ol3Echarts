@@ -233,6 +233,7 @@ class ol3Echarts {
    */
   onZoomEnd () {
     if (!this.$options['hideOnZooming']) {
+      this._clearAndRedraw()
       return
     }
     this.show()
@@ -244,6 +245,7 @@ class ol3Echarts {
    */
   onDragRotateEnd () {
     if (!this.$options['hideOnRotating']) {
+      this._clearAndRedraw()
       return
     }
     this.show()
@@ -264,13 +266,19 @@ class ol3Echarts {
    */
   onMoveEnd () {
     if (!this.$options['hideOnMoving']) {
+      this._clearAndRedraw()
       return
     }
     this.show()
     this._clearAndRedraw()
   }
 
-  onCenterChange () {
+  /**
+   * handle center change
+   * @param event
+   */
+  onCenterChange (event) {
+    this._clearAndRedraw()
     //
   }
 
@@ -281,7 +289,7 @@ class ol3Echarts {
   _registerEvents () {
     const Map = this.$Map
     const view = Map.getView()
-    Map.on('precompose', this.reRender, this)
+    // Map.on('precompose', this.reRender, this)
     Map.on('change:size', this.onResize, this)
     view.on('change:resolution', this.onZoomEnd, this)
     view.on('change:center', this.onCenterChange, this)
@@ -298,7 +306,7 @@ class ol3Echarts {
     const Map = this.$Map
     const view = Map.getView()
     Map.un('change:size', this.onResize, this)
-    Map.un('precompose', this.reRender, this)
+    // Map.un('precompose', this.reRender, this)
     view.un('change:resolution', this.onZoomEnd, this)
     view.un('change:center', this.onCenterChange, this)
     view.un('change:rotation', this.onDragRotateEnd, this)

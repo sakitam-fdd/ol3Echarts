@@ -463,6 +463,7 @@ var ol3Echarts = function () {
 
   ol3Echarts.prototype.onZoomEnd = function onZoomEnd() {
     if (!this.$options['hideOnZooming']) {
+      this._clearAndRedraw();
       return;
     }
     this.show();
@@ -471,6 +472,7 @@ var ol3Echarts = function () {
 
   ol3Echarts.prototype.onDragRotateEnd = function onDragRotateEnd() {
     if (!this.$options['hideOnRotating']) {
+      this._clearAndRedraw();
       return;
     }
     this.show();
@@ -485,18 +487,21 @@ var ol3Echarts = function () {
 
   ol3Echarts.prototype.onMoveEnd = function onMoveEnd() {
     if (!this.$options['hideOnMoving']) {
+      this._clearAndRedraw();
       return;
     }
     this.show();
     this._clearAndRedraw();
   };
 
-  ol3Echarts.prototype.onCenterChange = function onCenterChange() {};
+  ol3Echarts.prototype.onCenterChange = function onCenterChange(event) {
+    this._clearAndRedraw();
+  };
 
   ol3Echarts.prototype._registerEvents = function _registerEvents() {
     var Map = this.$Map;
     var view = Map.getView();
-    Map.on('precompose', this.reRender, this);
+
     Map.on('change:size', this.onResize, this);
     view.on('change:resolution', this.onZoomEnd, this);
     view.on('change:center', this.onCenterChange, this);
@@ -509,7 +514,7 @@ var ol3Echarts = function () {
     var Map = this.$Map;
     var view = Map.getView();
     Map.un('change:size', this.onResize, this);
-    Map.un('precompose', this.reRender, this);
+
     view.un('change:resolution', this.onZoomEnd, this);
     view.un('change:center', this.onCenterChange, this);
     view.un('change:rotation', this.onDragRotateEnd, this);
