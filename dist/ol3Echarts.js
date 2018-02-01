@@ -470,4 +470,3 @@ ol3Echarts.bind = bind;
 return ol3Echarts;
 
 })));
-//# sourceMappingURL=ol3Echarts.js.map
