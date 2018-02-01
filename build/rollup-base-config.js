@@ -19,7 +19,10 @@ const genConfig = (opts) => {
     input: {
       input: resolve('src/index.js'),
       plugins: [
-        eslint((eslintConfig => eslintConfig.formatter = friendlyFormatter)(eslintConfig)),
+        eslint(Object.assign({}, eslintConfig, {
+          formatter: friendlyFormatter,
+          exclude: [resolve('node_modules')]
+        })),
         babel({
           exclude: 'node_modules/**' // only transpile our source code
         }),
@@ -36,7 +39,11 @@ const genConfig = (opts) => {
       file: opts.file,
       format: opts.format,
       banner,
-      name: _package.namespace
+      name: _package.namespace,
+      globals: {
+        openlayers: 'ol',
+        echarts: 'echarts'
+      }
     }
   }
   if (opts.env) {

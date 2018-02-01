@@ -1,3 +1,8 @@
+## 1.3.2 (2018.02.01)
+
+* 修复了 [windy-layer](https://github.com/sakitam-fdd/wind-layer)叠加时丢失动画效果。
+* 新增 ``forcedPrecomposeRerender`` 参数，主要可以控制echarts图层是否无滞后跟随（会造成大量重绘，必要时可以开启）。
+
 ## 1.3.1 (2018.01.05)
 
 * 兼容了极少的 ``echarts-gl``图表类型。

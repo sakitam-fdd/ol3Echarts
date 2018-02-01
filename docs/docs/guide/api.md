@@ -33,7 +33,7 @@ params = {
   forcedRerender: false,
   hideOnZooming: false, // when zooming hide chart
   hideOnMoving: false, // when moving hide chart
-  hideOnRotating: false // // when Rotating hide chart
+  hideOnRotating: false, // // when Rotating hide chart
 }
 ```
 
@@ -45,6 +45,7 @@ params = {
 | source | 数据源投影 | `String` | 投影系 `code` 常用 EPSG:4326, EPSG:3857 |
 | destination | 数据目标投影 | `String` | 渲染数据的目标投影，不传时从地图视图获取 |
 | forcedRerender | 是否开启强制重新渲染 | `boolean` | 默认 `false`, 注意开启后可能会造成性能损失，建议不开启。 |
+| forcedPrecomposeRerender | 是否在地图渲染之前刷新echarts图层 | `boolean` | 默认 `false`, 注意开启后可以保证图层无滞后，但是会造成大量重绘，不建议开启。 |
 | hideOnZooming | 缩放时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
 | hideOnMoving | 拖动时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
 | hideOnRotating | 旋转时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
