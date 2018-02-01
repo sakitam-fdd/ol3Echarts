@@ -364,6 +364,7 @@ class ol3Echarts {
       }
     } else if (this._isVisible()) {
       this.$chart.resize()
+      this.reRender()
     }
   }
 

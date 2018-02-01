@@ -451,6 +451,7 @@ var ol3Echarts = function () {
       }
     } else if (this._isVisible()) {
       this.$chart.resize();
+      this.reRender();
     }
   };
 
@@ -469,3 +470,4 @@ ol3Echarts.bind = bind;
 return ol3Echarts;
 
 })));
+//# sourceMappingURL=ol3Echarts.js.map

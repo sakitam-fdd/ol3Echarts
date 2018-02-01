@@ -433,6 +433,7 @@ var ol3Echarts = function () {
   };
 
   ol3Echarts.prototype.render = function render() {
+    console.log('111');
     if (!this.$container) {
       this._createLayerContainer(this.$Map, this.$options);
       this._resizeContainer();
