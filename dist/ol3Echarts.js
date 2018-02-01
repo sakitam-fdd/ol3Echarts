@@ -1,16 +1,16 @@
 /*!
- * ol3-echarts v1.3.1
+ * ol3-echarts v1.3.2
  * LICENSE : MIT
  * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('openlayers'), require('echarts')) :
-	typeof define === 'function' && define.amd ? define(['openlayers', 'echarts'], factory) :
-	(global.ol3Echarts = factory(global.ol,global.echarts));
-}(this, (function (ol,echarts) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('echarts'), require('openlayers')) :
+	typeof define === 'function' && define.amd ? define(['echarts', 'openlayers'], factory) :
+	(global.ol3Echarts = factory(global.echarts,global.ol));
+}(this, (function (echarts,ol) { 'use strict';
 
-ol = ol && ol.hasOwnProperty('default') ? ol['default'] : ol;
 echarts = echarts && echarts.hasOwnProperty('default') ? echarts['default'] : echarts;
+ol = ol && ol.hasOwnProperty('default') ? ol['default'] : ol;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -22,118 +22,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -319,6 +208,7 @@ var charts = Object.freeze({
 
 var _options = {
   forcedRerender: false,
+  forcedPrecomposeRerender: false,
   hideOnZooming: false,
   hideOnMoving: false,
   hideOnRotating: false,
@@ -462,35 +352,21 @@ var ol3Echarts = function () {
   };
 
   ol3Echarts.prototype.onZoomEnd = function onZoomEnd() {
-    if (!this.$options['hideOnZooming']) {
-      this._clearAndRedraw();
-      return;
-    }
-    this.show();
+    this.$options['hideOnZooming'] && this.show();
     this._clearAndRedraw();
   };
 
   ol3Echarts.prototype.onDragRotateEnd = function onDragRotateEnd() {
-    if (!this.$options['hideOnRotating']) {
-      this._clearAndRedraw();
-      return;
-    }
-    this.show();
+    this.$options['hideOnRotating'] && this.show();
     this._clearAndRedraw();
   };
 
   ol3Echarts.prototype.onMoveStart = function onMoveStart() {
-    if (this.$options['hideOnMoving']) {
-      this.hide();
-    }
+    this.$options['hideOnMoving'] && this.hide();
   };
 
   ol3Echarts.prototype.onMoveEnd = function onMoveEnd() {
-    if (!this.$options['hideOnMoving']) {
-      this._clearAndRedraw();
-      return;
-    }
-    this.show();
+    this.$options['hideOnMoving'] && this.show();
     this._clearAndRedraw();
   };
 
@@ -501,7 +377,9 @@ var ol3Echarts = function () {
   ol3Echarts.prototype._registerEvents = function _registerEvents() {
     var Map = this.$Map;
     var view = Map.getView();
-
+    if (this.$options.forcedPrecomposeRerender) {
+      Map.on('precompose', this.reRender, this);
+    }
     Map.on('change:size', this.onResize, this);
     view.on('change:resolution', this.onZoomEnd, this);
     view.on('change:center', this.onCenterChange, this);
@@ -514,7 +392,9 @@ var ol3Echarts = function () {
     var Map = this.$Map;
     var view = Map.getView();
     Map.un('change:size', this.onResize, this);
-
+    if (this.$options.forcedPrecomposeRerender) {
+      Map.un('precompose', this.reRender, this);
+    }
     view.un('change:resolution', this.onZoomEnd, this);
     view.un('change:center', this.onCenterChange, this);
     view.un('change:rotation', this.onDragRotateEnd, this);

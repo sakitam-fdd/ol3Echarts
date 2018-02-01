@@ -3,9 +3,9 @@ import echarts from 'echarts'
 import { getTarget, merge, isObject, map, bind } from './helper'
 import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem'
 import * as charts from './charts/index'
-// FIXME 地图相关事件的polyfill（事件触发的开始结束），参数定义（包含重绘，动画等）
 const _options = {
   forcedRerender: false, // Force re-rendering
+  forcedPrecomposeRerender: false, // force pre re-render
   hideOnZooming: false, // when zooming hide chart
   hideOnMoving: false, // when moving hide chart
   hideOnRotating: false, // // when Rotating hide chart
@@ -232,11 +232,7 @@ class ol3Echarts {
    * handle zoom end events
    */
   onZoomEnd () {
-    if (!this.$options['hideOnZooming']) {
-      this._clearAndRedraw()
-      return
-    }
-    this.show()
+    this.$options['hideOnZooming'] && this.show()
     this._clearAndRedraw()
   }
 
@@ -244,11 +240,7 @@ class ol3Echarts {
    * handle rotate end events
    */
   onDragRotateEnd () {
-    if (!this.$options['hideOnRotating']) {
-      this._clearAndRedraw()
-      return
-    }
-    this.show()
+    this.$options['hideOnRotating'] && this.show()
     this._clearAndRedraw()
   }
 
@@ -256,20 +248,14 @@ class ol3Echarts {
    * handle move start events
    */
   onMoveStart () {
-    if (this.$options['hideOnMoving']) {
-      this.hide()
-    }
+    this.$options['hideOnMoving'] && this.hide()
   }
 
   /**
    * handle move end events
    */
   onMoveEnd () {
-    if (!this.$options['hideOnMoving']) {
-      this._clearAndRedraw()
-      return
-    }
-    this.show()
+    this.$options['hideOnMoving'] && this.show()
     this._clearAndRedraw()
   }
 
@@ -279,7 +265,6 @@ class ol3Echarts {
    */
   onCenterChange (event) {
     this._clearAndRedraw()
-    //
   }
 
   /**
@@ -289,7 +274,9 @@ class ol3Echarts {
   _registerEvents () {
     const Map = this.$Map
     const view = Map.getView()
-    // Map.on('precompose', this.reRender, this)
+    if (this.$options.forcedPrecomposeRerender) {
+      Map.on('precompose', this.reRender, this)
+    }
     Map.on('change:size', this.onResize, this)
     view.on('change:resolution', this.onZoomEnd, this)
     view.on('change:center', this.onCenterChange, this)
@@ -306,7 +293,9 @@ class ol3Echarts {
     const Map = this.$Map
     const view = Map.getView()
     Map.un('change:size', this.onResize, this)
-    // Map.un('precompose', this.reRender, this)
+    if (this.$options.forcedPrecomposeRerender) {
+      Map.un('precompose', this.reRender, this)
+    }
     view.un('change:resolution', this.onZoomEnd, this)
     view.un('change:center', this.onCenterChange, this)
     view.un('change:rotation', this.onDragRotateEnd, this)
@@ -385,4 +374,5 @@ class ol3Echarts {
     this._clearAndRedraw()
   }
 }
+
 export default ol3Echarts
