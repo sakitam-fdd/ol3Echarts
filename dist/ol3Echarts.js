@@ -1,6 +1,7 @@
 /*!
+ * author: FDD <smileFDD@gmail.com>
  * ol3-echarts v1.3.2
- * LICENSE : MIT
+ * LICENSE: MIT
  * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
 (function (global, factory) {
@@ -92,6 +93,18 @@ var _getCoordinateSystem = function _getCoordinateSystem(map$$1) {
   RegisterCoordinateSystem.prototype.dimensions = ['lng', 'lat'];
 
   RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions;
+
+  RegisterCoordinateSystem.prototype.getZoom = function () {
+    return map$$1.getView().getZoom();
+  };
+
+  RegisterCoordinateSystem.prototype.setZoom = function (zoom) {
+    return map$$1.getView().setZoom(zoom);
+  };
+
+  RegisterCoordinateSystem.prototype.getViewRectAfterRoam = function () {
+    return this.getViewRect().clone();
+  };
 
   RegisterCoordinateSystem.prototype.setMapOffset = function (mapOffset) {
     this._mapOffset = mapOffset;
@@ -199,11 +212,17 @@ var bar = function bar(options, serie, coordinateSystem) {
   return serie;
 };
 
+var map$1 = function map(options, serie, coordinateSystem) {
+  console.log(options, serie);
+  return serie;
+};
+
 
 
 var charts = Object.freeze({
 	pie: pie,
-	bar: bar
+	bar: bar,
+	map: map$1
 });
 
 var _options = {
@@ -212,7 +231,7 @@ var _options = {
   hideOnZooming: false,
   hideOnMoving: false,
   hideOnRotating: false,
-  convertTypes: ['pie', 'line', 'bar']
+  convertTypes: ['pie', 'line', 'bar', 'map']
 };
 
 var ol3Echarts = function () {
@@ -470,3 +489,4 @@ ol3Echarts.bind = bind;
 return ol3Echarts;
 
 })));
+//# sourceMappingURL=ol3Echarts.js.map

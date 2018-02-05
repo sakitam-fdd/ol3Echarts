@@ -9,7 +9,7 @@ const _options = {
   hideOnZooming: false, // when zooming hide chart
   hideOnMoving: false, // when moving hide chart
   hideOnRotating: false, // // when Rotating hide chart
-  convertTypes: ['pie', 'line', 'bar']
+  convertTypes: ['pie', 'line', 'bar', 'map']
 }
 
 class ol3Echarts {
