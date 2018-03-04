@@ -110,5 +110,12 @@
     "chart_name": "柱状图",
     "chart_author": "FDD",
     "chart_time": "2018.01.01"
+  },
+  {
+    "imgSrc": "./assets/images/world.jpg",
+    "url": "./examples/map/city.html",
+    "chart_name": "echarts map 类型",
+    "chart_author": "FDD",
+    "chart_time": "2018.03.04"
   }
 ]

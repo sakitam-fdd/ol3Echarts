@@ -1,3 +1,7 @@
+## 1.3.3 (2018.03.04)
+
+* 新增 `echarts` 提供的 `map` 类型的 `GeoJSON` 数据解析。
+
 ## 1.3.2 (2018.02.01)
 
 * 修复了 [windy-layer](https://github.com/sakitam-fdd/wind-layer)叠加时丢失动画效果。
