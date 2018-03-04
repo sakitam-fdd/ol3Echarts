@@ -1,6 +1,7 @@
 import ol from 'openlayers'
 import echarts from 'echarts'
 import { getTarget, merge, isObject, map, bind } from './helper'
+import formatGeoJSON from './coordinate/formatGeoJSON'
 import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem'
 import * as charts from './charts/index'
 const _options = {
@@ -17,6 +18,7 @@ class ol3Echarts {
   static merge = merge
   static map = map
   static bind = bind
+  static formatGeoJSON = formatGeoJSON
   constructor (chartOptions, options = {}, map) {
     /**
      * layer options

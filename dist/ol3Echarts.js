@@ -1,6 +1,8 @@
 /*!
- * ol3-echarts v1.3.2
- * LICENSE : MIT
+ * author: FDD <smileFDD@gmail.com> 
+ * ol3-echarts v1.3.3
+ * build-time: 2018-2-0 17:33
+ * LICENSE: MIT
  * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
 (function (global, factory) {
@@ -80,6 +82,105 @@ var bind = function bind(func, context) {
   };
 };
 
+var checkDecoded = function checkDecoded(json) {
+  if (json.UTF8Encoding) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+var decode = function decode(json) {
+  if (checkDecoded(json)) {
+    return json;
+  }
+  var encodeScale = json.UTF8Scale;
+  if (encodeScale == null) {
+    encodeScale = 1024;
+  }
+  var features = json.features;
+  for (var f = 0; f < features.length; f++) {
+    var feature = features[f];
+    var geometry = feature.geometry;
+    var _ref = [geometry.coordinates, geometry.encodeOffsets],
+        coordinates = _ref[0],
+        encodeOffsets = _ref[1];
+
+    for (var c = 0; c < coordinates.length; c++) {
+      var coordinate = coordinates[c];
+      if (geometry.type === 'Polygon') {
+        coordinates[c] = decodePolygon(coordinate, encodeOffsets[c], encodeScale);
+      } else if (geometry.type === 'MultiPolygon') {
+        for (var c2 = 0; c2 < coordinate.length; c2++) {
+          var polygon = coordinate[c2];
+          coordinate[c2] = decodePolygon(polygon, encodeOffsets[c][c2], encodeScale);
+        }
+      }
+    }
+  }
+
+  json.UTF8Encoding = false;
+  return json;
+};
+
+var decodePolygon = function decodePolygon(coordinate, encodeOffsets, encodeScale) {
+  var _ref2 = [[], encodeOffsets[0], encodeOffsets[1]],
+      result = _ref2[0],
+      prevX = _ref2[1],
+      prevY = _ref2[2];
+
+  for (var i = 0; i < coordinate.length; i += 2) {
+    var x = coordinate.charCodeAt(i) - 64;
+    var y = coordinate.charCodeAt(i + 1) - 64;
+
+    x = x >> 1 ^ -(x & 1);
+    y = y >> 1 ^ -(y & 1);
+
+    x += prevX;
+    y += prevY;
+    prevX = x;
+    prevY = y;
+
+    result.push([x / encodeScale, y / encodeScale]);
+  }
+  return result;
+};
+
+function formatGeoJSON (json) {
+  var geoJson = decode(json);
+  var _features = echarts.util.map(echarts.util.filter(geoJson.features, function (featureObj) {
+    return featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0;
+  }), function (featureObj) {
+    var properties = featureObj.properties;
+    var geo = featureObj.geometry;
+    var coordinates = geo.coordinates;
+    var geometries = [];
+    if (geo.type === 'Polygon') {
+      geometries.push(coordinates[0]);
+    }
+    if (geo.type === 'MultiPolygon') {
+      echarts.util.each(coordinates, function (item) {
+        if (item[0]) {
+          geometries.push(item[0]);
+        }
+      });
+    }
+    return {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': geometries
+      },
+      'properties': properties
+    };
+  });
+  return {
+    'type': 'FeatureCollection',
+    'crs': {},
+    'features': _features
+  };
+}
+
 var _getCoordinateSystem = function _getCoordinateSystem(map$$1) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -92,6 +193,18 @@ var _getCoordinateSystem = function _getCoordinateSystem(map$$1) {
   RegisterCoordinateSystem.prototype.dimensions = ['lng', 'lat'];
 
   RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions;
+
+  RegisterCoordinateSystem.prototype.getZoom = function () {
+    return map$$1.getView().getZoom();
+  };
+
+  RegisterCoordinateSystem.prototype.setZoom = function (zoom) {
+    return map$$1.getView().setZoom(zoom);
+  };
+
+  RegisterCoordinateSystem.prototype.getViewRectAfterRoam = function () {
+    return this.getViewRect().clone();
+  };
 
   RegisterCoordinateSystem.prototype.setMapOffset = function (mapOffset) {
     this._mapOffset = mapOffset;
@@ -466,6 +579,7 @@ ol3Echarts.getTarget = getTarget;
 ol3Echarts.merge = merge;
 ol3Echarts.map = map;
 ol3Echarts.bind = bind;
+ol3Echarts.formatGeoJSON = formatGeoJSON;
 
 return ol3Echarts;
 

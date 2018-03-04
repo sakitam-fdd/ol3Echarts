@@ -38,8 +38,8 @@ import ol3Echarts from 'ol3-echarts'
 
 ```bash
 // jsdelivr (jsdelivr由于缓存原因最好锁定版本号)
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.2/dist/ol3Echarts.js
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.2/dist/ol3Echarts.min.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.3/dist/ol3Echarts.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.3/dist/ol3Echarts.min.js
 // npm
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.js
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js

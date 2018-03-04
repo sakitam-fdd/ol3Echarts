@@ -19,6 +19,26 @@ const _getCoordinateSystem = function (map, options = {}) {
   RegisterCoordinateSystem.dimensions = RegisterCoordinateSystem.prototype.dimensions
 
   /**
+   * get zoom
+   * @returns {number}
+   */
+  RegisterCoordinateSystem.prototype.getZoom = function () {
+    return map.getView().getZoom()
+  }
+
+  /**
+   * set zoom
+   * @param zoom
+   */
+  RegisterCoordinateSystem.prototype.setZoom = function (zoom) {
+    return map.getView().setZoom(zoom)
+  }
+
+  RegisterCoordinateSystem.prototype.getViewRectAfterRoam = function () {
+    return this.getViewRect().clone()
+  }
+
+  /**
    * 设置地图窗口的偏移
    * @param mapOffset
    */
