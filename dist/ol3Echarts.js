@@ -1,7 +1,7 @@
 /*!
  * author: FDD <smileFDD@gmail.com> 
  * ol3-echarts v1.3.3
- * build-time: 2018-2-0 17:33
+ * build-time: 2018-2-0 20:11
  * LICENSE: MIT
  * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
