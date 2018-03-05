@@ -117,5 +117,12 @@
     "chart_name": "echarts map 类型",
     "chart_author": "FDD",
     "chart_time": "2018.03.04"
+  },
+  {
+    "imgSrc": "./assets/images/heatmap.jpg",
+    "url": "./examples/point/heatmap.html",
+    "chart_name": "热力图",
+    "chart_author": "FDD",
+    "chart_time": "2018.03.05"
   }
 ]
