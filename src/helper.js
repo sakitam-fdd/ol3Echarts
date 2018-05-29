@@ -9,9 +9,9 @@
  * @returns {boolean}
  */
 const isObject = value => {
-  const type = typeof value
-  return value !== null && (type === 'object' || type === 'function')
-}
+  const type = typeof value;
+  return value !== null && (type === 'object' || type === 'function');
+};
 
 /**
  * merge
@@ -22,13 +22,13 @@ const isObject = value => {
 const merge = (a, b) => {
   for (const key in b) {
     if (isObject(b[key]) && isObject(a[key])) {
-      merge(a[key], b[key])
+      merge(a[key], b[key]);
     } else {
-      a[key] = b[key]
+      a[key] = b[key];
     }
   }
   return a
-}
+};
 
 /**
  * get parent container
@@ -36,7 +36,7 @@ const merge = (a, b) => {
  */
 const getTarget = (selector) => {
   let dom = (function () {
-    let found
+    let found;
     return (document && /^#([\w-]+)$/.test(selector))
       ? ((found = document.getElementById(RegExp.$1)) ? [found] : [])
       : Array.prototype.slice.call(/^\.([\w-]+)$/.test(selector)
@@ -44,9 +44,9 @@ const getTarget = (selector) => {
         : /^[\w-]+$/.test(selector) ? document.getElementsByTagName(selector)
           : document.querySelectorAll(selector)
       )
-  })()
+  })();
   return dom
-}
+};
 
 /**
  * 数组映射
@@ -57,25 +57,25 @@ const getTarget = (selector) => {
  */
 const map = function (obj, cb, context) {
   if (!(obj && cb)) {
-    return
+    return;
   }
   if (obj.map && obj.map === Array.prototype.map) {
-    return obj.map(cb, context)
+    return obj.map(cb, context);
   } else {
-    let result = []
+    let result = [];
     for (let i = 0, len = obj.length; i < len; i++) {
-      result.push(cb.call(context, obj[i], i, obj))
+      result.push(cb.call(context, obj[i], i, obj));
     }
-    return result
+    return result;
   }
-}
+};
 
 const bind = function (func, context) {
-  let args = Array.prototype.slice.call(arguments, 2)
+  let args = Array.prototype.slice.call(arguments, 2);
   return function () {
-    return func.apply(context, args.concat(Array.prototype.slice.call(arguments)))
+    return func.apply(context, args.concat(Array.prototype.slice.call(arguments)));
   }
-}
+};
 
 export {
   getTarget,

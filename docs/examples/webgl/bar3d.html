@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>bar3d</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.0.2/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl@1.0.0/dist/echarts-gl.js"></script>
+<script src="../../assets/scripts/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<!--<script src="../../../dist/ol3Echarts.js"></script>-->
+<script>
+  var Maps = new HMap({
+    target: 'map',
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false,
+      attribution: false
+    },
+    view: {
+      center: [113.53450137499999, 34.44104525],
+      projection: 'EPSG:4326',
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'TileXYZ',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
+      }
+    ]
+  });
+  $fetch.get('../../data/population.json').then(function (res) {
+    var data = res.data.filter(function (dataItem) {
+      return dataItem[2] > 0;
+    }).map(function (dataItem) {
+      return [dataItem[0], dataItem[1], dataItem[2]];
+    });
+    var option = {
+      visualMap: {
+        show: false,
+        max: 1000,
+        calculable: true,
+        realtime: false,
+        inRange: {
+          color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+        },
+        outOfRange: {
+          colorAlpha: 0
+        }
+      },
+      maptalks3D: {
+        boxHeight: 50,
+        // altitudeScale: 1e2,
+        postEffect: {
+          enable: true,
+          screenSpaceAmbientOcclusion: {
+            enable: true,
+            radius: 2
+          }
+        },
+        light: {
+          main: {
+            intensity: 2,
+            shadow: true,
+            shadowQuality: 'high'
+          },
+          ambient: {
+            intensity: 0.
+          }
+        }
+      },
+      series: [{
+        type: 'bar3D',
+        coordinateSystem: 'openlayers',
+        shading: 'lambert',
+        minHeight: 0.1,
+        barSize: 0.1,
+        data: data,
+        silent: true,
+        animationEasingUpdate: 2000
+      }]
+    };
+    var echartslayer = new ol3Echarts(option, {
+      hideOnMoving: true,
+      hideOnZooming: true
+    });
+    echartslayer.appendTo(Maps.getMap());
+  });
+</script>
+</body>
+</html>

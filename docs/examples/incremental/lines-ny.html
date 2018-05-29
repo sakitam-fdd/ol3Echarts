@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>lines-ny</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>-->
+<script src="../../../dist/ol3Echarts.js"></script>
+<script>
+  var map = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [-74.04327099998152, 40.86737600240287],
+      projection: 'EPSG:4326',
+      zoom: 10, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'vector',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        tileGrid: {
+          tileSize: 256,
+          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+          origin: [-2.0037508342787E7, 2.0037508342787E7],
+          resolutions: [
+            156543.03392800014,
+            78271.51696399994,
+            39135.75848200009,
+            19567.87924099992,
+            9783.93962049996,
+            4891.96981024998,
+            2445.98490512499,
+            1222.992452562495,
+            611.4962262813797,
+            305.74811314055756,
+            152.87405657041106,
+            76.43702828507324,
+            38.21851414253662,
+            19.10925707126831,
+            9.554628535634155,
+            4.77731426794937,
+            2.388657133974685
+          ]
+        },
+        layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+      }
+    ]
+  });
+  var CHUNK_COUNT = 10;
+  var dataCount = 0;
+  var option = {
+    progressive: 20000,
+    backgroundColor: 'transparent',
+    series: [{
+      type: 'lines',
+      blendMode: 'lighter',
+      dimensions: ['value'],
+      data: new Float64Array(),
+      polyline: true,
+      large: true,
+      lineStyle: {
+        color: 'orange',
+        width: 0.5,
+        opacity: 0.3
+      }
+    }]
+  };
+  var echartslayer = new ol3Echarts(option, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
+  echartslayer.appendTo(map.getMap());
+  echartslayer.on('redraw', function () {
+    console.log(this)
+    fetchData(0);
+  });
+  function fetchData(idx) {
+    if (idx >= CHUNK_COUNT) {
+      return;
+    }
+    var dataURL = `./data/links_ny_${idx}.bin`
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', dataURL, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function (e) {
+      var rawData = new Float32Array(this.response);
+      var data = new Float64Array(rawData.length - 2);
+      var offsetX = rawData[0];
+      var offsetY = rawData[1];
+      var off = 0;
+      var addedDataCount = 0;
+      for (var i = 2; i < rawData.length;) {
+        var count = rawData[i++];
+        data[off++] = count;
+        for (var k = 0; k < count; k++) {
+          var x = rawData[i++] + offsetX;
+          var y = rawData[i++] + offsetY;
+          data[off++] = x;
+          data[off++] = y;
+
+          addedDataCount++;
+        }
+      }
+      echartslayer.appendData({
+        seriesIndex: 0,
+        data: data
+      }, false);
+      dataCount += addedDataCount;
+      fetchData(idx + 1);
+    };
+    xhr.send();
+  }
+  fetchData(0);
+</script>
+</body>
+</html>

@@ -1,9 +1,10 @@
-import ol from 'openlayers'
-import echarts from 'echarts'
-import { getTarget, merge, isObject, map, bind } from './helper'
-import formatGeoJSON from './coordinate/formatGeoJSON'
-import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem'
-import * as charts from './charts/index'
+import ol from 'openlayers';
+import echarts from 'echarts';
+import copy from 'fast-copy/dist/fast-copy';
+import { getTarget, merge, isObject, map, bind } from './helper';
+import formatGeoJSON from './coordinate/formatGeoJSON';
+import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem';
+import * as charts from './charts/index';
 const _options = {
   forcedRerender: false, // Force re-rendering
   forcedPrecomposeRerender: false, // force pre re-render
@@ -11,53 +12,61 @@ const _options = {
   hideOnMoving: false, // when moving hide chart
   hideOnRotating: false, // // when Rotating hide chart
   convertTypes: ['pie', 'line', 'bar']
-}
+};
 
-class ol3Echarts {
-  static getTarget = getTarget
-  static merge = merge
-  static map = map
-  static bind = bind
-  static formatGeoJSON = formatGeoJSON
+class ol3Echarts extends ol.Object {
+  static getTarget = getTarget;
+  static merge = merge;
+  static map = map;
+  static bind = bind;
+  static formatGeoJSON = formatGeoJSON;
   constructor (chartOptions, options = {}, map) {
+    super();
     /**
      * layer options
      * @type {{}}
      */
-    this.$options = merge(_options, options)
+    this.$options = merge(_options, options);
 
     /**
      * chart options
      */
-    this.$chartOptions = chartOptions
+    this.$chartOptions = chartOptions;
 
     /**
      * chart instance
      * @type {null}
      */
-    this.$chart = null
+    this.$chart = null;
 
     /**
      * map
      * @type {null}
      */
-    this.$Map = null
+    this.$Map = null;
 
     /**
      * Whether the relevant configuration has been registered
      * @type {boolean}
      * @private
      */
-    this._isRegistered = false
+    this._isRegistered = false;
+
+    /**
+     * 增量数据存放
+     * @type {Array}
+     * @private
+     */
+    this._incremental = [];
 
     /**
      * coordinate system
      * @type {null}
      * @private
      */
-    this._coordinateSystem = null
+    this._coordinateSystem = null;
 
-    if (map) this.appendTo(map)
+    if (map) this.appendTo(map);
   }
 
   /**
@@ -66,13 +75,13 @@ class ol3Echarts {
    */
   appendTo (map) {
     if (map && map instanceof ol.Map) {
-      this.$Map = map
-      this.$Map.once('postrender', this.render, this)
-      this.$Map.renderSync()
-      this._unRegisterEvents()
-      this._registerEvents()
+      this.$Map = map;
+      this.$Map.once('postrender', this.render, this);
+      this.$Map.renderSync();
+      this._unRegisterEvents();
+      this._registerEvents();
     } else {
-      throw new Error('not map object')
+      throw new Error('not map object');
     }
   }
 
@@ -81,7 +90,7 @@ class ol3Echarts {
    * @returns {*}
    */
   getChartOptions () {
-    return this.$chartOptions
+    return this.$chartOptions;
   }
 
   /**
@@ -90,10 +99,29 @@ class ol3Echarts {
    * @returns {ol3Echarts}
    */
   setChartOptions (options = {}) {
-    this.$chartOptions = options
-    this.$Map.once('postrender', this.render, this)
-    this.$Map.renderSync()
-    return this
+    this.$chartOptions = options;
+    this.$Map.once('postrender', this.render, this);
+    this.$Map.renderSync();
+    return this;
+  }
+
+  /**
+   * append data
+   * @param data
+   * @param save
+   * @returns {ol3Echarts}
+   */
+  appendData (data, save = true) {
+    if (data) {
+      if (save) {
+        this._incremental.push({
+          data: copy(data.data),
+          seriesIndex: data.seriesIndex
+        });
+      }
+      this.$chart.appendData(data);
+    }
+    return this;
   }
 
   /**
@@ -101,7 +129,7 @@ class ol3Echarts {
    * @returns {null}
    */
   getMap () {
-    return this.$Map
+    return this.$Map;
   }
 
   /**
@@ -110,7 +138,7 @@ class ol3Echarts {
    * @private
    */
   _isVisible () {
-    return this.$container && this.$container.style.display === ''
+    return this.$container && this.$container.style.display === '';
   }
 
   /**
@@ -118,7 +146,7 @@ class ol3Echarts {
    */
   show () {
     if (this.$container) {
-      this.$container.style.display = ''
+      this.$container.style.display = '';
     }
   }
 
@@ -127,7 +155,7 @@ class ol3Echarts {
    */
   hide () {
     if (this.$container) {
-      this.$container.style.display = 'none'
+      this.$container.style.display = 'none';
     }
   }
 
@@ -135,19 +163,19 @@ class ol3Echarts {
    * remove layer
    */
   remove () {
-    this.$chart.clear()
-    this.$chart.dispose()
-    this._unRegisterEvents()
-    delete this.$chart
-    delete this.$Map
-    this.$container.parentNode.removeChild(this.$container)
+    this.$chart.clear();
+    this.$chart.dispose();
+    this._unRegisterEvents();
+    delete this.$chart;
+    delete this.$Map;
+    this.$container.parentNode.removeChild(this.$container);
   }
 
   /**
    * clear chart
    */
   clear () {
-    this.$chart.clear()
+    this.$chart.clear();
   }
 
   /**
@@ -155,7 +183,7 @@ class ol3Echarts {
    */
   showLoading () {
     if (this.$chart) {
-      this.$chart.showLoading()
+      this.$chart.showLoading();
     }
   }
 
@@ -164,7 +192,7 @@ class ol3Echarts {
    */
   hideLoading () {
     if (this.$chart) {
-      this.$chart.hideLoading()
+      this.$chart.hideLoading();
     }
   }
 
@@ -175,21 +203,21 @@ class ol3Echarts {
    * @private
    */
   _createLayerContainer (map, options) {
-    const container = this.$container = document.createElement('div')
-    container.style.position = 'absolute'
-    container.style.top = 0
-    container.style.left = 0
-    container.style.right = 0
-    container.style.bottom = 0
-    let _target = getTarget(options['target'])
+    const container = this.$container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.top = '0px';
+    container.style.left = '0px';
+    container.style.right = '0px';
+    container.style.bottom = '0px';
+    let _target = getTarget(options['target']);
     if (_target && _target[0] && _target[0] instanceof Element) {
-      _target[0].appendChild(container)
+      _target[0].appendChild(container);
     } else {
-      let _target = getTarget('.ol-overlaycontainer')
+      let _target = getTarget('.ol-overlaycontainer');
       if (_target && _target[0] && _target[0] instanceof Element) {
-        _target[0].appendChild(container)
+        _target[0].appendChild(container);
       } else {
-        map.getViewport().appendChild(container)
+        map.getViewport().appendChild(container);
       }
     }
   }
@@ -199,9 +227,9 @@ class ol3Echarts {
    * @private
    */
   _resizeContainer () {
-    const size = this.getMap().getSize()
-    this.$container.style.height = size[1] + 'px'
-    this.$container.style.width = size[0] + 'px'
+    const size = this.getMap().getSize();
+    this.$container.style.height = size[1] + 'px';
+    this.$container.style.width = size[0] + 'px';
   }
 
   /**
@@ -210,15 +238,24 @@ class ol3Echarts {
    */
   _clearAndRedraw () {
     if (!this.$chart || (this.$container && this.$container.style.display === 'none')) {
-      return
+      return;
     }
+    this.dispatchEvent({
+      type: 'redraw',
+      source: this
+    });
     if (this.$options.forcedRerender) {
-      this.$chart.clear()
+      this.$chart.clear();
     }
-    this.$chart.resize()
+    this.$chart.resize();
     if (this.$chartOptions) {
-      this._registerMap()
-      this.$chart.setOption(this.reConverData(this.$chartOptions), false)
+      this._registerMap();
+      this.$chart.setOption(this.reConverData(this.$chartOptions), false);
+      if (this._incremental && this._incremental.length > 0) {
+        for (let i = 0; i < this._incremental.length; i++) {
+          this.appendData(this._incremental[i], false)
+        }
+      }
     }
   }
 
@@ -226,39 +263,59 @@ class ol3Echarts {
    * handle map resize
    */
   onResize () {
-    this._resizeContainer()
-    this._clearAndRedraw()
+    this._resizeContainer();
+    this._clearAndRedraw();
+    this.dispatchEvent({
+      type: 'change:size',
+      source: this
+    });
   }
 
   /**
    * handle zoom end events
    */
   onZoomEnd () {
-    this.$options['hideOnZooming'] && this.show()
-    this._clearAndRedraw()
+    this.$options['hideOnZooming'] && this.show();
+    this._clearAndRedraw();
+    this.dispatchEvent({
+      type: 'zoomend',
+      source: this
+    });
   }
 
   /**
    * handle rotate end events
    */
   onDragRotateEnd () {
-    this.$options['hideOnRotating'] && this.show()
-    this._clearAndRedraw()
+    this.$options['hideOnRotating'] && this.show();
+    this._clearAndRedraw();
+    this.dispatchEvent({
+      type: 'change:rotation',
+      source: this
+    });
   }
 
   /**
    * handle move start events
    */
   onMoveStart () {
-    this.$options['hideOnMoving'] && this.hide()
+    this.$options['hideOnMoving'] && this.hide();
+    this.dispatchEvent({
+      type: 'movestart',
+      source: this
+    });
   }
 
   /**
    * handle move end events
    */
   onMoveEnd () {
-    this.$options['hideOnMoving'] && this.show()
-    this._clearAndRedraw()
+    this.$options['hideOnMoving'] && this.show();
+    this._clearAndRedraw();
+    this.dispatchEvent({
+      type: 'movesend',
+      source: this
+    });
   }
 
   /**
@@ -266,7 +323,11 @@ class ol3Echarts {
    * @param event
    */
   onCenterChange (event) {
-    this._clearAndRedraw()
+    this._clearAndRedraw();
+    this.dispatchEvent({
+      type: 'change:center',
+      source: this
+    });
   }
 
   /**
@@ -274,17 +335,17 @@ class ol3Echarts {
    * @private
    */
   _registerEvents () {
-    const Map = this.$Map
-    const view = Map.getView()
+    const Map = this.$Map;
+    const view = Map.getView();
     if (this.$options.forcedPrecomposeRerender) {
-      Map.on('precompose', this.reRender, this)
+      Map.on('precompose', this.reRender, this);
     }
-    Map.on('change:size', this.onResize, this)
-    view.on('change:resolution', this.onZoomEnd, this)
-    view.on('change:center', this.onCenterChange, this)
-    view.on('change:rotation', this.onDragRotateEnd, this)
-    Map.on('movestart', this.onMoveStart, this)
-    Map.on('moveend', this.onMoveEnd, this)
+    Map.on('change:size', this.onResize, this);
+    view.on('change:resolution', this.onZoomEnd, this);
+    view.on('change:center', this.onCenterChange, this);
+    view.on('change:rotation', this.onDragRotateEnd, this);
+    Map.on('movestart', this.onMoveStart, this);
+    Map.on('moveend', this.onMoveEnd, this);
   }
 
   /**
@@ -292,17 +353,17 @@ class ol3Echarts {
    * @private
    */
   _unRegisterEvents () {
-    const Map = this.$Map
-    const view = Map.getView()
-    Map.un('change:size', this.onResize, this)
+    const Map = this.$Map;
+    const view = Map.getView();
+    Map.un('change:size', this.onResize, this);
     if (this.$options.forcedPrecomposeRerender) {
-      Map.un('precompose', this.reRender, this)
+      Map.un('precompose', this.reRender, this);
     }
-    view.un('change:resolution', this.onZoomEnd, this)
-    view.un('change:center', this.onCenterChange, this)
-    view.un('change:rotation', this.onDragRotateEnd, this)
-    Map.un('movestart', this.onMoveStart, this)
-    Map.un('moveend', this.onMoveEnd, this)
+    view.un('change:resolution', this.onZoomEnd, this);
+    view.un('change:center', this.onCenterChange, this);
+    view.un('change:rotation', this.onDragRotateEnd, this);
+    Map.un('movestart', this.onMoveStart, this);
+    Map.un('moveend', this.onMoveEnd, this);
   }
 
   /**
@@ -311,16 +372,16 @@ class ol3Echarts {
    */
   _registerMap () {
     if (!this._isRegistered) {
-      echarts.registerCoordinateSystem('openlayers', _getCoordinateSystem(this.getMap(), this.$options))
-      this._isRegistered = true
+      echarts.registerCoordinateSystem('openlayers', _getCoordinateSystem(this.getMap(), this.$options));
+      this._isRegistered = true;
     }
-    const series = this.$chartOptions.series
+    const series = this.$chartOptions.series;
     if (series && isObject(series)) {
       for (let i = series.length - 1; i >= 0; i--) {
         if (!(this.$options.convertTypes.indexOf(series[i]['type']) > -1)) {
-          series[i]['coordinateSystem'] = 'openlayers'
+          series[i]['coordinateSystem'] = 'openlayers';
         }
-        series[i]['animation'] = false
+        series[i]['animation'] = false;
       }
     }
   }
@@ -331,23 +392,23 @@ class ol3Echarts {
    * @returns {*}
    */
   reConverData (options) {
-    let series = options['series']
+    let series = options['series'];
     if (series && series.length > 0) {
       if (!this._coordinateSystem) {
-        let _cs = _getCoordinateSystem(this.getMap(), this.$options)
-        this._coordinateSystem = new _cs()
+        let _cs = _getCoordinateSystem(this.getMap(), this.$options);
+        this._coordinateSystem = new _cs();
       }
       if (series && isObject(series)) {
         for (let i = series.length - 1; i >= 0; i--) {
           if (this.$options.convertTypes.indexOf(series[i]['type']) > -1) {
             if (series[i] && series[i].hasOwnProperty('coordinates')) {
-              series[i] = charts[series[i]['type']](options, series[i], this._coordinateSystem)
+              series[i] = charts[series[i]['type']](options, series[i], this._coordinateSystem);
             }
           }
         }
       }
     }
-    return options
+    return options;
   }
 
   /**
@@ -355,18 +416,18 @@ class ol3Echarts {
    */
   render () {
     if (!this.$container) {
-      this._createLayerContainer(this.$Map, this.$options)
-      this._resizeContainer()
+      this._createLayerContainer(this.$Map, this.$options);
+      this._resizeContainer();
     }
     if (!this.$chart) {
-      this.$chart = echarts.init(this.$container)
+      this.$chart = echarts.init(this.$container);
       if (this.$chartOptions) {
-        this._registerMap()
-        this.$chart.setOption(this.reConverData(this.$chartOptions), false)
+        this._registerMap();
+        this.$chart.setOption(this.reConverData(this.$chartOptions), false);
       }
     } else if (this._isVisible()) {
-      this.$chart.resize()
-      this.reRender()
+      this.$chart.resize();
+      this.reRender();
     }
   }
 
@@ -374,7 +435,7 @@ class ol3Echarts {
    * re-render
    */
   reRender () {
-    this._clearAndRedraw()
+    this._clearAndRedraw();
   }
 }
 
