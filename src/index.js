@@ -1,6 +1,5 @@
 import ol from 'openlayers';
 import echarts from 'echarts';
-import copy from 'fast-copy/dist/fast-copy';
 import { getTarget, merge, isObject, map, bind } from './helper';
 import formatGeoJSON from './coordinate/formatGeoJSON';
 import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem';
@@ -115,11 +114,15 @@ class ol3Echarts extends ol.Object {
     if (data) {
       if (save) {
         this._incremental.push({
-          data: copy(data.data),
+          data: data.data,
           seriesIndex: data.seriesIndex
         });
       }
-      this.$chart.appendData(data);
+      // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin
+      this.$chart.appendData({
+        data: data.data.copyWithin(),
+        seriesIndex: data.seriesIndex
+      });
     }
     return this;
   }
@@ -166,6 +169,7 @@ class ol3Echarts extends ol.Object {
     this.$chart.clear();
     this.$chart.dispose();
     this._unRegisterEvents();
+    this._incremental = [];
     delete this.$chart;
     delete this.$Map;
     this.$container.parentNode.removeChild(this.$container);
@@ -313,7 +317,7 @@ class ol3Echarts extends ol.Object {
     this.$options['hideOnMoving'] && this.show();
     this._clearAndRedraw();
     this.dispatchEvent({
-      type: 'movesend',
+      type: 'moveend',
       source: this
     });
   }

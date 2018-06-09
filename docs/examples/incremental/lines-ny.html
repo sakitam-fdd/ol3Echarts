@@ -92,10 +92,9 @@
     hideOnZooming: true
   });
   echartslayer.appendTo(map.getMap());
-  echartslayer.on('redraw', function () {
-    console.log(this)
-    fetchData(0);
-  });
+  // echartslayer.on('redraw', function () {
+  //   fetchData(0);
+  // });
   function fetchData(idx) {
     if (idx >= CHUNK_COUNT) {
       return;
@@ -119,14 +118,13 @@
           var y = rawData[i++] + offsetY;
           data[off++] = x;
           data[off++] = y;
-
           addedDataCount++;
         }
       }
       echartslayer.appendData({
         seriesIndex: 0,
         data: data
-      }, false);
+      }, true);
       dataCount += addedDataCount;
       fetchData(idx + 1);
     };

@@ -1,7 +1,7 @@
 /*!
  * author: FDD <smileFDD@gmail.com> 
- * ol3-echarts v1.3.3
- * build-time: 2018-4-2 22:12
+ * ol3-echarts v1.3.4
+ * build-time: 2018-5-6 22:49
  * LICENSE: MIT
  * (c) 2017-2018 https://sakitam-fdd.github.io/ol3Echarts
  */
@@ -13,368 +13,6 @@
 
 echarts = echarts && echarts.hasOwnProperty('default') ? echarts['default'] : echarts;
 ol = ol && ol.hasOwnProperty('default') ? ol['default'] : ol;
-
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-
-
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var fastCopy = createCommonjsModule(function (module, exports) {
-(function (global, factory) {
-  factory(exports);
-}(commonjsGlobal, (function (exports) { var HAS_FLAGS_SUPPORT = typeof /foo/g.flags === 'string';
-
-  /**
-   * @constant {boolean} HAS_PROPERTY_SYMBOL_SUPPORT
-   */
-  var HAS_PROPERTY_SYMBOL_SUPPORT = typeof commonjsGlobal.Object.getOwnPropertySymbols === 'function';
-
-  /**
-   * @constant {boolean} HAS_WEAKSET_SUPPORT
-   */
-  var HAS_WEAKSET_SUPPORT = typeof commonjsGlobal.WeakSet === 'function';
-
-  // constants
-
-  var propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-  /**
-   * @function getNewCache
-   *
-   * @description
-   * get a new cache object to prevent circular references
-   *
-   * @returns {Object|Weakset} the new cache object
-   */
-  var getNewCache = function getNewCache() {
-    return HAS_WEAKSET_SUPPORT ? new WeakSet() : Object.create({
-      _values: [],
-      add: function add(value) {
-        this._values.push(value);
-      },
-      has: function has(value) {
-        return !!~this._values.indexOf(value);
-      }
-    });
-  };
-
-  /**
-   * @function getRegExpFlags
-   *
-   * @description
-   * get the flags to apply to the copied regexp
-   *
-   * @param {RegExp} regExp the regexp to get the flags of
-   * @returns {string} the flags for the regexp
-   */
-  var getRegExpFlags = function getRegExpFlags(regExp) {
-    var flags = '';
-
-    if (regExp.global) {
-      flags += 'g';
-    }
-
-    if (regExp.ignoreCase) {
-      flags += 'i';
-    }
-
-    if (regExp.multiline) {
-      flags += 'm';
-    }
-
-    if (regExp.unicode) {
-      flags += 'u';
-    }
-
-    if (regExp.sticky) {
-      flags += 'y';
-    }
-
-    return flags;
-  };
-
-  /**
-   * @function isObjectCopyable
-   *
-   * @description
-   * is the object able to be copied
-   *
-   * @param {any} object the object to test
-   * @param {Object|Weakset} cache the cache of copied values
-   * @returns {boolean} can the object be copied
-   */
-  var isObjectCopyable = function isObjectCopyable(object, cache) {
-    return typeof object === 'object' && object !== null && !cache.has(object);
-  };
-
-  /**
-   * @function shouldObjectBeCopied
-   *
-   * @description
-   * should the object be copied
-   *
-   * @param {any} object the object to test
-   * @param {any} realm the realm to check instanceof in
-   * @returns {boolean} should the object be copied
-   */
-  var shouldObjectBeCopied = function shouldObjectBeCopied(object, realm) {
-    return typeof object.then !== 'function' && !(object instanceof realm.Error) && !(realm.WeakMap && object instanceof realm.WeakMap) && !(realm.WeakSet && object instanceof realm.WeakSet);
-  };
-
-  /**
-   * @function copyArray
-   *
-   * @description
-   * copy the array, deeply copying the values
-   *
-   * @param {Array<any>} array the array to copy
-   * @param {function} copy the function to copy values
-   * @param {any} realm the realm to check instanceof in
-   * @returns {Array<any>} the copied array
-   */
-  var copyArray = function copyArray(array, copy, realm) {
-    var newArray = new array.constructor();
-
-    for (var index = 0; index < array.length; index++) {
-      newArray.push(copy(array[index], realm));
-    }
-
-    return newArray;
-  };
-
-  /**
-   * @function copyArrayBuffer
-   *
-   * @description
-   * copy the arrayBuffer, deeply copying the values
-   *
-   * @param {ArrayBuffer} arrayBuffer the arrayBuffer to copy
-   * @returns {ArrayBuffer} the copied bufarrayBufferfer
-   */
-  var copyArrayBuffer = function copyArrayBuffer(arrayBuffer) {
-    return arrayBuffer.slice();
-  };
-
-  /**
-   * @function copyBuffer
-   *
-   * @description
-   * copy the buffer, deeply copying the values
-   *
-   * @param {Buffer} buffer the buffer to copy
-   * @param {any} realm the realm to check instanceof in
-   * @returns {Buffer} the copied buffer
-   */
-  var copyBuffer = function copyBuffer(buffer, realm) {
-    var newBuffer = realm.Buffer.allocUnsafe ? realm.Buffer.allocUnsafe(buffer.length) : new realm.Buffer(buffer.length);
-
-    buffer.copy(newBuffer);
-
-    return newBuffer;
-  };
-
-  /**
-   * @function copyIterable
-   *
-   * @description
-   * copy the iterable values into a new iterable of the same type
-   *
-   * @param {function} assignmentHandler the handler for assigning the values to the new iterable
-   * @returns {function((Map|Set), function, any): (Map|Set)} the copied iterable
-   */
-  var createCopyIterable = function createCopyIterable(assignmentHandler) {
-    return function (iterable, copy, realm) {
-      var newIterable = new iterable.constructor();
-
-      iterable.forEach(assignmentHandler(newIterable, copy, realm));
-
-      return newIterable;
-    };
-  };
-
-  var copyMap = createCopyIterable(function (iterable, copy, realm) {
-    return function (value, key) {
-      return iterable.set(key, copy(value, realm));
-    };
-  });
-  var copySet = createCopyIterable(function (iterable, copy, realm) {
-    return function (value) {
-      return iterable.add(copy(value, realm));
-    };
-  });
-
-  /**
-   * @function copyObject
-   *
-   * @description
-   * copy the object values into a new object of the same type
-   *
-   * @param {Object} object the object to copy
-   * @param {function} copy the copy method
-   * @param {any} realm the realm to check instanceof in
-   * @param {boolean} isPlainObject is the object to copy a plain object
-   * @returns {Object} the copied object
-   */
-  var copyObject = function copyObject(object, copy, realm, isPlainObject) {
-    var newObject = isPlainObject ? {} : object.constructor ? new object.constructor() : Object.create(null);
-    var keys = Object.keys(object);
-
-    if (keys.length) {
-      var key = void 0;
-
-      for (var index = 0; index < keys.length; index++) {
-        key = keys[index];
-
-        newObject[key] = copy(object[key], realm);
-      }
-    }
-
-    if (HAS_PROPERTY_SYMBOL_SUPPORT) {
-      var symbols = Object.getOwnPropertySymbols(object);
-
-      if (symbols.length) {
-        var symbol = void 0;
-
-        for (var _index = 0; _index < symbols.length; _index++) {
-          symbol = symbols[_index];
-
-          if (propertyIsEnumerable.call(object, symbol)) {
-            newObject[symbol] = copy(object[symbol], realm);
-          }
-        }
-      }
-    }
-
-    return newObject;
-  };
-
-  /**
-   * @function copyRegExp
-   *
-   * @description
-   * copy the RegExp to a new RegExp with the same properties
-   *
-   * @param {RegExp} regExp the RegExp to copy
-   * @param {any} realm the realm to check instanceof in
-   * @returns {RegExp} the copied RegExp
-   */
-  var copyRegExp = function copyRegExp(regExp, realm) {
-    var newRegExp = new realm.RegExp(regExp.source, HAS_FLAGS_SUPPORT ? regExp.flags : getRegExpFlags(regExp));
-
-    newRegExp.lastIndex = regExp.lastIndex;
-
-    return newRegExp;
-  };
-
-  /**
-   * @function copyTypedArray
-   *
-   * @description
-   * copy the typedArray, deeply copying the values
-   *
-   * @param {TypedArray} typedArray the typedArray to copy
-   * @returns {TypedArray} the copied typedArray
-   */
-  var copyTypedArray = function copyTypedArray(typedArray) {
-    return new typedArray.constructor(copyArrayBuffer(typedArray.buffer));
-  };
-
-  // utils
-
-  /**
-   * @function copy
-   *
-   * @description
-   * deeply copy the object to a new object of the same type
-   *
-   * @param {any} object the object to copy
-   * @param {any} [realm=global] the realm to check instanceof in
-   * @returns {any} the copied object
-   */
-  function copy(object) {
-    var realm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : commonjsGlobal;
-
-    var cache = getNewCache();
-
-    function handleCopy(object) {
-      if (!isObjectCopyable(object, cache)) {
-        return object;
-      }
-
-      if (Array.isArray(object)) {
-        cache.add(object);
-
-        return copyArray(object, handleCopy, realm);
-      }
-
-      if (object.constructor === realm.Object) {
-        cache.add(object);
-
-        return copyObject(object, handleCopy, realm, true);
-      }
-
-      if (object instanceof realm.Date) {
-        return new Date(object.getTime());
-      }
-
-      if (object instanceof realm.RegExp) {
-        return copyRegExp(object, realm);
-      }
-
-      if (realm.Map && object instanceof realm.Map) {
-        cache.add(object);
-
-        return copyMap(object, handleCopy, realm);
-      }
-
-      if (realm.Set && object instanceof realm.Set) {
-        cache.add(object);
-
-        return copySet(object, handleCopy, realm);
-      }
-
-      if (realm.Buffer && realm.Buffer.isBuffer(object)) {
-        return copyBuffer(object, realm);
-      }
-
-      if (realm.ArrayBuffer) {
-        if (realm.ArrayBuffer.isView(object)) {
-          return copyTypedArray(object);
-        }
-
-        if (object instanceof realm.ArrayBuffer) {
-          return copyArrayBuffer(object);
-        }
-      }
-
-      if (shouldObjectBeCopied(object, realm)) {
-        cache.add(object);
-
-        return copyObject(object, handleCopy, realm);
-      }
-
-      return object;
-    }
-
-    return handleCopy(object);
-  }
-
-  exports.default = copy;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-//# sourceMappingURL=fast-copy.js.map
-});
-
-var copy = unwrapExports(fastCopy);
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -793,11 +431,15 @@ var ol3Echarts = function (_ol$Object) {
     if (data) {
       if (save) {
         this._incremental.push({
-          data: copy(data.data),
+          data: data.data,
           seriesIndex: data.seriesIndex
         });
       }
-      this.$chart.appendData(data);
+
+      this.$chart.appendData({
+        data: data.data.copyWithin(),
+        seriesIndex: data.seriesIndex
+      });
     }
     return this;
   };
@@ -826,6 +468,7 @@ var ol3Echarts = function (_ol$Object) {
     this.$chart.clear();
     this.$chart.dispose();
     this._unRegisterEvents();
+    this._incremental = [];
     delete this.$chart;
     delete this.$Map;
     this.$container.parentNode.removeChild(this.$container);
@@ -935,7 +578,7 @@ var ol3Echarts = function (_ol$Object) {
     this.$options['hideOnMoving'] && this.show();
     this._clearAndRedraw();
     this.dispatchEvent({
-      type: 'movesend',
+      type: 'moveend',
       source: this
     });
   };
@@ -1045,4 +688,3 @@ ol3Echarts.formatGeoJSON = formatGeoJSON;
 return ol3Echarts;
 
 })));
-//# sourceMappingURL=ol3Echarts.js.map
