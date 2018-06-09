@@ -923,7 +923,11 @@
         zlevel: 1
       }]
   };
-  var echartslayer = new ol3Echarts(option);
+  var echartslayer = new ol3Echarts(option, {
+    hideOnMoving: false,
+    hideOnZooming: false,
+    forcedPrecomposeRerender: true
+  });
   echartslayer.appendTo(Maps.getMap())
 </script>
 </body>

@@ -124,5 +124,12 @@
     "chart_name": "热力图",
     "chart_author": "FDD",
     "chart_time": "2018.03.05"
+  },
+  {
+    "imgSrc": "./assets/images/int.jpg",
+    "url": "./examples/incremental/lines-ny.html",
+    "chart_name": "增量渲染",
+    "chart_author": "FDD",
+    "chart_time": "2018.06.09"
   }
 ]

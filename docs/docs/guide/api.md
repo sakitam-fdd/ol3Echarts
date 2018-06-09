@@ -50,3 +50,22 @@ params = {
 | hideOnMoving | 拖动时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
 | hideOnRotating | 旋转时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
 
+### 事件
+
+``` js
+echartslayer.on('redraw', function (event) {
+  console.log(this, event)
+});
+```
+
+支持的事件系统如下：
+
+| 事件名 | 简介 | 类型 | 备注 |
+| --- | --- | --- | --- |
+| redraw | 图层重新渲染事件 | `String` | 注意：因为耦合原因, 每次重绘事件可能不只触发一次 |
+| change:size | 地图大小变化事件 | `String` | -- |
+| zoomend | 地图缩放结束事件 | `String` | -- |
+| change:rotation | 地图旋转角度变化事件 | `String` | -- |
+| movestart | 地图拖拽开始事件 | `String` | -- |
+| moveend | 地图拖拽结束事件 | `String` | -- |
+| change:center | 地图中心点变化事件 | `String` | -- |

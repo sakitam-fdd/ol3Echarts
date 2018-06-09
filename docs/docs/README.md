@@ -1,10 +1,11 @@
-# ol3Echarts 
+# ol3Echarts
 
 > 基于openlayers3+新版扩展的echarts3的图表插件，暂时支持echarts的所有map组件类型，对普通不支持坐标系的图表正在兼容（饼图，柱状图，折线图已兼容）
 
 [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts)
 [![codecov](https://codecov.io/gh/sakitam-fdd/ol3Echarts/branch/master/graph/badge.svg)](https://codecov.io/gh/sakitam-fdd/ol3Echarts)
 [![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts)
+[![](https://data.jsdelivr.com/v1/package/npm/ol3-echarts/badge)](https://www.jsdelivr.com/package/npm/ol3-echarts)
 ![JS gzip size](http://img.badgesize.io/https://unpkg.com/ol3-echarts/dist/ol3Echarts.js?compression=gzip&label=gzip%20size:%20JS)
 [![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts)
 [![GitHub stars](https://img.shields.io/github/stars/sakitam-fdd/ol3Echarts.svg)](https://github.com/sakitam-fdd/ol3Echarts/stargazers)
@@ -33,9 +34,13 @@ import ol3Echarts from 'ol3-echarts'
 
 #### cdn
 
-目前可通过 [unpkg.com](https://unpkg.com/ol3-echarts@1.3.0/dist/ol3Echarts.js) 获取最新版本的资源。
+目前可通过 [unpkg.com](https://unpkg.com/ol3-echarts/dist/ol3Echarts.js) / [jsdelivr](https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js) 获取最新版本的资源。
 
 ```bash
+// jsdelivr (jsdelivr由于缓存原因最好锁定版本号)
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.4/dist/ol3Echarts.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.4/dist/ol3Echarts.min.js
+// npm
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.js
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 ```
@@ -47,7 +52,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 ``` javascript
 <div id="map"></div>
-<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/openlayers/dist/ol.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <script>
@@ -70,7 +75,9 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
     target: '.ol-overlaycontainer',
     source: '',
     destination: '',
-    hideOnMoving: true
+    hideOnMoving: true,
+    forcedRerender: false,
+    forcedPrecomposeRerender: false
   });
   echartslayer.appendTo(Map)
 </script>
@@ -133,7 +140,9 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
     target: '.ol-overlaycontainer',
     source: '',
     destination: '',
-    hideOnMoving: true
+    hideOnMoving: true,
+    forcedRerender: false,
+    forcedPrecomposeRerender: false
   });
   echartslayer.appendTo(Maps.getMap())
 </script>
@@ -141,12 +150,15 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 ## 截图示例
 
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/sdt.gif)
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/scatter.jpg)
 
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/examples/asset/images/qxt.gif)
+![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/mock-migration.jpg)
+
+![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/wchart-gl.jpg)
 
 其他示例请自己挖掘
 
-## 参考
+## 致谢
 
->[https://github.com/ecomfe/echarts](https://github.com/ecomfe/echarts)
+> [echarts](https://github.com/ecomfe/echarts)
+> [openlayers](https://github.com/openlayers/openlayers)
