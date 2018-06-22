@@ -151,6 +151,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 ## 截图示例
 
 ![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/scatter.jpg)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_shield)
 
 ![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/mock-migration.jpg)
 
@@ -162,3 +163,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 > [echarts](https://github.com/ecomfe/echarts)
 > [openlayers](https://github.com/openlayers/openlayers)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_large)
