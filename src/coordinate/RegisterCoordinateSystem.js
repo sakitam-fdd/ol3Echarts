@@ -4,7 +4,7 @@
  */
 
 import echarts from 'echarts';
-import ol from 'openlayers';
+import { transform } from 'ol/proj';
 import { map as $map, bind } from '../helper';
 
 const _getCoordinateSystem = function (map, options = {}) {
@@ -62,7 +62,7 @@ const _getCoordinateSystem = function (map, options = {}) {
     }
     let source = options['source'] || 'EPSG:4326';
     let destination = options['destination'] || this.projCode_;
-    let pixel = map.getPixelFromCoordinate(ol.proj.transform(coords, source, destination));
+    let pixel = map.getPixelFromCoordinate(transform(coords, source, destination));
     const mapOffset = this._mapOffset;
     return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
   };

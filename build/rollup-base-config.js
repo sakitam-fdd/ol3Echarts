@@ -7,8 +7,8 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const eslint = require('rollup-plugin-eslint');
 const friendlyFormatter = require("eslint-friendly-formatter");
-const _package = require('../package.json')
-const eslintConfig = require('../.eslintrc')
+const _package = require('../package.json');
+const eslintConfig = require('../.eslintrc');
 
 const time = new Date();
 const year = time.getFullYear();
@@ -25,10 +25,10 @@ const genConfig = (opts) => {
     input: {
       input: resolve('src/index.js'),
       plugins: [
-        eslint(Object.assign({}, eslintConfig, {
-          formatter: friendlyFormatter,
-          exclude: [resolve('node_modules')]
-        })),
+        // eslint(Object.assign({}, eslintConfig, {
+        //   formatter: friendlyFormatter,
+        //   exclude: [resolve('node_modules')]
+        // })),
         babel({
           exclude: 'node_modules/**' // only transpile our source code
         }),
@@ -39,7 +39,11 @@ const genConfig = (opts) => {
         }),
         cjs()
       ],
-      external: ['echarts', 'openlayers']
+      external: [
+        'echarts',
+        'ol',
+        'ol/proj'
+      ]
     },
     output: {
       file: opts.file,
@@ -95,4 +99,4 @@ module.exports = [
     file: resolve(_package.module),
     format: 'es'
   }
-].map(genConfig)
+].map(genConfig);

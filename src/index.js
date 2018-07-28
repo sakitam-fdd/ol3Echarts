@@ -1,4 +1,4 @@
-import ol from 'openlayers';
+import { Object, Map } from 'ol';
 import echarts from 'echarts';
 import { getTarget, merge, isObject, map, bind } from './helper';
 import formatGeoJSON from './coordinate/formatGeoJSON';
@@ -13,7 +13,7 @@ const _options = {
   convertTypes: ['pie', 'line', 'bar']
 };
 
-class ol3Echarts extends ol.Object {
+class EchartsLayer extends Object {
   static getTarget = getTarget;
   static merge = merge;
   static map = map;
@@ -73,7 +73,7 @@ class ol3Echarts extends ol.Object {
    * @param map
    */
   appendTo (map) {
-    if (map && map instanceof ol.Map) {
+    if (map && map instanceof Map) {
       this.$Map = map;
       this.$Map.once('postrender', this.render, this);
       this.$Map.renderSync();
@@ -443,4 +443,4 @@ class ol3Echarts extends ol.Object {
   }
 }
 
-export default ol3Echarts
+export default EchartsLayer
