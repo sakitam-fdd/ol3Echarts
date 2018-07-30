@@ -38,7 +38,7 @@ const getTarget = (selector) => {
   let dom = (function () {
     let found;
     return (document && /^#([\w-]+)$/.test(selector))
-      ? ((found = document.getElementById(RegExp.$1)) ? [found] : [])
+      ? ((found = document.getElementById(RegExp.$1)) ? [found] : []) // eslint-disable-line
       : Array.prototype.slice.call(/^\.([\w-]+)$/.test(selector)
         ? document.getElementsByClassName(RegExp.$1)
         : /^[\w-]+$/.test(selector) ? document.getElementsByTagName(selector)
@@ -77,10 +77,34 @@ const bind = function (func, context) {
   }
 };
 
+/**
+ * add own item
+ * @param array
+ * @param item
+ * @returns {*}
+ */
+const arrayAdd = function (array, item) {
+  let i = 0;
+  let index;
+  const length = array.length;
+  for (; i < length; i++) {
+    if (array[i]['seriesIndex'] === item['seriesIndex']) {
+      index = i;
+    }
+  }
+  if (index === undefined) {
+    array.push(item);
+  } else {
+    array[index] = item;
+  }
+  return array;
+};
+
 export {
   getTarget,
   merge,
   isObject,
   map,
-  bind
+  bind,
+  arrayAdd
 }

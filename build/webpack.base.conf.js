@@ -2,7 +2,7 @@ const path = require('path');
 const utils = require('./utils');
 
 module.exports = {
-  context: path.resolve(__dirname, '../'),
+  context: path.resolve(__dirname, '..'),
   entry: {
     app: './preview/index.js'
   },

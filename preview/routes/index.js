@@ -16,7 +16,7 @@ const mainRouter = [
 const routes = (
   <Switch>
     {mainRouter.map((route) => <Route key={route.key} {...route.route} />)}
-    <Redirect to="/map" />
+    <Redirect to="/" />
   </Switch>
 );
 

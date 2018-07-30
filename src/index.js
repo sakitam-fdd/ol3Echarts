@@ -1,6 +1,6 @@
 import { Object, Map } from 'ol';
 import echarts from 'echarts';
-import { getTarget, merge, isObject, map, bind } from './helper';
+import { getTarget, merge, isObject, map, bind, arrayAdd } from './helper';
 import formatGeoJSON from './coordinate/formatGeoJSON';
 import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem';
 import * as charts from './charts/index';
@@ -75,7 +75,9 @@ class EchartsLayer extends Object {
   appendTo (map) {
     if (map && map instanceof Map) {
       this.$Map = map;
-      this.$Map.once('postrender', this.render, this);
+      this.$Map.once('postrender', event => {
+        this.render()
+      }, this);
       this.$Map.renderSync();
       this._unRegisterEvents();
       this._registerEvents();
@@ -99,7 +101,9 @@ class EchartsLayer extends Object {
    */
   setChartOptions (options = {}) {
     this.$chartOptions = options;
-    this.$Map.once('postrender', this.render, this);
+    this.$Map.once('postrender', event => {
+      this.render()
+    }, this);
     this.$Map.renderSync();
     return this;
   }
@@ -113,7 +117,7 @@ class EchartsLayer extends Object {
   appendData (data, save = true) {
     if (data) {
       if (save) {
-        this._incremental.push({
+        this._incremental = arrayAdd(this._incremental, {
           data: data.data,
           seriesIndex: data.seriesIndex
         });
@@ -419,6 +423,7 @@ class EchartsLayer extends Object {
    * render
    */
   render () {
+    console.log(this)
     if (!this.$container) {
       this._createLayerContainer(this.$Map, this.$options);
       this._resizeContainer();

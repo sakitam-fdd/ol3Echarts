@@ -5,10 +5,9 @@ const babel = require('rollup-plugin-babel'); // ES2015 tran
 const cjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
-const eslint = require('rollup-plugin-eslint');
+const { eslint } = require('rollup-plugin-eslint');
 const friendlyFormatter = require("eslint-friendly-formatter");
 const _package = require('../package.json');
-const eslintConfig = require('../.eslintrc');
 
 const time = new Date();
 const year = time.getFullYear();
@@ -25,10 +24,11 @@ const genConfig = (opts) => {
     input: {
       input: resolve('src/index.js'),
       plugins: [
-        // eslint(Object.assign({}, eslintConfig, {
-        //   formatter: friendlyFormatter,
-        //   exclude: [resolve('node_modules')]
-        // })),
+        eslint({
+          configFile: resolve('.eslintrc.js'),
+          formatter: friendlyFormatter,
+          exclude: [resolve('node_modules')]
+        }),
         babel({
           exclude: 'node_modules/**' // only transpile our source code
         }),
