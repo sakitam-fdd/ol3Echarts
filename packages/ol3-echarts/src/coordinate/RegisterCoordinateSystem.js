@@ -58,7 +58,7 @@ const _getCoordinateSystem = function (map, options = {}) {
           item = Number(item);
         }
         return item;
-      })
+      });
     }
     let source = options['source'] || 'EPSG:4326';
     let destination = options['destination'] || this.projCode_;
@@ -75,7 +75,12 @@ const _getCoordinateSystem = function (map, options = {}) {
   RegisterCoordinateSystem.prototype._getProjectionCode = function () {
     let code = '';
     if (map) {
-      code = map.getView() && map.getView().getProjection().getCode();
+      code =
+        map.getView() &&
+        map
+          .getView()
+          .getProjection()
+          .getCode();
     } else {
       code = 'EPSG:3857';
     }
@@ -128,7 +133,7 @@ const _getCoordinateSystem = function (map, options = {}) {
         coord: bind(this.dataToPoint, this),
         size: bind(RegisterCoordinateSystem.dataToCoordSize, this)
       }
-    }
+    };
   };
 
   /**
@@ -138,15 +143,19 @@ const _getCoordinateSystem = function (map, options = {}) {
    */
   RegisterCoordinateSystem.dataToCoordSize = function (dataSize, dataItem) {
     dataItem = dataItem || [0, 0];
-    return $map([0, 1], function (dimIdx) {
-      let val = dataItem[dimIdx];
-      let halfSize = dataSize[dimIdx] / 2;
-      let [p1, p2] = [[], []];
-      p1[dimIdx] = val - halfSize;
-      p2[dimIdx] = val + halfSize;
-      p1[1 - dimIdx] = p2[1 - dimIdx] = dataItem[1 - dimIdx];
-      return Math.abs(this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx]);
-    }, this)
+    return $map(
+      [0, 1],
+      function (dimIdx) {
+        let val = dataItem[dimIdx];
+        let halfSize = dataSize[dimIdx] / 2;
+        let [p1, p2] = [[], []];
+        p1[dimIdx] = val - halfSize;
+        p2[dimIdx] = val + halfSize;
+        p1[1 - dimIdx] = p2[1 - dimIdx] = dataItem[1 - dimIdx];
+        return Math.abs(this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx]);
+      },
+      this
+    );
   };
 
   /**
@@ -158,7 +167,7 @@ const _getCoordinateSystem = function (map, options = {}) {
       if (seriesModel.get('coordinateSystem') === 'openlayers') {
         seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);
       }
-    })
+    });
   };
 
   return RegisterCoordinateSystem;

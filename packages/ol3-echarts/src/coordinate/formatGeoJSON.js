@@ -7,7 +7,7 @@ import echarts from 'echarts';
  * @param json
  * @returns {boolean}
  */
-const checkDecoded = json => {
+const checkDecoded = (json) => {
   if (json.UTF8Encoding) {
     return false;
   } else {
@@ -36,19 +36,11 @@ const decode = (json) => {
     for (let c = 0; c < coordinates.length; c++) {
       let coordinate = coordinates[c];
       if (geometry.type === 'Polygon') {
-        coordinates[c] = decodePolygon(
-          coordinate,
-          encodeOffsets[c],
-          encodeScale
-        )
+        coordinates[c] = decodePolygon(coordinate, encodeOffsets[c], encodeScale);
       } else if (geometry.type === 'MultiPolygon') {
         for (let c2 = 0; c2 < coordinate.length; c2++) {
           let polygon = coordinate[c2];
-          coordinate[c2] = decodePolygon(
-            polygon,
-            encodeOffsets[c][c2],
-            encodeScale
-          )
+          coordinate[c2] = decodePolygon(polygon, encodeOffsets[c][c2], encodeScale);
         }
       }
     }
@@ -56,7 +48,7 @@ const decode = (json) => {
   // Has been decoded
   json.UTF8Encoding = false;
   return json;
-}
+};
 
 /**
  * decode polygon
@@ -71,8 +63,8 @@ const decodePolygon = (coordinate, encodeOffsets, encodeScale) => {
     let x = coordinate.charCodeAt(i) - 64;
     let y = coordinate.charCodeAt(i + 1) - 64;
     // ZigZag decoding
-    x = (x >> 1) ^ (-(x & 1));
-    y = (y >> 1) ^ (-(y & 1));
+    x = (x >> 1) ^ -(x & 1);
+    y = (y >> 1) ^ -(y & 1);
     // Delta deocding
     x += prevX;
     y += prevY;
@@ -90,38 +82,39 @@ const decodePolygon = (coordinate, encodeOffsets, encodeScale) => {
  */
 export default function (json) {
   const geoJson = decode(json);
-  const _features = echarts.util.map(echarts.util.filter(geoJson.features, function (featureObj) {
-    // Output of mapshaper may have geometry null
-    return featureObj.geometry &&
-      featureObj.properties &&
-      featureObj.geometry.coordinates.length > 0
-  }), function (featureObj) {
-    let properties = featureObj.properties;
-    let geo = featureObj.geometry;
-    let coordinates = geo.coordinates;
-    let geometries = [];
-    if (geo.type === 'Polygon') {
-      geometries.push(coordinates[0]);
+  const _features = echarts.util.map(
+    echarts.util.filter(geoJson.features, function (featureObj) {
+      // Output of mapshaper may have geometry null
+      return featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0;
+    }),
+    function (featureObj) {
+      let properties = featureObj.properties;
+      let geo = featureObj.geometry;
+      let coordinates = geo.coordinates;
+      let geometries = [];
+      if (geo.type === 'Polygon') {
+        geometries.push(coordinates[0]);
+      }
+      if (geo.type === 'MultiPolygon') {
+        echarts.util.each(coordinates, function (item) {
+          if (item[0]) {
+            geometries.push(item[0]);
+          }
+        });
+      }
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: geometries
+        },
+        properties: properties
+      };
     }
-    if (geo.type === 'MultiPolygon') {
-      echarts.util.each(coordinates, function (item) {
-        if (item[0]) {
-          geometries.push(item[0]);
-        }
-      })
-    }
-    return {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'Polygon',
-        'coordinates': geometries
-      },
-      'properties': properties
-    }
-  });
+  );
   return {
-    'type': 'FeatureCollection',
-    'crs': {},
-    'features': _features
-  }
+    type: 'FeatureCollection',
+    crs: {},
+    features: _features
+  };
 }

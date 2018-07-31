@@ -33,9 +33,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   devServer: {
     clientLogLevel: 'warning',
     historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: path.posix.join('/', 'index.html') },
-      ],
+      rewrites: [{ from: /.*/, to: path.posix.join('/', 'index.html') }]
     },
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
@@ -47,7 +45,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     publicPath: '/',
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
-      poll: false,
+      poll: false
     }
   },
   plugins: [
@@ -80,12 +78,14 @@ module.exports = new Promise((resolve, reject) => {
       // add port to devServer config
       devWebpackConfig.devServer.port = port;
       // Add FriendlyErrorsPlugin
-      devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
-        compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
-        },
-        onErrors: undefined
-      }));
+      devWebpackConfig.plugins.push(
+        new FriendlyErrorsPlugin({
+          compilationSuccessInfo: {
+            messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`]
+          },
+          onErrors: undefined
+        })
+      );
       resolve(devWebpackConfig);
     }
   });

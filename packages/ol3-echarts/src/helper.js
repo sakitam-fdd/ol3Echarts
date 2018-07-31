@@ -8,7 +8,7 @@
  * @param value
  * @returns {boolean}
  */
-const isObject = value => {
+const isObject = (value) => {
   const type = typeof value;
   return value !== null && (type === 'object' || type === 'function');
 };
@@ -27,7 +27,7 @@ const merge = (a, b) => {
       a[key] = b[key];
     }
   }
-  return a
+  return a;
 };
 
 /**
@@ -37,15 +37,19 @@ const merge = (a, b) => {
 const getTarget = (selector) => {
   let dom = (function () {
     let found;
-    return (document && /^#([\w-]+)$/.test(selector))
-      ? ((found = document.getElementById(RegExp.$1)) ? [found] : []) // eslint-disable-line
-      : Array.prototype.slice.call(/^\.([\w-]+)$/.test(selector)
-        ? document.getElementsByClassName(RegExp.$1)
-        : /^[\w-]+$/.test(selector) ? document.getElementsByTagName(selector)
-          : document.querySelectorAll(selector)
-      )
+    return document && /^#([\w-]+)$/.test(selector)
+      ? (found = document.getElementById(RegExp.$1))
+        ? [found]
+        : [] // eslint-disable-line
+      : Array.prototype.slice.call(
+        /^\.([\w-]+)$/.test(selector)
+          ? document.getElementsByClassName(RegExp.$1)
+          : /^[\w-]+$/.test(selector)
+            ? document.getElementsByTagName(selector)
+            : document.querySelectorAll(selector)
+      );
   })();
-  return dom
+  return dom;
 };
 
 /**
@@ -74,7 +78,7 @@ const bind = function (func, context) {
   let args = Array.prototype.slice.call(arguments, 2);
   return function () {
     return func.apply(context, args.concat(Array.prototype.slice.call(arguments)));
-  }
+  };
 };
 
 /**
@@ -100,11 +104,4 @@ const arrayAdd = function (array, item) {
   return array;
 };
 
-export {
-  getTarget,
-  merge,
-  isObject,
-  map,
-  bind,
-  arrayAdd
-}
+export { getTarget, merge, isObject, map, bind, arrayAdd };

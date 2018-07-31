@@ -7,17 +7,16 @@ module.exports = {
     sourceType: 'module'
   },
   env: {
-    browser: true,
+    browser: true
   },
   // https://github.com/standard/standard/blob/master/docs/RULES-en.md
   extends: 'standard',
   // required to lint *.vue files
-  plugins: [
-  ],
+  plugins: [],
   // add your custom rules here
-  'rules': {
+  rules: {
     // allow semi
-    'semi': 0,
+    semi: 0,
     // allow global require
     'global-require': 0,
     // allow paren-less arrow functions

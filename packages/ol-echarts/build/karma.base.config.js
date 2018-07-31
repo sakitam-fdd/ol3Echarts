@@ -3,9 +3,8 @@
 const path = require('path');
 const _package = require('../package.json');
 const babel = require('rollup-plugin-babel');
-const resolve = _path => path.resolve(__dirname, '../', _path)
+const resolve = (_path) => path.resolve(__dirname, '../', _path);
 module.exports = {
-
   // base path that will be used to resolve all patterns (eg. files, exclude)
   basePath: '..',
 
@@ -14,16 +13,10 @@ module.exports = {
   frameworks: ['mocha', 'expect', 'sinon', 'happen'],
 
   // list of files / patterns to load in the browser
-  files: [
-    'node_modules/openlayers/dist/ol.js',
-    'node_modules/echarts/dist/echarts.js',
-    'src/**/*.js',
-    'test/**/*.js'
-  ],
+  files: ['node_modules/openlayers/dist/ol.js', 'node_modules/echarts/dist/echarts.js', 'src/**/*.js', 'test/**/*.js'],
 
   // list of files to exclude
-  exclude: [
-  ],
+  exclude: [],
 
   // preprocess matching files before serving them to the browser
   // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -36,9 +29,7 @@ module.exports = {
     input: resolve('src/index.js'),
     file: resolve(_package.unpkg),
     format: 'umd',
-    plugins: [
-      babel()
-    ]
+    plugins: [babel()]
   },
 
   // test results reporter to use
@@ -46,8 +37,8 @@ module.exports = {
   // available reporters: https://npmjs.org/browse/keyword/karma-reporter
   reporters: ['progress', 'coverage'],
   coverageReporter: {
-    type : 'html',
-    dir : 'coverage/',
+    type: 'html',
+    dir: 'coverage/',
     instrumenterOptions: {
       istanbul: { noCompact: true }
     }
@@ -73,4 +64,4 @@ module.exports = {
   // Concurrency level
   // how many browser should be started simultaneous
   concurrency: Infinity
-}
+};

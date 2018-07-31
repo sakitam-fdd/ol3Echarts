@@ -8,8 +8,8 @@ const bar = function (options, serie, coordinateSystem) {
       let coorPixel = coordinateSystem.dataToPoint(options.series[index].coordinates);
       gri.left = coorPixel[0] - parseFloat(gri.width) / 2;
       gri.top = coorPixel[1] - parseFloat(gri.height) / 2;
-      return gri
-    })
+      return gri;
+    });
   }
   return serie;
 };

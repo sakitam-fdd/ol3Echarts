@@ -4,6 +4,7 @@
 # User-specific stuff:
 .idea/
 node_modules/
+packages/**/node_modules
 coverage/
 npm-debug.log*
 yarn-debug.log*

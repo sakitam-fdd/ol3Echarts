@@ -13,11 +13,7 @@ module.exports = {
     libraryTarget: 'var'
   },
   resolve: {
-    extensions: [
-      '.js',
-      '.jsx',
-      '.json',
-    ]
+    extensions: ['.js', '.jsx', '.json']
   },
   module: {
     rules: [
@@ -25,34 +21,30 @@ module.exports = {
         test: /\.(js|jsx)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
-        include: [
-          utils.resolve('preview')
-        ],
+        include: [utils.resolve('preview')],
         options: {
           formatter: require('eslint-friendly-formatter'),
-          emitWarning: true,
-        },
+          emitWarning: true
+        }
       },
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
-        include: [
-          utils.resolve('preview'),
-          utils.resolve('node_modules/webpack-dev-server/client')
-        ],
+        include: [utils.resolve('preview'), utils.resolve('node_modules/webpack-dev-server/client')],
         options: {
           cacheDirectory: true,
           presets: [
             [
-              "env", {
-              "targets": {
-                "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
-              },
-              "modules": false
-            }
+              'env',
+              {
+                targets: {
+                  browsers: ['> 1%', 'last 2 versions', 'not ie <= 8']
+                },
+                modules: false
+              }
             ],
-            "stage-2",
-            "react"
+            'stage-2',
+            'react'
           ],
           plugins: [
             'react-hot-loader/babel',
@@ -63,44 +55,44 @@ module.exports = {
             [
               'transform-runtime',
               {
-                'polyfill': false
+                polyfill: false
               }
             ],
             [
               'import',
               {
-                'libraryName': 'antd',
-                'style': false
+                libraryName: 'antd',
+                style: false
               }
             ]
           ]
-        },
+        }
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: utils.assetsPath('img/[name].[hash:7].[ext]'),
-        },
+          name: utils.assetsPath('img/[name].[hash:7].[ext]')
+        }
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: utils.assetsPath('media/[name].[hash:7].[ext]'),
-        },
+          name: utils.assetsPath('media/[name].[hash:7].[ext]')
+        }
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: utils.assetsPath('fonts/[name].[hash:7].[ext]'),
-        },
+          name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+        }
       }
-    ],
+    ]
   },
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
@@ -114,4 +106,4 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty'
   }
-}
+};

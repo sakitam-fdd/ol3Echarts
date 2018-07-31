@@ -76,8 +76,8 @@ class EChartsLayer extends Object {
   appendTo (map) {
     if (map && map instanceof Map) {
       this.$Map = map;
-      this.$Map.once('postrender', event => {
-        this.render()
+      this.$Map.once('postrender', (event) => {
+        this.render();
       });
       this.$Map.renderSync();
       this._unRegisterEvents();
@@ -102,8 +102,8 @@ class EChartsLayer extends Object {
    */
   setChartOptions (options = {}) {
     this.$chartOptions = options;
-    this.$Map.once('postrender', event => {
-      this.render()
+    this.$Map.once('postrender', (event) => {
+      this.render();
     });
     this.$Map.renderSync();
     return this;
@@ -212,7 +212,7 @@ class EChartsLayer extends Object {
    * @private
    */
   _createLayerContainer (map, options) {
-    const container = this.$container = document.createElement('div');
+    const container = (this.$container = document.createElement('div'));
     container.style.position = 'absolute';
     container.style.top = '0px';
     container.style.left = '0px';
@@ -262,7 +262,7 @@ class EChartsLayer extends Object {
       this.$chart.setOption(this.reConverData(this.$chartOptions), false);
       if (this._incremental && this._incremental.length > 0) {
         for (let i = 0; i < this._incremental.length; i++) {
-          this.appendData(this._incremental[i], false)
+          this.appendData(this._incremental[i], false);
         }
       }
     }

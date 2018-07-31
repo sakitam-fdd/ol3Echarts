@@ -1,6 +1,3 @@
 import pie from './pie';
 import bar from './bar';
-export {
-  pie,
-  bar
-}
+export { pie, bar };

@@ -6,7 +6,7 @@ const cjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const { eslint } = require('rollup-plugin-eslint');
-const friendlyFormatter = require("eslint-friendly-formatter");
+const friendlyFormatter = require('eslint-friendly-formatter');
 const _package = require('../package.json');
 
 const time = new Date();
@@ -17,7 +17,7 @@ const banner = `/*!\n * author: ${_package.author}
  * LICENSE: ${_package.license}
  * (c) 2017-${year} ${_package.homepage}\n */`;
 
-const resolve = _path => path.resolve(__dirname, '../', _path)
+const resolve = (_path) => path.resolve(__dirname, '../', _path);
 
 const genConfig = (opts) => {
   const config = {
@@ -39,12 +39,7 @@ const genConfig = (opts) => {
         }),
         cjs()
       ],
-      external: [
-        'echarts',
-        'ol',
-        'ol/proj',
-        'ol/Observable'
-      ]
+      external: ['echarts', 'openlayers']
     },
     output: {
       file: opts.file,
@@ -56,30 +51,32 @@ const genConfig = (opts) => {
         echarts: 'echarts'
       }
     }
-  }
+  };
   if (opts.env) {
-    config.input.plugins.unshift(replace({
-      'process.env.NODE_ENV': JSON.stringify(opts.env)
-    }))
+    config.input.plugins.unshift(
+      replace({
+        'process.env.NODE_ENV': JSON.stringify(opts.env)
+      })
+    );
   }
-  return config
-}
+  return config;
+};
 
-const handleMinEsm = name => {
+const handleMinEsm = (name) => {
   if (typeof name === 'string') {
-    let arr_ = name.split('.')
-    let arrTemp = []
+    let arr_ = name.split('.');
+    let arrTemp = [];
     arr_.forEach((item, index) => {
       if (index < arr_.length - 1) {
-        arrTemp.push(item)
+        arrTemp.push(item);
       } else {
-        arrTemp.push('min')
-        arrTemp.push(item)
+        arrTemp.push('min');
+        arrTemp.push(item);
       }
-    })
-    return arrTemp.join('.')
+    });
+    return arrTemp.join('.');
   }
-}
+};
 
 module.exports = [
   {
