@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
 import 'ol/ol.css';
 import './index.scss';
-import EchartsLayer from '../../';
+import EChartsLayer from '../../';
 
 class Index extends React.Component {
   constructor (props, context) {
@@ -892,14 +892,15 @@ class Index extends React.Component {
           zlevel: 1
         }]
     };
+    const echartslayer = new EChartsLayer(option, {
+      hideOnMoving: false,
+      hideOnZooming: false,
+      forcedPrecomposeRerender: true
+    });
+    echartslayer.appendTo(this.map);
     window.setTimeout(() => {
-      const echartslayer = new EchartsLayer(option, {
-        hideOnMoving: false,
-        hideOnZooming: false,
-        forcedPrecomposeRerender: true
-      });
-      echartslayer.appendTo(this.map);
-    }, 2 * 1000)
+      echartslayer.remove();
+    }, 10 * 1000)
   }
 
   setRef = (x = null) => {

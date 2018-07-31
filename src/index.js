@@ -1,3 +1,4 @@
+import { unByKey } from 'ol/Observable';
 import { Object, Map } from 'ol';
 import echarts from 'echarts';
 import { getTarget, merge, isObject, map, bind, arrayAdd } from './helper';
@@ -13,7 +14,7 @@ const _options = {
   convertTypes: ['pie', 'line', 'bar']
 };
 
-class EchartsLayer extends Object {
+class EChartsLayer extends Object {
   static getTarget = getTarget;
   static merge = merge;
   static map = map;
@@ -77,7 +78,7 @@ class EchartsLayer extends Object {
       this.$Map = map;
       this.$Map.once('postrender', event => {
         this.render()
-      }, this);
+      });
       this.$Map.renderSync();
       this._unRegisterEvents();
       this._registerEvents();
@@ -103,7 +104,7 @@ class EchartsLayer extends Object {
     this.$chartOptions = options;
     this.$Map.once('postrender', event => {
       this.render()
-    }, this);
+    });
     this.$Map.renderSync();
     return this;
   }
@@ -343,17 +344,18 @@ class EchartsLayer extends Object {
    * @private
    */
   _registerEvents () {
+    // https://github.com/openlayers/openlayers/issues/7284
     const Map = this.$Map;
     const view = Map.getView();
     if (this.$options.forcedPrecomposeRerender) {
-      Map.on('precompose', this.reRender, this);
+      this.precomposeListener_ = Map.on('precompose', this.reRender.bind(this));
     }
-    Map.on('change:size', this.onResize, this);
-    view.on('change:resolution', this.onZoomEnd, this);
-    view.on('change:center', this.onCenterChange, this);
-    view.on('change:rotation', this.onDragRotateEnd, this);
-    Map.on('movestart', this.onMoveStart, this);
-    Map.on('moveend', this.onMoveEnd, this);
+    this.sizeChangeListener_ = Map.on('change:size', this.onResize.bind(this));
+    this.resolutionListener_ = view.on('change:resolution', this.onZoomEnd.bind(this));
+    this.centerChangeListener_ = view.on('change:center', this.onCenterChange.bind(this));
+    this.rotationListener_ = view.on('change:rotation', this.onDragRotateEnd.bind(this));
+    this.movestartListener_ = Map.on('movestart', this.onMoveStart.bind(this));
+    this.moveendListener_ = Map.on('moveend', this.onMoveEnd.bind(this));
   }
 
   /**
@@ -361,17 +363,32 @@ class EchartsLayer extends Object {
    * @private
    */
   _unRegisterEvents () {
-    const Map = this.$Map;
-    const view = Map.getView();
-    Map.un('change:size', this.onResize, this);
+    // const Map = this.$Map;
+    // const view = Map.getView();
+    unByKey(this.sizeChangeListener_);
+    // Map.un('change:size', this.onResize.bind(this));
     if (this.$options.forcedPrecomposeRerender) {
-      Map.un('precompose', this.reRender, this);
+      unByKey(this.precomposeListener_);
+      // Map.un('precompose', this.reRender.bind(this));
     }
-    view.un('change:resolution', this.onZoomEnd, this);
-    view.un('change:center', this.onCenterChange, this);
-    view.un('change:rotation', this.onDragRotateEnd, this);
-    Map.un('movestart', this.onMoveStart, this);
-    Map.un('moveend', this.onMoveEnd, this);
+    unByKey(this.resolutionListener_);
+    unByKey(this.centerChangeListener_);
+    unByKey(this.rotationListener_);
+    unByKey(this.movestartListener_);
+    unByKey(this.moveendListener_);
+    this.sizeChangeListener_ = null;
+    this.precomposeListener_ = null;
+    this.sizeChangeListener_ = null;
+    this.resolutionListener_ = null;
+    this.centerChangeListener_ = null;
+    this.rotationListener_ = null;
+    this.movestartListener_ = null;
+    this.moveendListener_ = null;
+    // view.un('change:resolution', this.onZoomEnd.bind(this));
+    // view.un('change:center', this.onCenterChange.bind(this));
+    // view.un('change:rotation', this.onDragRotateEnd.bind(this));
+    // Map.un('movestart', this.onMoveStart.bind(this));
+    // Map.un('moveend', this.onMoveEnd.bind(this));
   }
 
   /**
@@ -423,7 +440,6 @@ class EchartsLayer extends Object {
    * render
    */
   render () {
-    console.log(this)
     if (!this.$container) {
       this._createLayerContainer(this.$Map, this.$options);
       this._resizeContainer();
@@ -448,4 +464,4 @@ class EchartsLayer extends Object {
   }
 }
 
-export default EchartsLayer
+export default EChartsLayer;

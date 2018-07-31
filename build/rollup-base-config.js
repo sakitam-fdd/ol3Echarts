@@ -42,7 +42,8 @@ const genConfig = (opts) => {
       external: [
         'echarts',
         'ol',
-        'ol/proj'
+        'ol/proj',
+        'ol/Observable'
       ]
     },
     output: {
