@@ -47,7 +47,7 @@ const genConfig = (opts) => {
       banner,
       name: _package.namespace,
       globals: {
-        openlayers: 'ol',
+        ol: 'ol',
         echarts: 'echarts'
       }
     }

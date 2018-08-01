@@ -38,7 +38,7 @@ const getTarget = (selector) => {
   let dom = (function () {
     let found;
     return document && /^#([\w-]+)$/.test(selector)
-      ? (found = document.getElementById(RegExp.$1))
+      ? (found = document.getElementById(RegExp.$1)) // eslint-disable-line
         ? [found]
         : [] // eslint-disable-line
       : Array.prototype.slice.call(

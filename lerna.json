@@ -4,8 +4,13 @@
     "packages/*"
   ],
   "version": "independent",
-  "npmClient": "npm",
+  "npmClient": "yarn",
   "useWorkspaces": true,
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": ["--no-lockfile"]
+    }
+  },
   "changelog": {
     "labels": {
       "tag: add": "🌟 新增",
@@ -16,6 +21,6 @@
       "tag: publish": "📖 发布",
       "tag: abandon": "🙅 废弃"
     },
-    "cacheDir": "changelog"
+    "cacheDir": ".changelog"
   }
 }
