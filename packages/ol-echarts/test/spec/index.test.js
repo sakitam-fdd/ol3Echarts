@@ -1,4 +1,10 @@
 /* eslint-env es6 */
+import echarts from 'echarts';
+import { Map as OlMap, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+import 'ol/ol.css';
+import EChartsLayer from 'ol-echarts';
 describe('indexSpec', () => {
   var container, Map;
   beforeEach(function () {
@@ -6,20 +12,21 @@ describe('indexSpec', () => {
     container.style.width = '400px';
     container.style.height = '300px';
     document.body.appendChild(container);
-    Map = new ol.Map({
+    Map = new OlMap({
       target: container,
-      layers: [
-        new ol.layer.Tile({
-          preload: 4,
-          source: new ol.source.OSM()
-        })
-      ],
-      loadTilesWhileAnimating: true,
-      view: new ol.View({
+      view: new View({
+        center: [113.53450137499999, 34.44104525],
         projection: 'EPSG:4326',
-        center: [120.74758724751435, 30.760422266949334],
-        zoom: 8
-      })
+        zoom: 5 // resolution
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline' +
+            'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+          })
+        })
+      ]
     });
   });
 
@@ -29,16 +36,16 @@ describe('indexSpec', () => {
 
   describe('creat echarts layer', () => {
     it('creat dom content', () => {
-      const echartslayer = new ol3Echarts(getOptions());
+      const echartslayer = new EChartsLayer(getOptions());
       echartslayer.appendTo(Map);
-      expect(echartslayer instanceof ol3Echarts).to.be.ok();
+      expect(echartslayer instanceof EChartsLayer).to.be.ok();
     });
   });
 
   describe('echarts layer state', () => {
     let echartslayer;
     it('_isVisible', () => {
-      echartslayer = new ol3Echarts(getOptions());
+      echartslayer = new EChartsLayer(getOptions());
       echartslayer.appendTo(Map);
       let vis = echartslayer._isVisible();
       expect(vis).to.be.eql(true);
@@ -59,7 +66,7 @@ describe('indexSpec', () => {
 
   describe('ol.Map', () => {
     it('getMap', () => {
-      const echartslayer = new ol3Echarts(getOptions());
+      const echartslayer = new EChartsLayer(getOptions());
       echartslayer.appendTo(Map);
       expect(echartslayer.getMap()).to.be.eql(Map);
     });
@@ -68,7 +75,7 @@ describe('indexSpec', () => {
   describe('charts option', () => {
     let echartslayer;
     it('setChartOptions', () => {
-      echartslayer = new ol3Echarts(getOptions());
+      echartslayer = new EChartsLayer(getOptions());
       echartslayer.appendTo(Map);
       expect(echartslayer._isVisible() && echartslayer._isRegistered).to.be.eql(true);
     });
@@ -82,7 +89,7 @@ describe('indexSpec', () => {
   describe('charts action', () => {
     let echartslayer;
     it('onResize', () => {
-      echartslayer = new ol3Echarts(getOptions());
+      echartslayer = new EChartsLayer(getOptions());
       echartslayer.appendTo(Map);
       let size = Map.getSize();
       Map.setSize([size[0] + 100, size[1] + 100]);
@@ -121,9 +128,9 @@ describe('indexSpec', () => {
 
   describe('remove charts', () => {
     it('remove', () => {
-      const echartslayer = new ol3Echarts(getOptions());
+      const echartslayer = new EChartsLayer(getOptions());
       echartslayer.appendTo(Map);
-      expect(echartslayer instanceof ol3Echarts).to.be.ok();
+      expect(echartslayer instanceof EChartsLayer).to.be.ok();
       expect(echartslayer.getMap()).to.be.eql(Map);
       echartslayer.remove();
       expect(echartslayer.getMap()).to.be.eql(undefined);
@@ -132,7 +139,7 @@ describe('indexSpec', () => {
 
   it('throws an error when creating without new operator', () => {
     expect(() => {
-      ol3Echarts.appendTo();
+      EChartsLayer.appendTo();
     }).to.throwException();
   });
 });

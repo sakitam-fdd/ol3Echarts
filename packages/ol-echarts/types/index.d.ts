@@ -1,1 +1,1 @@
-export class EchartsLayer {}
+export default class EChartsLayer {};

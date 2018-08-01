@@ -14,7 +14,8 @@
     "prettify": "prettier --write packages/ol-echarts/src/**/*.js packages/ol3-echarts/src/**/*.js",
     "bootstrap": "lerna bootstrap",
     "publish-packages": "lerna publish --conventional-commits",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "website": "webpack-dev-server --inline --config build/webpack.preview.conf.js"
   },
   "lint-staged": {
     "*.{js}": [
@@ -22,6 +23,10 @@
       "eslint --fix",
       "git add"
     ]
+  },
+  "dependencies": {
+    "echarts": "^4.1.0",
+    "ol": "^5.1.3"
   },
   "devDependencies": {
     "eslint": "^4.16.0",
@@ -72,7 +77,56 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-watch": "^4.3.1",
     "sinon": "^3.2.1",
-    "uglify-js": "^3.4.6"
+    "uglify-js": "^3.4.6",
+    "style-loader": "^0.21.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.16.3",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-merge": "^4.1.3",
+    "eslint-tinker": "^0.5.0",
+    "file-loader": "^1.1.11",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "history": "^4.7.2",
+    "html-webpack-plugin": "^4.0.0-alpha",
+    "node-sass": "^4.9.1",
+    "portfinder": "^1.0.13",
+    "postcss": "^6.0.23",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^2.0.8",
+    "postcss-url": "^7.2.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-hot-loader": "^4.3.0",
+    "react-router-dom": "^4.3.1",
+    "rimraf": "^2.6.2",
+    "sass-loader": "^7.0.3",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "optimize-css-assets-webpack-plugin": "^3.2.0",
+    "shx": "^0.3.2",
+    "autoprefixer": "^9.0.1",
+    "babel-plugin-import": "^1.8.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.13",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "copy-webpack-plugin": "^4.5.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0"
+
   },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
   "license": "MIT"
 }

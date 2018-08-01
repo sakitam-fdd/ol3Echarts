@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
 import 'ol/ol.css';
 import './index.scss';
-import EChartsLayer from '../../';
+import EChartsLayer from 'ol-echarts';
 
 class Index extends React.Component {
   constructor (props, context) {

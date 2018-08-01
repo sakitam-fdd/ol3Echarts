@@ -13,7 +13,7 @@ module.exports = {
   frameworks: ['mocha', 'expect', 'sinon', 'happen'],
 
   // list of files / patterns to load in the browser
-  files: ['node_modules/openlayers/dist/ol.js', 'node_modules/echarts/dist/echarts.js', 'src/**/*.js', 'test/**/*.js'],
+  files: ['../../node_modules/ol/**/*.js', 'node_modules/echarts/dist/echarts.js', 'src/**/*.js', 'test/**/*.js'],
 
   // list of files to exclude
   exclude: [],
@@ -21,6 +21,7 @@ module.exports = {
   // preprocess matching files before serving them to the browser
   // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
   preprocessors: {
+    '../../node_modules/ol/**/*.js': ['rollup'],
     'src/**/*.js': ['rollup', 'coverage']
   },
 
