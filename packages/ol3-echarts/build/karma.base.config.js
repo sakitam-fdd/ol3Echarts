@@ -13,7 +13,7 @@ module.exports = {
   frameworks: ['mocha', 'expect', 'sinon', 'happen'],
 
   // list of files / patterns to load in the browser
-  files: ['node_modules/openlayers/dist/ol.js', 'node_modules/echarts/dist/echarts.js', 'src/**/*.js', 'test/**/*.js'],
+  files: ['../../node_modules/openlayers/dist/ol.js', '../../node_modules/echarts/dist/echarts.js', 'src/**/*.js', 'test/**/*.js'],
 
   // list of files to exclude
   exclude: [],

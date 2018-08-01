@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "lerna run dev",
     "build": "lerna run build",
-    "release": "",
+    "karma.test": "lerna run karma.test",
+    "karma.cover": "lerna run karma.cover",
+    "karma.tdd": "lerna run karma.tdd",
     "clean": "lerna clean",
     "lint": "eslint --fix --ext .js,.jsx packages/ol-echarts/src packages/ol3-echarts/src",
     "prettify": "prettier --write packages/ol-echarts/src/**/*.js packages/ol3-echarts/src/**/*.js",
