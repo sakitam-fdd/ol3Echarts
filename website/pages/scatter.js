@@ -2,8 +2,6 @@ import * as React from 'react';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
-import 'ol/ol.css';
-import './index.scss';
 import EChartsLayer from 'ol-echarts';
 
 class Index extends React.Component {

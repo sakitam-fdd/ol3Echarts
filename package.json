@@ -15,7 +15,8 @@
     "bootstrap": "lerna bootstrap",
     "publish-packages": "lerna publish --conventional-commits",
     "precommit": "lint-staged",
-    "website": "webpack-dev-server --inline --config build/webpack.preview.conf.js"
+    "website": "webpack-dev-server --inline --config build/webpack.preview.conf.js",
+    "generate": "node build/webpack.generate.conf.js"
   },
   "lint-staged": {
     "*.{js}": [

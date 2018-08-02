@@ -20,7 +20,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     })
   },
   output: {
-    path: path.resolve(__dirname, '../.preview'),
+    path: path.resolve(__dirname, '../_site'),
     filename: '[name].js',
     publicPath: '/',
     library: undefined,

@@ -2,7 +2,7 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 exports.assetsPath = function (_path) {
-  return path.posix.join('../.preview', _path);
+  return path.posix.join('../_site', _path);
 };
 
 exports.cssLoaders = function (options) {

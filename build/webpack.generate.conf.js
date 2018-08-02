@@ -24,10 +24,10 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
   },
   devtool: false,
   output: {
-    path: utils.resolve(__dirname, '../../demoDist'),
+    path: utils.resolve(__dirname, '../../_site'),
     filename: utils.assetsPath('scripts/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('scripts/[id].[chunkhash].js'),
-    publicPath: './',
+    publicPath: './_site',
     library: undefined,
     libraryTarget: 'var',
     umdNamedDefine: false
@@ -57,7 +57,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     }),
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: path.resolve(__dirname, '../demoDist/index.html'),
+      filename: path.resolve(__dirname, '../_site/index.html'),
       template: 'index.html',
       inject: true,
       minify: {
@@ -101,7 +101,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
 });
 
 module.exports = new Promise((resolve, reject) => {
-  rm(path.join(path.resolve(__dirname, '../demoDist')), err => {
+  rm(path.join(path.resolve(__dirname, '../_site')), err => {
     if (err) throw err;
     resolve(webpackConfig)
   })

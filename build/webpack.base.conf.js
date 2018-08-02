@@ -2,12 +2,12 @@ const path = require('path');
 const utils = require('./utils');
 
 module.exports = {
-  context: path.resolve(__dirname, '..'),
+  context: path.resolve(__dirname, '../'),
   entry: {
     app: './website/index.js'
   },
   output: {
-    path: path.resolve(__dirname, '../.preview'),
+    path: path.resolve(__dirname, '../_site'),
     filename: '[name].js',
     publicPath: '/',
     libraryTarget: 'var'
