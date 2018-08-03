@@ -16,7 +16,7 @@
     "publish-packages": "lerna publish --conventional-commits",
     "precommit": "lint-staged",
     "website": "webpack-dev-server --inline --config build/webpack.preview.conf.js",
-    "generate": "node build/webpack.generate.conf.js"
+    "generate": "webpack --config build/webpack.generate.conf.js"
   },
   "lint-staged": {
     "*.{js}": [
@@ -102,8 +102,9 @@
     "react-router-dom": "^4.3.1",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.0.3",
+    "mini-css-extract-plugin": "^0.4.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "optimize-css-assets-webpack-plugin": "^3.2.0",
+    "optimize-css-assets-webpack-plugin": "^4.0.3",
     "shx": "^0.3.2",
     "autoprefixer": "^9.0.1",
     "babel-plugin-import": "^1.8.0",

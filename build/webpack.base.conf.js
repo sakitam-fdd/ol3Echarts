@@ -7,7 +7,7 @@ module.exports = {
     app: './website/index.js'
   },
   output: {
-    path: path.resolve(__dirname, '../_site'),
+    path: utils.resolve('_site'),
     filename: '[name].js',
     publicPath: '/',
     libraryTarget: 'var'

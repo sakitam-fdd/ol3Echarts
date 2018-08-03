@@ -6,7 +6,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -24,10 +24,10 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
   },
   devtool: false,
   output: {
-    path: utils.resolve(__dirname, '../../_site'),
+    path: utils.resolve('_site'),
     filename: utils.assetsPath('scripts/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('scripts/[id].[chunkhash].js'),
-    publicPath: './_site',
+    publicPath: './',
     library: undefined,
     libraryTarget: 'var',
     umdNamedDefine: false
@@ -57,8 +57,8 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     }),
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: path.resolve(__dirname, '../_site/index.html'),
-      template: 'index.html',
+      filename: 'index.html',
+      template: 'website/index.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -68,7 +68,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'auto'
     }),
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
@@ -76,7 +76,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     // copy custom static assets
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, '../static'),
+        from: 'static',
         to: 'static',
         ignore: ['.*']
       }
@@ -101,7 +101,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
 });
 
 module.exports = new Promise((resolve, reject) => {
-  rm(path.join(path.resolve(__dirname, '../_site')), err => {
+  rm(path.join(utils.resolve('_site')), err => {
     if (err) throw err;
     resolve(webpackConfig)
   })

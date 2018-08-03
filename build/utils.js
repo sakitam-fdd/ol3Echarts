@@ -1,8 +1,8 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require('mini-css-extract-plugin');
 
 exports.assetsPath = function (_path) {
-  return path.posix.join('../_site', _path);
+  return path.posix.join('static', _path);
 };
 
 exports.cssLoaders = function (options) {
@@ -36,10 +36,10 @@ exports.cssLoaders = function (options) {
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
-      return ExtractTextPlugin.extract({
-        use: loaders,
-        fallback: 'style-loader'
-      });
+      return [{
+        loader: ExtractTextPlugin.loader,
+        options: {}
+      }].concat(loaders)
     } else {
       return ['style-loader'].concat(loaders);
     }
