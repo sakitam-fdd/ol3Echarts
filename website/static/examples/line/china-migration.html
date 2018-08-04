@@ -17,11 +17,11 @@
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="../../assets/scripts/common.js"></script>
+<script src="../ajax.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap('map', {
+  var map = new HMap('map', {
     controls: {
       loading: true,
       zoomSlider: true,
@@ -70,79 +70,81 @@
     hideOnMoving: true,
     hideOnZooming: true
   });
-  echartslayer.appendTo(Maps.getMap());
-  $fetch.get('../../data/china-migration.json').then(function (geoCoord) {
-    $fetch.get('../../data/china-airline.json').then(function (res) {
-      var data = res.data;
-      var option = {
-        backgroundColor: 'transparent',
-        title: {
-          text: '春节人口迁徙',
-          x: 'center',
-          y: 'top',
-          textStyle: {
-            color: 'white'
-          }
-        },
-        legend: {
-          show: true,
-          selected: {},
-          x: 'left',
-          orient: 'vertical',
-          textStyle: {
-            color: 'white'
-          },
-          data: []
-        },
-        series: [
-          {
-            name: "Migration",
-            type: 'lines',
-            effect: {
-              constantSpeed: 30,
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/china-migration.json', function (geoCoord) {
+    if (geoCoord) {
+      getJSON('../../json/china-airline.json', function (data) {
+        if (data) {
+          var option = {
+            backgroundColor: 'transparent',
+            title: {
+              text: '春节人口迁徙',
+              x: 'center',
+              y: 'top',
+              textStyle: {
+                color: 'white'
+              }
+            },
+            legend: {
               show: true,
-              trailLength: 1,
-              symbolSize: 1.5,
-              color: 'rgba(204, 246, 255, 1)',
+              selected: {},
+              x: 'left',
+              orient: 'vertical',
+              textStyle: {
+                color: 'white'
+              },
+              data: []
             },
+            series: [
+              {
+                name: "Migration",
+                type: 'lines',
+                effect: {
+                  constantSpeed: 30,
+                  show: true,
+                  trailLength: 1,
+                  symbolSize: 1.5,
+                  color: 'rgba(204, 246, 255, 1)',
+                },
 
-            itemStyle: {
-              normal: {
-                lineStyle: {
-                  color: 'rgba(2, 166, 253, 1)',
-                  type: 'solid',
-                  width: 0.5,
-                  opacity: 0.4
-                }
+                itemStyle: {
+                  normal: {
+                    lineStyle: {
+                      color: 'rgba(2, 166, 253, 1)',
+                      type: 'solid',
+                      width: 0.5,
+                      opacity: 0.4
+                    }
+                  }
+                },
+                data: []
+              }, {
+                symbol: 'circle',
+                type: 'effectScatter',
+                symbolSize: 1.5,
+                itemStyle: {
+                  normal: {
+                    color: 'rgba(255, 0, 0, 1)'
+                  }
+                },
+                data: []
               }
-            },
-            data: []
-          }, {
-            symbol: 'circle',
-            type: 'effectScatter',
-            symbolSize: 1.5,
-            itemStyle: {
-              normal: {
-                color: 'rgba(255, 0, 0, 1)'
-              }
-            },
-            data: []
-          }
-        ]
-      };
-      data.allLine.sort(function(a, b) {
-        return b.num - a.num
-      }).slice(0, 3000).map(function(line) {
-        option.series[0].data.push(getLineCoord(geoCoord.data, line.start, line.end));
-      });
-
-      option.series[1].data = data.topCityOut.map(function(point) {
-        return {
-          value: getGeoCoord(geoCoord.data, point.name)
+            ]
+          };
+          data.allLine.sort(function(a, b) {
+            return b.num - a.num
+          }).slice(0, 3000).map(function(line) {
+            option.series[0].data.push(getLineCoord(geoCoord, line.start, line.end));
+          });
+          option.series[1].data = data.topCityOut.map(function(point) {
+            return {
+              value: getGeoCoord(geoCoord, point.name)
+            }
+          });
+          echartslayer.setChartOptions(option);
         }
       });
-      echartslayer.setChartOptions(option);
-    });
+    }
   });
 
   // 经纬度获取

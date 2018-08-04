@@ -17,11 +17,11 @@
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="../../assets/scripts/common.js"></script>
+<script src="../ajax.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap('map', {
+  var map = new HMap('map', {
     controls: {
       loading: true,
       zoomSlider: true,
@@ -70,59 +70,60 @@
     hideOnMoving: true,
     hideOnZooming: true
   });
-  echartslayer.appendTo(Maps.getMap());
-  $fetch.get('../../data/traffic.json').then(function (res) {
-    // 配置项
-    var option = {
-      visualMap: {
-        type: "piecewise",
-        left: 'right',
-        top: 'top',
-        /*            pieces: [
-         {min: 15}, // 不指定 max，表示 max 为无限大（Infinity）。
-         {min: 12, max: 15},
-         {min: 9, max: 12},
-         {min: 6, max: 9},
-         {min: 3, max: 6},
-         {max: 3}     // 不指定 min，表示 min 为无限大（-Infinity）。
-         ],*/
-        min: 0,
-        max: 15,
-        splitNumber: 5,
-        maxOpen: true,
-        color: ['red', 'yellow', 'green']
-      },
-      tooltip: {
-        formatter: function (params, ticket, callback) {
-          return "拥堵指数:" + params.value;
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/traffic.json', function (data) {
+    if (data) {
+      // 配置项
+      var option = {
+        visualMap: {
+          type: "piecewise",
+          left: 'right',
+          top: 'top',
+          /*            pieces: [
+           {min: 15}, // 不指定 max，表示 max 为无限大（Infinity）。
+           {min: 12, max: 15},
+           {min: 9, max: 12},
+           {min: 6, max: 9},
+           {min: 3, max: 6},
+           {max: 3}     // 不指定 min，表示 min 为无限大（-Infinity）。
+           ],*/
+          min: 0,
+          max: 15,
+          splitNumber: 5,
+          maxOpen: true,
+          color: ['red', 'yellow', 'green']
         },
-        trigger: 'item'
-      },
-      series: [
-        {
-          type: 'lines',
-          polyline: true,
-          lineStyle: {
-            normal: {
-              opacity: 1,
-              width: 4
-            },
-            emphasis: {
-              width: 6
-            }
+        tooltip: {
+          formatter: function (params, ticket, callback) {
+            return "拥堵指数:" + params.value;
           },
-          effect: {
-            show: true,
-            symbolSize: 2,
-            color: "white"
+          trigger: 'item'
+        },
+        series: [
+          {
+            type: 'lines',
+            polyline: true,
+            lineStyle: {
+              normal: {
+                opacity: 1,
+                width: 4
+              },
+              emphasis: {
+                width: 6
+              }
+            },
+            effect: {
+              show: true,
+              symbolSize: 2,
+              color: "white"
+            }
           }
-        }
-      ]
-    };
-    option.series[0].data = convertData(res['data']);
-    echartslayer.setChartOptions(option);
+        ]
+      };
+      option.series[0].data = convertData(data);
+      echartslayer.setChartOptions(option);
+    }
   });
-
   // 处理数据
   function convertData (sourceData) {
     return [].concat.apply([], sourceData.map(function (busLine, index) {

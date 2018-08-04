@@ -76,7 +76,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     // copy custom static assets
     new CopyWebpackPlugin([
       {
-        from: 'static',
+        from: 'website/static',
         to: 'static',
         ignore: ['.*']
       }

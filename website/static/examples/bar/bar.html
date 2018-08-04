@@ -25,7 +25,7 @@
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap('map', {
+  var map = new HMap('map', {
     controls: {
       loading: true,
       zoomSlider: true,
@@ -179,7 +179,7 @@
   })
 
   var echartslayer = new ol3Echarts(options);
-  echartslayer.appendTo(Maps.getMap());
+  echartslayer.appendTo(map.getMap());
 </script>
 </body>
 </html>

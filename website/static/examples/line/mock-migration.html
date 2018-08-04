@@ -20,7 +20,7 @@
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap('map', {
+  var map = new HMap('map', {
     controls: {
       loading: true,
       zoomSlider: true,
@@ -66,7 +66,7 @@
     ]
   });
   var echartslayer = new ol3Echarts(getOption());
-  echartslayer.appendTo(Maps.getMap());
+  echartslayer.appendTo(map.getMap());
   function getOption () {
     var geoCoordMap = {
       '上海': [121.4648, 31.2891],

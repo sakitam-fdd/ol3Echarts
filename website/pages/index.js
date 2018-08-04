@@ -1,22 +1,9 @@
 import React, { Component } from 'react'; // eslint-disable-line
 import { Link } from 'react-router-dom'; // eslint-disable-line
 import Header from './Header'; // eslint-disable-line
+import { getJSON } from '../helper';
 import magnifier from '../assets/images/magnifier.png';
 import '../assets/style/index.scss';
-
-function getJSON (url, callback) {
-  const xhr = new XMLHttpRequest();
-  xhr.responseType = 'json';
-  xhr.open('get', url, true);
-  xhr.onload = function () {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      callback(xhr.response);
-    } else {
-      throw new Error(xhr.statusText);
-    }
-  };
-  xhr.send();
-}
 
 class Index extends Component {
   constructor (props, context) {
@@ -70,7 +57,7 @@ class Index extends Component {
                   </div>
                   <div>基本示例</div>
                 </div>
-                <Link to={item.url}>
+                <Link to={item.link}>
                   <div className="chart_magnifier_right">
                     <div>
                       <img src={magnifier} />

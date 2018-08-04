@@ -1,4 +1,3 @@
-import 'ol/ol.css';
 import * as React from 'react'; // eslint-disable-line
 import * as ReactDOM from 'react-dom'; // eslint-disable-line
 import { Router } from 'react-router-dom'; // eslint-disable-line
