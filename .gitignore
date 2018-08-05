@@ -11,4 +11,5 @@ yarn-debug.log*
 yarn-error.log*
 /packages/ol-echarts/dist/
 /packages/ol3-echarts/dist/
+/packages/canvas-render/dist/
 _site/

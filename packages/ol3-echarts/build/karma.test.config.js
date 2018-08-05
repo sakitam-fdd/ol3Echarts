@@ -7,7 +7,7 @@ const base = require('./karma.base.config.js');
 module.exports = function (config) {
   config.set(
     Object.assign(base, {
-      browsers: ['Firefox'],
+      browsers: ['Chrome'],
       reporters: ['mocha'],
       // level of logging
       // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
