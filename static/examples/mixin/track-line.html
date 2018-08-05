@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>杭州热门步行路线</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../ajax.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<!--<script src="../../../dist/ol3Echarts.js"></script>-->
+<script>
+  var map = new HMap({
+    target: 'map',
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false,
+      attribution: false
+    },
+    view: {
+      center: [120.13066322374, 30.240018034923],
+      projection: 'EPSG:4326',
+      zoom: 14, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'TileXYZ',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: false
+  });
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/tracks.json', function (data) {
+    var lines = data.map(function (track) {
+      return {
+        coords: track.map(function (seg, idx) {
+          return seg.coord;
+        })
+      };
+    })
+    var option = {
+      title: {
+        text: '杭州热门步行路线',
+        left: 'center',
+        textStyle: {
+          color: '#eee'
+        }
+      },
+      backgroundColor: 'transparent',
+      series: [{
+        type: 'lines',
+        data: lines,
+        polyline: true,
+        lineStyle: {
+          normal: {
+            color: '#ddb926',
+            opacity: 0.6,
+            width: 1
+          }
+        }
+      }]
+    };
+    echartslayer.setChartOptions(option);
+  });
+</script>
+</body>
+</html>

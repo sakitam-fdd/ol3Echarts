@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>成都市出租车运行轨迹图</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.js"></script>
+<script src="../../assets/scripts/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.min.js"></script>
+<script>
+  var Maps = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [11464017.313439976, 3934744.6720247352],
+      extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+      projection: 'EPSG:102100',
+      tileSize: 256,
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'vector',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        tileGrid: {
+          tileSize: 256,
+          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+          origin: [-2.0037508342787E7, 2.0037508342787E7],
+          resolutions: [
+            156543.03392800014,
+            78271.51696399994,
+            39135.75848200009,
+            19567.87924099992,
+            9783.93962049996,
+            4891.96981024998,
+            2445.98490512499,
+            1222.992452562495,
+            611.4962262813797,
+            305.74811314055756,
+            152.87405657041106,
+            76.43702828507324,
+            38.21851414253662,
+            19.10925707126831,
+            9.554628535634155,
+            4.77731426794937,
+            2.388657133974685
+          ]
+        },
+        layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
+  echartslayer.appendTo(Maps.getMap());
+  $fetch.get('../../data/bus.json').then(function (res) {
+    var data = res.data.data
+    var taxiRoutes = [];
+    for (var x in data) {
+      var line = data[x];
+      var pointString = line.ROAD_LINE;
+      var pointArr = pointString.split(';');
+      var lnglats = [];
+      for (var j in pointArr) {
+        lnglats.push(pointArr[j].split(','))
+      }
+      taxiRoutes.push({
+        coords: lnglats,
+        lineStyle: {
+          // color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * x))
+        }
+      })
+    }
+    var option = {
+      series: [
+        {
+          type: 'lines3D',
+          effect: {
+            show: true,
+            constantSpeed: 5,
+            trailWidth: 2,
+            trailLength: 0.4,
+            trailOpacity: 1,
+            spotIntensity: 10
+          },
+          blendMode: 'lighter',
+          polyline: true,
+          lineStyle: {
+            width: 0.1,
+            color: 'rgb(200, 40, 0)',
+            opacity: 0.
+          },
+          data: taxiRoutes
+        }
+      ]
+    };
+    echartslayer.setChartOptions(option);
+  });
+</script>
+</body>
+</html>

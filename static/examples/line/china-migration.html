@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>春节人口迁徙</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../ajax.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<!--<script src="../../../dist/ol3Echarts.js"></script>-->
+<script>
+  var map = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [113.53450137499999, 34.44104525],
+      projection: 'EPSG:4326',
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'vector',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        tileGrid: {
+          tileSize: 256,
+          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+          origin: [-2.0037508342787E7, 2.0037508342787E7],
+          resolutions: [
+            156543.03392800014,
+            78271.51696399994,
+            39135.75848200009,
+            19567.87924099992,
+            9783.93962049996,
+            4891.96981024998,
+            2445.98490512499,
+            1222.992452562495,
+            611.4962262813797,
+            305.74811314055756,
+            152.87405657041106,
+            76.43702828507324,
+            38.21851414253662,
+            19.10925707126831,
+            9.554628535634155,
+            4.77731426794937,
+            2.388657133974685
+          ]
+        },
+        layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: true,
+    hideOnZooming: true
+  });
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/china-migration.json', function (geoCoord) {
+    if (geoCoord) {
+      getJSON('../../json/china-airline.json', function (data) {
+        if (data) {
+          var option = {
+            backgroundColor: 'transparent',
+            title: {
+              text: '春节人口迁徙',
+              x: 'center',
+              y: 'top',
+              textStyle: {
+                color: 'white'
+              }
+            },
+            legend: {
+              show: true,
+              selected: {},
+              x: 'left',
+              orient: 'vertical',
+              textStyle: {
+                color: 'white'
+              },
+              data: []
+            },
+            series: [
+              {
+                name: "Migration",
+                type: 'lines',
+                effect: {
+                  constantSpeed: 30,
+                  show: true,
+                  trailLength: 1,
+                  symbolSize: 1.5,
+                  color: 'rgba(204, 246, 255, 1)',
+                },
+
+                itemStyle: {
+                  normal: {
+                    lineStyle: {
+                      color: 'rgba(2, 166, 253, 1)',
+                      type: 'solid',
+                      width: 0.5,
+                      opacity: 0.4
+                    }
+                  }
+                },
+                data: []
+              }, {
+                symbol: 'circle',
+                type: 'effectScatter',
+                symbolSize: 1.5,
+                itemStyle: {
+                  normal: {
+                    color: 'rgba(255, 0, 0, 1)'
+                  }
+                },
+                data: []
+              }
+            ]
+          };
+          data.allLine.sort(function(a, b) {
+            return b.num - a.num
+          }).slice(0, 3000).map(function(line) {
+            option.series[0].data.push(getLineCoord(geoCoord, line.start, line.end));
+          });
+          option.series[1].data = data.topCityOut.map(function(point) {
+            return {
+              value: getGeoCoord(geoCoord, point.name)
+            }
+          });
+          echartslayer.setChartOptions(option);
+        }
+      });
+    }
+  });
+
+  // 经纬度获取
+  function getGeoCoord (geoCoord, name) {
+    var city = name.split('_').pop();
+    var coord = geoCoord[city];
+    return coord;
+  }
+  // 线路获取
+  function getLineCoord (geoCoord, fromname, toname) {
+    fromname = fromname.split('_').pop();
+    var fromCoord = geoCoord[fromname];
+    toname = toname.split('_').pop();
+    var toCoord = geoCoord[toname];
+    return {
+      fromName: fromname,
+      toName: toname,
+      coords: [fromCoord, toCoord]
+    }
+  }
+</script>
+</body>
+</html>
