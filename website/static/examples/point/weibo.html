@@ -20,11 +20,11 @@
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="../../assets/scripts/common.js"></script>
+<script src="../ajax.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap('map', {
+  var map = new HMap('map', {
     controls: {
       loading: true,
       zoomSlider: true,
@@ -74,9 +74,8 @@
     hideOnMoving: true,
     hideOnZooming: true
   });
-  echartslayer.appendTo(Maps.getMap());
-  $fetch.get('../../data/weibo-gl.json').then(function (res) {
-    var rawData = res.data;
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/weibo-gl.json', function (rawData) {
     var weiboData = rawData.map(function (serieData, idx) {
       var px = serieData[0] / 1000;
       var py = serieData[1] / 1000;

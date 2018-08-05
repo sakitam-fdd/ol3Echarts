@@ -1,4 +1,6 @@
 import * as React from 'react';
+import echarts from 'echarts'; // eslint-disable-line
+import echartsgl from 'echarts-gl'; // eslint-disable-line
 import {Map, View} from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
@@ -61,7 +63,7 @@ class Index extends React.Component {
         }
         return res;
       });
-      var option = {
+      echartslayer.setChartOptions({
         title: {
           text: '微博签到数据点亮中国',
           left: 'center',
@@ -81,7 +83,7 @@ class Index extends React.Component {
         series: [
           {
             name: '弱',
-            type: 'scatter',
+            type: 'scatterGL',
             symbolSize: 1,
             itemStyle: {
               shadowBlur: 2,
@@ -92,7 +94,7 @@ class Index extends React.Component {
           },
           {
             name: '中',
-            type: 'scatter',
+            type: 'scatterGL',
             symbolSize: 1,
             itemStyle: {
               shadowBlur: 2,
@@ -103,7 +105,7 @@ class Index extends React.Component {
           },
           {
             name: '强',
-            type: 'scatter',
+            type: 'scatterGL',
             symbolSize: 1,
             itemStyle: {
               shadowBlur: 2,
@@ -113,8 +115,7 @@ class Index extends React.Component {
             data: weiboData[2]
           }
         ]
-      };
-      echartslayer.setChartOptions(option);
+      });
     });
   }
 

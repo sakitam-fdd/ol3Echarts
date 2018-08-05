@@ -22,6 +22,10 @@ class Header extends Component {
     }
   }
 
+  openDocs (event) {
+    window.open('./docs/index.html')
+  }
+
   render () {
     return (
       <div className="header clearfix" onClick={event => this.handleDefEvent(event)}>
@@ -36,7 +40,7 @@ class Header extends Component {
               <a href="./">首页</a>
             </li>
             <li id="nav-doc" className="dropdown">
-              <a href="https://sakitam-fdd.github.io/ol3Echarts/docs/" target="_blank">文档</a>
+              <a href="./docs/index.html" target="_blank" onClick={event => this.openDocs(event)}>文档</a>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">

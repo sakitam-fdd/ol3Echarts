@@ -128,6 +128,14 @@ class ol3Echarts extends ol.Object {
   }
 
   /**
+   * clear layer
+   */
+  clear () {
+    this._incremental = [];
+    this.$chart.clear();
+  }
+
+  /**
    * get map
    * @returns {null}
    */
@@ -173,13 +181,6 @@ class ol3Echarts extends ol.Object {
     delete this.$chart;
     delete this.$Map;
     this.$container.parentNode.removeChild(this.$container);
-  }
-
-  /**
-   * clear chart
-   */
-  clear () {
-    this.$chart.clear();
   }
 
   /**

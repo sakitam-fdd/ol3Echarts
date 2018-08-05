@@ -33,7 +33,7 @@
   },
   {
     "imgSrc": "./static/images/track.jpg",
-    "link": "/track",
+    "link": "/trackline",
     "url": "./static/examples/mixin/track-line.html",
     "chart_name": "杭州热门步行路线",
     "chart_author": "FDD",
@@ -145,7 +145,7 @@
   },
   {
     "imgSrc": "./static/images/int.jpg",
-    "link": "/int",
+    "link": "/incremental",
     "url": "./static/examples/incremental/lines-ny.html",
     "chart_name": "增量渲染",
     "chart_author": "FDD",

@@ -19,13 +19,13 @@
 <body>
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts@4.0.2/dist/echarts.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts-gl@1.0.0/dist/echarts-gl.js"></script>
-<script src="../../assets/scripts/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.js"></script>
+<script src="../ajax.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap('map', {
+  var map = new HMap('map', {
     target: 'map',
     view: {
       center: [113.53450137499999, 34.44104525],
@@ -33,13 +33,6 @@
       zoom: 5, // resolution
     },
     baseLayers: [
-      // {
-      //   layerName: 'TileXYZ',
-      //   isDefault: true,
-      //   layerType: 'TileXYZ',
-      //   projection: 'EPSG:3857',
-      //   layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
-      // },
       {
         layerName: 'ArcGIS',
         isDefault: true,
@@ -60,9 +53,8 @@
     hideOnMoving: true,
     hideOnZooming: true
   });
-  echartslayer.appendTo(Maps.getMap());
-  $fetch.get('../../data/wind.json').then(function (res) {
-    var windData = res.data;
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/wind.json', function (windData) {
     var data = [];
     var p = 0;
     var maxMag = 0;

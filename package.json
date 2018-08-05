@@ -13,10 +13,11 @@
     "lint": "eslint --fix --ext .js,.jsx packages/ol-echarts/src packages/ol3-echarts/src",
     "prettify": "prettier --write packages/ol-echarts/src/**/*.js packages/ol3-echarts/src/**/*.js",
     "bootstrap": "lerna bootstrap",
-    "publish-packages": "lerna publish --conventional-commits",
+    "publish-packages": "lerna publish --force-publish",
     "precommit": "lint-staged",
     "website": "webpack-dev-server --inline --config build/webpack.preview.conf.js",
-    "generate": "webpack --config build/webpack.generate.conf.js"
+    "generate": "webpack --config build/webpack.generate.conf.js",
+    "deploy": "gh-pages -d _site"
   },
   "lint-staged": {
     "*.{js}": [
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "echarts": "^4.1.0",
+    "echarts-gl": "^1.0.0",
     "ol": "^5.1.3"
   },
   "devDependencies": {
@@ -112,6 +114,7 @@
     "sass-loader": "^7.0.3",
     "shx": "^0.3.2",
     "sinon": "^3.2.1",
+    "gh-pages": "^1.2.0",
     "style-loader": "^0.21.0",
     "uglify-js": "^3.4.6",
     "url-loader": "^1.0.1",

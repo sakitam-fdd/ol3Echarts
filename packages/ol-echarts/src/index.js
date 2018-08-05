@@ -113,7 +113,7 @@ class EChartsLayer extends Object {
    * append data
    * @param data
    * @param save
-   * @returns {ol3Echarts}
+   * @returns {EChartsLayer}
    */
   appendData (data, save = true) {
     if (data) {
@@ -130,6 +130,14 @@ class EChartsLayer extends Object {
       });
     }
     return this;
+  }
+
+  /**
+   * clear layer
+   */
+  clear () {
+    this._incremental = [];
+    this.$chart.clear();
   }
 
   /**
@@ -178,13 +186,6 @@ class EChartsLayer extends Object {
     delete this.$chart;
     delete this.$Map;
     this.$container.parentNode.removeChild(this.$container);
-  }
-
-  /**
-   * clear chart
-   */
-  clear () {
-    this.$chart.clear();
   }
 
   /**

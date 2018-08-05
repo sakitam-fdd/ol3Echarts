@@ -21,12 +21,12 @@
 <body>
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts@4.0.2/dist/echarts.js"></script>
-<script src="../../assets/scripts/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../ajax.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var Maps = new HMap({
+  var map = new HMap({
     target: 'map',
     controls: {
       loading: true,
@@ -52,9 +52,8 @@
   var echartslayer = new ol3Echarts(null, {
     hideOnMoving: false
   });
-  echartslayer.appendTo(Maps.getMap());
-  $fetch.get('../../data/tracks.json').then(function (res) {
-    var data = res.data;
+  echartslayer.appendTo(map.getMap());
+  getJSON('../../json/tracks.json', function (data) {
     var lines = data.map(function (track) {
       return {
         coords: track.map(function (seg, idx) {
