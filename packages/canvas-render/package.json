@@ -25,10 +25,7 @@
   ],
   "scripts": {
     "dev": "rollup -wm -c build/rollup-dev-config.js",
-    "build": "node build/rollup-prod-config.js",
-    "karma.test": "karma start build/karma.test.config.js",
-    "karma.cover": "karma start build/karma.cover.config.js",
-    "karma.tdd": "karma start build/karma.tdd.config.js"
+    "build": "node build/rollup-prod-config.js"
   },
   "peerDependencies": {
     "echarts": ">=3.3.2",
