@@ -59,7 +59,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 ```
 
 #### [示例](//sakitam-fdd.github.io/ol3Echarts/)
-#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/index.html)
+#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/)
 
 ##### openlayers
 
