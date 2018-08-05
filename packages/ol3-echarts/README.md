@@ -59,7 +59,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 ```
 
 #### [示例](//sakitam-fdd.github.io/ol3Echarts/)
-#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/)
+#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/index.html)
 
 ##### openlayers
 
@@ -225,11 +225,11 @@ class Index extends React.Component {
 
 ## 截图示例
 
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/scatter.jpg)
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/scatter.jpg)
 
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/mock-migration.jpg)
+![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/mock-migration.jpg)
 
-![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/wchart-gl.jpg)
+![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/website/static/assets/images/wchart-gl.jpg)
 
 其他示例请自己挖掘
 
