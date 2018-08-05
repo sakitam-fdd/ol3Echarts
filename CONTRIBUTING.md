@@ -26,7 +26,7 @@
 - commit 信息要以# [记录] + messages
 
 
-- 执行 `npm run dev && npm run build` 后可以正确打包文件。
+- 执行 `yarn run dev && yarn run build` 后可以正确打包文件。
 
 - 提交 PR 前请 rebase，确保 commit 记录的整洁。
 
@@ -40,9 +40,9 @@
 首先你需要 Node.js 4+ 和 NPM 3+
 ```shell
 git clone https://github.com/sakitam-fdd/ol3Echarts.git
-npm install
-npm run dev
-npm run build
-npm run karma.test
-npm run karma.cover
+yarn run bootstrap
+yarn run dev
+yarn run build
+yarn run karma.test
+yarn run karma.cover
 ```

@@ -1,0 +1,95 @@
+@import "./common";
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  border: none;
+  padding-right: 15px;
+  padding-left: 15px;
+  background-color: #293c55;
+  transition: background-color 0.5s linear;
+  background-color: rgba(41,60,85,0.4);
+  .navbar-header {
+    a {
+      float: left;
+      color: #777;
+      height: 50px;
+      padding: 15px 15px;
+      font-size: 18px;
+      line-height: 20px;
+    }
+    .navbar-logo {
+      display: block;
+      height: 32px;
+      margin-top: -6px;
+      margin-left: -2px;
+    }
+  }
+}
+
+.navbar-nav {
+  transition: background-color 0.5s linear;
+  li {
+    position: relative;
+    float: left;
+    a {
+      color: #fff;
+      background-color: transparent;
+      font-size: 14px;
+      position: relative;
+      line-height: 20px;
+      display: block;
+      padding: 15px 20px;
+      transition: 0.5s background-color;
+      &:before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        right: 50%;
+        top: 0;
+        background: #42B983;
+        height: 4px;
+        transition-duration: .3s;
+        transition-timing-function: ease-out;
+      }
+      &:hover {
+        background-color: #162436;
+        &:before {
+          left: 0;
+          right: 0;
+        }
+      }
+      &:focus {
+        &:before {
+          left: 0;
+          right: 0;
+        }
+      }
+    }
+  }
+  .active > a {
+    padding-top: 11px;
+    color: #fff;
+    background-color: transparent;
+    border-top: 4px solid #42B983;
+    transition: 0.5s background-color;
+    &:hover {
+      color: #f9f9f9;
+      background-color: #162436;
+    }
+  }
+}
+
+.navbar-left {
+  float: left;
+}
+
+.navbar-right {
+  float: right;
+  margin-right: -15px;
+  transition: background-color 0.5s linear;
+}

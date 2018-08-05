@@ -4,7 +4,11 @@
 # User-specific stuff:
 .idea/
 node_modules/
+packages/**/node_modules
 coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/packages/ol-echarts/dist/
+/packages/ol3-echarts/dist/
+_site/

@@ -1,6 +1,7 @@
-# ol3Echarts
+# ol3-echarts / ol-echarts
 
-> 基于openlayers3+新版扩展的echarts3的图表插件，暂时支持echarts的所有map组件类型，对普通不支持坐标系的图表正在兼容（饼图，柱状图，折线图已兼容）
+* ol3-echarts： 基于openlayers(3/4)新版扩展的echarts图表插件，暂时支持echarts的所有map组件类型，对普通不支持坐标系的图表正在兼容（饼图，柱状图，折线图已兼容）
+* ol-echarts：基于 openlayers5(ol package)扩展的数据可视化插件，功能和 ``ol3-echarts`` 保持一致。
 
 [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts)
 [![codecov](https://codecov.io/gh/sakitam-fdd/ol3Echarts/branch/master/graph/badge.svg)](https://codecov.io/gh/sakitam-fdd/ol3Echarts)
@@ -16,37 +17,49 @@
 
 ```bash
 git clone https://github.com/sakitam-fdd/ol3Echarts.git
-npm install
-npm run dev
-npm run build
-npm run karma.test
-npm run karma.cover
+yarn run bootstrap
+yarn run dev
+yarn run build
+yarn run karma.test
+yarn run karma.cover
 ```
 
 ### 安装
 
 #### npm安装
 
+> 注意：npm下存在两个包 [ol3-echarts](https://npmjs.org/package/ol3-echarts) 和 [ol-echarts](https://npmjs.org/package/ol-echarts)
+  前者是在使用 [openlayers](https://npmjs.org/package/openlayers) 或者是 `ol` 的cdn时使用；后者是在使用 [ol](https://npmjs.org/package/ol)
+  配合打包工具使用。
+
 ```bash
+// old openlayers package
 npm install ol3-echarts --save
 import ol3Echarts from 'ol3-echarts'
+
+// ol package
+npm install ol-echarts --save
+import EChartsLayer from 'ol-echarts'
+
 ```
 
 #### cdn
+
+> cdn 引用方式只支持 旧版 `openlayers` 和新版 `ol` 的cdn引用方式，统一使用 `ol3-echarts` 支持。
 
 目前可通过 [unpkg.com](https://unpkg.com/ol3-echarts/dist/ol3Echarts.js) / [jsdelivr](https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js) 获取最新版本的资源。
 
 ```bash
 // jsdelivr (jsdelivr由于缓存原因最好锁定版本号)
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.4/dist/ol3Echarts.js
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.4/dist/ol3Echarts.min.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.5/dist/ol3Echarts.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.5/dist/ol3Echarts.min.js
 // npm
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.js
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 ```
 
 #### [示例](//sakitam-fdd.github.io/ol3Echarts/)
-#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/)
+#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/index.html)
 
 ##### openlayers
 
@@ -81,6 +94,68 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
   });
   echartslayer.appendTo(Map)
 </script>
+```
+
+#### ol package & react 
+
+```jsx harmony
+import * as React from 'react';
+import { Map, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+import 'ol/ol.css';
+import EChartsLayer from 'ol-echarts';
+
+class Index extends React.Component {
+  constructor (props, context) {
+    super(props, context);
+    this.state = {
+      zoom: 14,
+      fov: 0,
+      pitch: 0,
+      bearing: 0
+    };
+
+    this.container = null;
+    this.map = null;
+  }
+
+  componentDidMount () {
+    this.map = new Map({
+      target: this.container,
+      view: new View({
+        center: [113.53450137499999, 34.44104525],
+        projection: 'EPSG:4326',
+        zoom: 5 // resolution
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline' +
+            'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+          })
+        })
+      ]
+    });
+    const echartslayer = new EChartsLayer(option, {
+      hideOnMoving: false,
+      hideOnZooming: false,
+      forcedPrecomposeRerender: true
+    });
+    echartslayer.appendTo(this.map);
+    window.setTimeout(() => {
+      echartslayer.remove();
+    }, 10 * 1000)
+  }
+
+  setRef = (x = null) => {
+    this.container = x;
+  };
+
+  render () {
+    return (<div ref={this.setRef} className="map-content"></div>);
+  }
+}
 ```
 
 ##### hmap-js
@@ -150,12 +225,11 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 ## 截图示例
 
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/scatter.jpg)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_shield)
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/scatter.jpg)
 
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/mock-migration.jpg)
+![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/mock-migration.jpg)
 
-![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/wchart-gl.jpg)
+![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/website/static/assets/images/wchart-gl.jpg)
 
 其他示例请自己挖掘
 
@@ -163,7 +237,6 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 > [echarts](https://github.com/ecomfe/echarts)
 > [openlayers](https://github.com/openlayers/openlayers)
-
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_large)

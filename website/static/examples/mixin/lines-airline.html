@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>lines-airline</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../ajax.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<!--<script src="../../../dist/ol3Echarts.js"></script>-->
+<script>
+  var map = new HMap({
+    target: 'map',
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false,
+      attribution: false
+    },
+    view: {
+      center: [113.53450137499999, 34.44104525],
+      projection: 'EPSG:4326',
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'ArcGIS',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        label: {
+          layerName: 'Label',
+          isDefault: true,
+          layerType: 'TileXYZ',
+          projection: 'EPSG:3857',
+          layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
+        },
+        layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+      }
+    ]
+  });
+  var echartslayer = new ol3Echarts(null, {
+    hideOnMoving: false
+  });
+  echartslayer.appendTo(map.getMap());
+
+  getJSON('../../json/flights.json', function (data) {
+    function getAirportCoord (idx) {
+      return [data.airports[idx][3], data.airports[idx][4]];
+    }
+    var routes = data.routes.map(function (airline) {
+      return [
+        getAirportCoord(airline[1]),
+        getAirportCoord(airline[2])
+      ];
+    });
+    var option = {
+      title: {
+        text: '航线',
+        left: 'center',
+        textStyle: {
+          color: '#eee'
+        }
+      },
+      backgroundColor: 'transparent',
+      tooltip: {
+        formatter: function (param) {
+          var route = data.routes[param.dataIndex];
+          return data.airports[route[1]][1] + ' > ' + data.airports[route[2]][1];
+        }
+      },
+      series: [{
+        type: 'lines',
+        data: routes,
+        large: true,
+        largeThreshold: 100,
+        lineStyle: {
+          normal: {
+            opacity: 0.05,
+            width: 0.5,
+            curveness: 0.3
+          }
+        },
+        // 设置混合模式为叠加
+        blendMode: 'lighter'
+      }]
+    };
+    echartslayer.setChartOptions(option);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>自定义点视图</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../ajax.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<!--<script src="../../../dist/ol3Echarts.js"></script>-->
+<script>
+  var map = new HMap('map', {
+    controls: {
+      loading: true,
+      zoomSlider: true,
+      fullScreen: false
+    },
+    view: {
+      center: [116.28245, 39.92121],
+      projection: 'EPSG:4326',
+      zoom: 9, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'TileXYZ',
+        isDefault: true,
+        layerType: 'TileXYZ',
+        projection: 'EPSG:3857',
+        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
+      }
+    ]
+  });
+  var COLORS = ["#070093", "#1c3fbf", "#1482e5", "#70b4eb", "#b4e0f3", "#ffffff"];
+  var lngExtent = [39.5, 40.6];
+  var latExtent = [115.9, 116.8];
+  var cellCount = [50, 50];
+  var cellSizeCoord = [
+    (lngExtent[1] - lngExtent[0]) / cellCount[0],
+    (latExtent[1] - latExtent[0]) / cellCount[1]
+  ];
+  var gapSize = 0;
+
+  function renderItem (params, api) {
+    var context = params.context;
+    var lngIndex = api.value(0);
+    var latIndex = api.value(1);
+    var coordLeftTop = [
+      +(latExtent[0] + lngIndex * cellSizeCoord[0]).toFixed(6),
+      +(lngExtent[0] + latIndex * cellSizeCoord[1]).toFixed(6)
+    ];
+    var pointLeftTop = getCoord(params, api, lngIndex, latIndex);
+    var pointRightBottom = getCoord(params, api, lngIndex + 1, latIndex + 1);
+
+    return {
+      type: 'rect',
+      shape: {
+        x: pointLeftTop[0],
+        y: pointLeftTop[1],
+        width: pointRightBottom[0] - pointLeftTop[0],
+        height: pointRightBottom[1] - pointLeftTop[1]
+      },
+      style: api.style({
+        stroke: 'rgba(0,0,0,0.1)'
+      }),
+      styleEmphasis: api.styleEmphasis()
+    };
+  }
+
+  function getCoord (params, api, lngIndex, latIndex) {
+    var coords = params.context.coords || (params.context.coords = []);
+    var key = lngIndex + '-' + latIndex;
+
+    // bmap returns point in integer, which makes cell width unstable.
+    // So we have to use right bottom point.
+    return coords[key] || (coords[key] = api.coord([
+      +(latExtent[0] + lngIndex * cellSizeCoord[0]).toFixed(6),
+      +(lngExtent[0] + latIndex * cellSizeCoord[1]).toFixed(6)
+    ]));
+  }
+
+  getJSON('../../json/bin.json', function (data) {
+    var echartslayer = new ol3Echarts({
+      tooltip: {
+        formatter: function (params, ticket, callback) {
+          return params.value;
+        },
+        trigger: 'item'
+      },
+      visualMap: {
+        type: 'piecewise',
+        inverse: true,
+        top: 10,
+        right: 10,
+        pieces: [
+          {
+            value: 0, color: COLORS[0]
+          }, {
+            value: 1, color: COLORS[1]
+          }, {
+            value: 2, color: COLORS[2]
+          }, {
+            value: 3, color: COLORS[3]
+          }, {
+            value: 4, color: COLORS[4]
+          }, {
+            value: 5, color: COLORS[5]
+          }
+        ],
+        borderColor: '#ccc',
+        borderWidth: 2,
+        backgroundColor: '#eee',
+        dimension: 2,
+        inRange: {
+          color: COLORS,
+          opacity: 0.7
+        }
+      },
+      series: [
+        {
+          type: 'custom',
+          renderItem: renderItem,
+          animation: false,
+          itemStyle: {
+            emphasis: {
+              color: 'yellow'
+            }
+          },
+          encode: {
+            tooltip: 2
+          },
+          data: data
+        }
+      ]
+    }, {
+      hideOnMoving: true,
+      hideOnZooming: true
+    });
+    echartslayer.appendTo(map.getMap());
+  });
+</script>
+</body>
+</html>

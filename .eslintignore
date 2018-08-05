@@ -2,3 +2,5 @@ build/*.js
 config/*.js
 test/**/*.js
 dist/
+node_modules/
+packages/**/node_modules/

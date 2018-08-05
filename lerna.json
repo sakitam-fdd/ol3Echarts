@@ -1,0 +1,26 @@
+{
+  "lerna": "2.8.0",
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": ["--no-lockfile"]
+    }
+  },
+  "changelog": {
+    "labels": {
+      "tag: add": "🌟 新增",
+      "tag: edit": "💄 修改",
+      "tag: fix": "🐞 修复 ",
+      "tag: remove": "🗑 移除",
+      "tag: refactoring": "📝 重构",
+      "tag: publish": "📖 发布",
+      "tag: abandon": "🙅 废弃"
+    },
+    "cacheDir": ".changelog"
+  }
+}
