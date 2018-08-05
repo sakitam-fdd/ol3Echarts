@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>微博签到数据点亮中国</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .hmap-control-zoom {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="../../../website/static/examples/ajax.js"></script>
+<script src="../dist/ol3Echarts.js"></script>
+<script>
+  var map = new ol.Map({
+    target: 'map',
+    layers: [
+      new ol.layer.Tile({
+        preload: 4,
+        source: new ol.source.XYZ({
+          url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline' +
+          'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+        })
+      })
+    ],
+    loadTilesWhileAnimating: true,
+    view: new ol.View({
+      projection: 'EPSG:4326',
+      center: [113.53450137499999, 34.44104525],
+      zoom: 5
+    })
+  });
+  var echartslayer = new ol3Echarts(null, {
+    projection: 'EPSG:4326'
+  });
+  echartslayer.appendTo(map);
+  getJSON('../../../website/static/json/weibo-gl.json', function (rawData) {
+    var weiboData = rawData.map(function (serieData, idx) {
+      var px = serieData[0] / 1000;
+      var py = serieData[1] / 1000;
+      var res = [[px, py]];
+      for (var i = 2; i < serieData.length; i += 2) {
+        var dx = serieData[i] / 1000;
+        var dy = serieData[i + 1] / 1000;
+        var x = px + dx;
+        var y = py + dy;
+        res.push([x.toFixed(2), y.toFixed(2), 1]);
+        px = x;
+        py = y;
+      }
+      return res;
+    });
+    var option = {
+      title: {
+        text: '微博签到数据点亮中国',
+        left: 'center',
+        top: 'top',
+        textStyle: {
+          color: '#fff'
+        }
+      },
+      tooltip: {},
+      legend: {
+        left: 'right',
+        data: ['强', '中', '弱'],
+        textStyle: {
+          color: '#ccc'
+        }
+      },
+      series: [
+        {
+          name: '弱',
+          type: 'scatter',
+          symbolSize: 1,
+          itemStyle: {
+            shadowBlur: 2,
+            shadowColor: 'rgba(37, 140, 249, 0.8)',
+            color: 'rgba(37, 140, 249, 0.8)'
+          },
+          data: weiboData[0]
+        },
+        {
+          name: '中',
+          type: 'scatter',
+          symbolSize: 1,
+          itemStyle: {
+            shadowBlur: 2,
+            shadowColor: 'rgba(14, 241, 242, 0.8)',
+            color: 'rgba(14, 241, 242, 0.8)'
+          },
+          data: weiboData[1]
+        },
+        {
+          name: '强',
+          type: 'scatter',
+          symbolSize: 1,
+          itemStyle: {
+            shadowBlur: 2,
+            shadowColor: 'rgba(255, 255, 255, 0.8)',
+            color: 'rgba(255, 255, 255, 0.8)'
+          },
+          data: weiboData[2]
+        }
+      ]
+    };
+    echartslayer.setChartOptions(option);
+  });
+</script>
+</body>
+</html>

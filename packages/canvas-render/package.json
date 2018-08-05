@@ -1,0 +1,51 @@
+{
+  "name": "ol3-echarts",
+  "version": "1.3.5",
+  "description": "a openlayers extension to echarts",
+  "author": "FDD <smileFDD@gmail.com>",
+  "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
+  "private": false,
+  "main": "dist/ol3Echarts.common.js",
+  "module": "dist/ol3Echarts.esm.js",
+  "unpkg": "dist/ol3Echarts.js",
+  "namespace": "ol3Echarts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sakitam-fdd/ol3Echarts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sakitam-fdd/ol3Echarts/issues"
+  },
+  "keywords": [
+    "javascript",
+    "webgis",
+    "canvas",
+    "echarts",
+    "openlayers"
+  ],
+  "scripts": {
+    "dev": "rollup -wm -c build/rollup-dev-config.js",
+    "build": "node build/rollup-prod-config.js",
+    "karma.test": "karma start build/karma.test.config.js",
+    "karma.cover": "karma start build/karma.cover.config.js",
+    "karma.tdd": "karma start build/karma.tdd.config.js"
+  },
+  "peerDependencies": {
+    "echarts": ">=3.3.2",
+    "openlayers": ">=3.0.0"
+  },
+  "devDependencies": {
+    "echarts": "^3.8.5",
+    "openlayers": "^4.5.0"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "license": "MIT"
+}
