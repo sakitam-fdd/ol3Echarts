@@ -40,7 +40,7 @@ class Header extends Component {
               <a href="./">首页</a>
             </li>
             <li id="nav-doc" className="dropdown">
-              <a href="./docs/index.html" target="_blank" onClick={event => this.openDocs(event)}>文档</a>
+              <a href="./docs/" target="_blank" onClick={event => this.openDocs(event)}>文档</a>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">

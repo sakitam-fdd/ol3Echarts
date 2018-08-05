@@ -59,7 +59,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 ```
 
 #### [示例](//sakitam-fdd.github.io/ol3Echarts/)
-#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/)
+#### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/index.html)
 
 ##### openlayers
 
@@ -229,7 +229,7 @@ class Index extends React.Component {
 
 ![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/mock-migration.jpg)
 
-![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/website/static/assets/images/wchart-gl.jpg)
+![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/wchart-gl.jpg)
 
 其他示例请自己挖掘
 
@@ -237,3 +237,6 @@ class Index extends React.Component {
 
 > [echarts](https://github.com/ecomfe/echarts)
 > [openlayers](https://github.com/openlayers/openlayers)
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_large)

@@ -160,7 +160,7 @@ const mainRouter = [
 const routes = (
   <Switch>
     {mainRouter.map((route) => <Route key={route.key} {...route.route} />)}
-    <Redirect to="./index" />
+    {/* <Redirect to="./index" /> */}
   </Switch>
 );
 
