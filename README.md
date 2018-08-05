@@ -225,7 +225,12 @@ class Index extends React.Component {
 
 ## 截图示例
 
+<<<<<<< HEAD
 ![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/scatter.jpg)
+=======
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/assets/images/scatter.jpg)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_shield)
+>>>>>>> master
 
 ![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/mock-migration.jpg)
 
@@ -237,3 +242,7 @@ class Index extends React.Component {
 
 > [echarts](https://github.com/ecomfe/echarts)
 > [openlayers](https://github.com/openlayers/openlayers)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsakitam-fdd%2Fol3Echarts?ref=badge_large)
