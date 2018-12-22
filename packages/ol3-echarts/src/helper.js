@@ -33,20 +33,21 @@ const merge = (a, b) => {
 /**
  * get parent container
  * @param selector
+ * @param doc
  */
-const getTarget = (selector) => {
+const getTarget = (selector, doc = document) => {
   let dom = (function () {
     let found;
-    return document && /^#([\w-]+)$/.test(selector)
-      ? (found = document.getElementById(RegExp.$1)) // eslint-disable-line
+    return doc && /^#([\w-]+)$/.test(selector)
+      ? (found = doc.getElementById(RegExp.$1)) // eslint-disable-line
         ? [found]
         : [] // eslint-disable-line
       : Array.prototype.slice.call(
         /^\.([\w-]+)$/.test(selector)
-          ? document.getElementsByClassName(RegExp.$1)
+          ? doc.getElementsByClassName(RegExp.$1)
           : /^[\w-]+$/.test(selector)
-            ? document.getElementsByTagName(selector)
-            : document.querySelectorAll(selector)
+            ? doc.getElementsByTagName(selector)
+            : doc.querySelectorAll(selector)
       );
   })();
   return dom;

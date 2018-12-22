@@ -213,21 +213,22 @@ class EChartsLayer extends Object {
    * @private
    */
   _createLayerContainer (map, options) {
+    const viewPort = map.getViewport()
     const container = (this.$container = document.createElement('div'));
     container.style.position = 'absolute';
     container.style.top = '0px';
     container.style.left = '0px';
     container.style.right = '0px';
     container.style.bottom = '0px';
-    let _target = getTarget(options['target']);
+    let _target = getTarget(options['target'], viewPort);
     if (_target && _target[0] && _target[0] instanceof Element) {
       _target[0].appendChild(container);
     } else {
-      let _target = getTarget('.ol-overlaycontainer');
+      let _target = getTarget('.ol-overlaycontainer', viewPort);
       if (_target && _target[0] && _target[0] instanceof Element) {
         _target[0].appendChild(container);
       } else {
-        map.getViewport().appendChild(container);
+        viewPort.appendChild(container);
       }
     }
   }
