@@ -133,14 +133,27 @@ class Index extends React.Component {
               zlevel: 1
             }]
         };
-        const echartslayer = new EChartsLayer(option, {
-          hideOnMoving: false,
-          hideOnZooming: false,
-          forcedPrecomposeRerender: true
-        });
-        echartslayer.appendTo(this.map);
+        this.initChart(option);
+        window.setTimeout(() => {
+          this.chart.remove();
+          window.setTimeout(() => {
+            this.initChart(option);
+          }, 5000)
+        }, 5000)
       }
     });
+  }
+
+  /**
+   * 初始化
+   */
+  initChart (option) {
+    const echartslayer = this.chart = new EChartsLayer(option, {
+      hideOnMoving: false,
+      hideOnZooming: false,
+      forcedPrecomposeRerender: true
+    });
+    echartslayer.appendTo(this.map);
   }
 
   setRef = (x = null) => {
