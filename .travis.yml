@@ -4,7 +4,7 @@ cache:
   directories:
     - node_modules
 before_install: npm i -g yarn
-install: npm install
+install: yarn
 before_script:
   - "export CHROME_BIN=chromium-browser"
   - "export DISPLAY=:99.0"

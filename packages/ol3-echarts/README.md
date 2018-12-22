@@ -51,8 +51,8 @@ import EChartsLayer from 'ol-echarts'
 
 ```bash
 // jsdelivr (jsdelivr由于缓存原因最好锁定版本号)
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.5/dist/ol3Echarts.js
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.5/dist/ol3Echarts.min.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.6/dist/ol3Echarts.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.6/dist/ol3Echarts.min.js
 // npm
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.js
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
