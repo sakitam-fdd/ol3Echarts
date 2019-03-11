@@ -1,5 +1,4 @@
 'use strict'
-const rm = require('rimraf');
 const path = require('path');
 const utils = require('./utils');
 const webpack = require('webpack');
@@ -7,14 +6,13 @@ const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('mini-css-extract-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 
 const webpackConfig = merge(require('./webpack.base.conf'), {
   mode: 'production',
-  entry: {
-    app: './website/index.js'
-  },
   module: {
     rules: utils.styleLoaders({
       sourceMap: true,
@@ -33,14 +31,27 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     umdNamedDefine: false
   },
   plugins: [
-    new UglifyJsPlugin({
-      uglifyOptions: {
-        compress: {
-          warnings: false
-        }
-      },
+    new CleanWebpackPlugin([
+      'dist'
+    ], {
+      root: path.resolve(__dirname, '../')
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: require('../dll/extlib-manifest.json')
+    }),
+    new ParallelUglifyPlugin({
+      cacheDir: path.join(__dirname, '../cache/'),
       sourceMap: false,
-      parallel: true
+      uglifyES: {
+        output: {
+          comments: false
+        },
+        compress: {
+          inline: 1, // https://github.com/mishoo/UglifyJS2/issues/2842
+          warnings: false,
+          drop_console: true
+        }
+      }
     }),
     // extract css into its own file
     new ExtractTextPlugin({
@@ -59,6 +70,13 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'website/index.html',
+      version: new Date().toLocaleString('zh', {
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false
+      }),
       inject: true,
       minify: {
         removeComments: true,
@@ -72,6 +90,14 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     }),
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+
+    new AddAssetHtmlPlugin({
+      filepath: path.resolve(__dirname, '../dll/extlib.dll.*.js'),
+      publicPath: './static/scripts',
+      outputPath: '../dist/static/scripts',
+      includeSourcemap: false
+    }),
 
     // copy custom static assets
     new CopyWebpackPlugin([
@@ -105,9 +131,4 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
   }
 });
 
-module.exports = new Promise((resolve, reject) => {
-  rm(path.join(utils.resolve('_site')), err => {
-    if (err) throw err;
-    resolve(webpackConfig)
-  })
-});
+module.exports = webpackConfig;

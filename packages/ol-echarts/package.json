@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "dev": "rollup -wm -c build/rollup-dev-config.js",
-    "build": "node build/rollup-prod-config.js"
+    "build": "rollup -c build/rollup-prod-config.js"
   },
   "peerDependencies": {
     "echarts": ">=4.0.1",

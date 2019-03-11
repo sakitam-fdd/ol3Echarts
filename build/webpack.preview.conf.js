@@ -1,3 +1,4 @@
+'use strict'
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
@@ -46,6 +47,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     overlay: { warnings: false, errors: true },
     publicPath: '/',
     quiet: true, // necessary for FriendlyErrorsPlugin
+    disableHostCheck: true,
     watchOptions: {
       poll: false
     }

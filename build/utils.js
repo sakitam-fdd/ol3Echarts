@@ -1,11 +1,13 @@
 const path = require('path');
+const _package = require('../package.json');
 const ExtractTextPlugin = require('mini-css-extract-plugin');
+const resolve = _path => path.resolve(__dirname, '..', _path);
 
 exports.assetsPath = function (_path) {
   return path.posix.join('static', _path);
 };
 
-exports.cssLoaders = function (options) {
+const cssLoaders = function (options) {
   options = options || {};
   const cssLoader = {
     loader: 'css-loader',
@@ -50,16 +52,13 @@ exports.cssLoaders = function (options) {
     postcss: generateLoaders(),
     less: generateLoaders('less'),
     sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
-    stylus: generateLoaders('stylus'),
-    styl: generateLoaders('stylus')
+    scss: generateLoaders('sass')
   };
 };
 
-exports.styleLoaders = function (options) {
+const styleLoaders = function (options) {
   const output = [];
-  const loaders = exports.cssLoaders(options);
-
+  const loaders = cssLoaders(options);
   for (const extension in loaders) {
     const loader = loaders[extension];
     output.push({
@@ -70,6 +69,47 @@ exports.styleLoaders = function (options) {
   return output;
 };
 
-exports.resolve = function (dir) {
-  return path.join(__dirname, '..', dir);
+const createLintingRule = () => ({
+  test: /\.(js|vue)$/,
+  loader: 'eslint-loader',
+  enforce: 'pre',
+  include: [
+    resolve('src'),
+    resolve('test')
+  ],
+  options: {
+    formatter: require('eslint-friendly-formatter'),
+    emitWarning: false
+  }
+});
+
+/**
+ * handle min file
+ * @param name
+ * @returns {string}
+ */
+const handleMinEsm = name => {
+  if (typeof name === 'string') {
+    let arr_ = name.split('.')
+    let arrTemp = []
+    arr_.forEach((item, index) => {
+      if (index < arr_.length - 1) {
+        arrTemp.push(item)
+      } else {
+        arrTemp.push('min')
+        arrTemp.push(item)
+      }
+    })
+    return arrTemp.join('.')
+  }
+};
+
+module.exports = {
+  _package,
+  resolve,
+  assetsPath,
+  cssLoaders,
+  styleLoaders,
+  handleMinEsm,
+  createLintingRule
 };
