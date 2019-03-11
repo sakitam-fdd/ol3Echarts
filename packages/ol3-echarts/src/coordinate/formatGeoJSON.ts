@@ -1,13 +1,14 @@
 /**
  * form https://github.com/ecomfe/echarts/blob/master/src/coord/geo/parseGeoJson.js
  */
-import echarts from 'echarts';
+// @ts-ignore
+import * as echarts from 'echarts';
 /**
  * check is decoded
  * @param json
  * @returns {boolean}
  */
-const checkDecoded = (json) => {
+const checkDecoded = (json: { UTF8Encoding: any; }) => {
   if (json.UTF8Encoding) {
     return false;
   } else {
@@ -20,7 +21,7 @@ const checkDecoded = (json) => {
  * @param json
  * @returns {*}
  */
-const decode = (json) => {
+const decode = (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any; }) => {
   if (checkDecoded(json)) {
     return json;
   }
@@ -57,7 +58,7 @@ const decode = (json) => {
  * @param encodeScale
  * @returns {null}
  */
-const decodePolygon = (coordinate, encodeOffsets, encodeScale) => {
+const decodePolygon = (coordinate: { length: number; charCodeAt: { (arg0: number): number; (arg0: number): number; }; }, encodeOffsets: any[], encodeScale: number) => {
   let [result, prevX, prevY] = [[], encodeOffsets[0], encodeOffsets[1]];
   for (let i = 0; i < coordinate.length; i += 2) {
     let x = coordinate.charCodeAt(i) - 64;
@@ -70,7 +71,7 @@ const decodePolygon = (coordinate, encodeOffsets, encodeScale) => {
     y += prevY;
     prevX = x;
     prevY = y;
-    // Dequantize
+    // @ts-ignore
     result.push([x / encodeScale, y / encodeScale]);
   }
   return result;
@@ -80,14 +81,14 @@ const decodePolygon = (coordinate, encodeOffsets, encodeScale) => {
  * decode geoJson
  * @param json
  */
-export default function (json) {
+export default function (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any; }) {
   const geoJson = decode(json);
   const _features = echarts.util.map(
-    echarts.util.filter(geoJson.features, function (featureObj) {
+    echarts.util.filter(geoJson.features, function (featureObj: { geometry: { coordinates: { length: number; }; }; properties: any; }) {
       // Output of mapshaper may have geometry null
       return featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0;
     }),
-    function (featureObj) {
+    function (featureObj: { properties: any; geometry: any; }) {
       let properties = featureObj.properties;
       let geo = featureObj.geometry;
       let coordinates = geo.coordinates;
@@ -96,7 +97,7 @@ export default function (json) {
         geometries.push(coordinates[0]);
       }
       if (geo.type === 'MultiPolygon') {
-        echarts.util.each(coordinates, function (item) {
+        echarts.util.each(coordinates, function (item: any[]) {
           if (item[0]) {
             geometries.push(item[0]);
           }

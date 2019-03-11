@@ -1,14 +1,9 @@
 /**
- * Created by FDD on 2017/11/28.
- * @desc helper
- */
-
-/**
  * 判断是否为对象
  * @param value
  * @returns {boolean}
  */
-const isObject = (value) => {
+const isObject = (value: any): boolean => {
   const type = typeof value;
   return value !== null && (type === 'object' || type === 'function');
 };
@@ -19,7 +14,7 @@ const isObject = (value) => {
  * @param b
  * @returns {*}
  */
-const merge = (a, b) => {
+const merge = (a: any, b: any): any => {
   for (const key in b) {
     if (isObject(b[key]) && isObject(a[key])) {
       merge(a[key], b[key]);
@@ -54,16 +49,14 @@ const getTarget = (selector, doc = document) => {
 };
 
 /**
- * 数组映射
+ * map items
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
  * @return {Array}
  */
-const map = function (obj, cb, context) {
-  if (!(obj && cb)) {
-    return;
-  }
+const map = function (obj: any[], cb: (value: any, index: number, array: any[]) => any, context: any) {
+  if (!(obj && cb)) return;
   if (obj.map && obj.map === Array.prototype.map) {
     return obj.map(cb, context);
   } else {
@@ -75,8 +68,13 @@ const map = function (obj, cb, context) {
   }
 };
 
-const bind = function (func, context) {
-  let args = Array.prototype.slice.call(arguments, 2);
+/**
+ * bind context
+ * @param func
+ * @param context
+ */
+const bind = function (func: Function, context: any): Function {
+  const args = Array.prototype.slice.call(arguments, 2);
   return function () {
     return func.apply(context, args.concat(Array.prototype.slice.call(arguments)));
   };
@@ -86,9 +84,8 @@ const bind = function (func, context) {
  * add own item
  * @param array
  * @param item
- * @returns {*}
  */
-const arrayAdd = function (array, item) {
+const arrayAdd = function (array: any[], item: any): any[] {
   let i = 0;
   let index;
   const length = array.length;
