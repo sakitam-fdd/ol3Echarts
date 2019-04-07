@@ -105,4 +105,11 @@ const arrayAdd = function (array, item) {
   return array;
 };
 
-export { getTarget, merge, isObject, map, bind, arrayAdd };
+function bindAll(fns, context) {
+  fns.forEach((fn) => {
+    if (!context[fn]) { return; }
+    context[fn] = context[fn].bind(context);
+  });
+}
+
+export { getTarget, merge, isObject, map, bind, bindAll, arrayAdd };

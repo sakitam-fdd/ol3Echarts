@@ -1,7 +1,6 @@
-import { unByKey } from 'ol/Observable';
 import { Object, Map } from 'ol';
 import echarts from 'echarts';
-import { getTarget, merge, isObject, map, bind, arrayAdd } from './helper';
+import { getTarget, merge, isObject, map, bind, bindAll, arrayAdd } from './helper';
 import formatGeoJSON from './coordinate/formatGeoJSON';
 import _getCoordinateSystem from './coordinate/RegisterCoordinateSystem';
 import * as charts from './charts/index';
@@ -65,6 +64,11 @@ class EChartsLayer extends Object {
      * @private
      */
     this._coordinateSystem = null;
+
+    bindAll([
+      'reRender', 'onResize', 'onZoomEnd', 'onCenterChange',
+      'onDragRotateEnd', 'onMoveStart', 'onMoveEnd'
+    ], this)
 
     if (map) this.appendTo(map);
   }
@@ -347,17 +351,17 @@ class EChartsLayer extends Object {
    */
   _registerEvents () {
     // https://github.com/openlayers/openlayers/issues/7284
-    const Map = this.$Map;
-    const view = Map.getView();
+    const map = this.getMap();
+    const view = map.getView();
     if (this.$options.forcedPrecomposeRerender) {
-      this.precomposeListener_ = Map.on('precompose', this.reRender.bind(this));
+      map.on('precompose', this.reRender);
     }
-    this.sizeChangeListener_ = Map.on('change:size', this.onResize.bind(this));
-    this.resolutionListener_ = view.on('change:resolution', this.onZoomEnd.bind(this));
-    this.centerChangeListener_ = view.on('change:center', this.onCenterChange.bind(this));
-    this.rotationListener_ = view.on('change:rotation', this.onDragRotateEnd.bind(this));
-    this.movestartListener_ = Map.on('movestart', this.onMoveStart.bind(this));
-    this.moveendListener_ = Map.on('moveend', this.onMoveEnd.bind(this));
+    map.on('change:size', this.onResize);
+    view.on('change:resolution', this.onZoomEnd);
+    view.on('change:center', this.onCenterChange);
+    view.on('change:rotation', this.onDragRotateEnd);
+    map.on('movestart', this.onMoveStart);
+    map.on('moveend', this.onMoveEnd);
   }
 
   /**
@@ -365,32 +369,15 @@ class EChartsLayer extends Object {
    * @private
    */
   _unRegisterEvents () {
-    // const Map = this.$Map;
-    // const view = Map.getView();
-    unByKey(this.sizeChangeListener_);
-    // Map.un('change:size', this.onResize.bind(this));
-    if (this.$options.forcedPrecomposeRerender) {
-      unByKey(this.precomposeListener_);
-      // Map.un('precompose', this.reRender.bind(this));
-    }
-    unByKey(this.resolutionListener_);
-    unByKey(this.centerChangeListener_);
-    unByKey(this.rotationListener_);
-    unByKey(this.movestartListener_);
-    unByKey(this.moveendListener_);
-    this.sizeChangeListener_ = null;
-    this.precomposeListener_ = null;
-    this.sizeChangeListener_ = null;
-    this.resolutionListener_ = null;
-    this.centerChangeListener_ = null;
-    this.rotationListener_ = null;
-    this.movestartListener_ = null;
-    this.moveendListener_ = null;
-    // view.un('change:resolution', this.onZoomEnd.bind(this));
-    // view.un('change:center', this.onCenterChange.bind(this));
-    // view.un('change:rotation', this.onDragRotateEnd.bind(this));
-    // Map.un('movestart', this.onMoveStart.bind(this));
-    // Map.un('moveend', this.onMoveEnd.bind(this));
+    const map = this.getMap();
+    const view = map.getView();
+    map.un('precompose', this.reRender);
+    map.un('change:size', this.onResize);
+    view.un('change:resolution', this.onZoomEnd);
+    view.un('change:center', this.onCenterChange);
+    view.un('change:rotation', this.onDragRotateEnd);
+    map.un('movestart', this.onMoveStart);
+    map.un('moveend', this.onMoveEnd);
   }
 
   /**

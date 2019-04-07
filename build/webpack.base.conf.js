@@ -1,6 +1,6 @@
 'use strict'
 const path = require('path');
-const utils = require('./helper');
+const utils = require('./utils');
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
@@ -21,6 +21,7 @@ module.exports = {
       '.json'
     ],
     alias: {
+      'ol-echarts': utils.resolve('packages/ol-echarts/src/index.js'),
       'react-dom': '@hot-loader/react-dom' // https://github.com/gatsbyjs/gatsby/issues/11934
     }
   },
@@ -32,8 +33,8 @@ module.exports = {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         include: [
-          utils.resolve('src'),
-          utils.resolve('test'),
+          utils.resolve('website'),
+          utils.resolve('packages'),
           // utils.resolve('node_modules/webpack-dev-server/client')
         ],
       },

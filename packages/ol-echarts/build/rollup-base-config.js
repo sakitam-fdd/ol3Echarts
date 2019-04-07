@@ -3,7 +3,6 @@ const json = require('rollup-plugin-json');
 const cjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
-const glslify = require('rollup-plugin-glslify');
 const tslint = require('rollup-plugin-tslint');
 const typescript = require('rollup-plugin-typescript2');
 const { resolve } = require('./helper');
@@ -23,7 +22,6 @@ module.exports = {
       clean: true,
       useTsconfigDeclarationDir: true,
     }),
-    glslify({ basedir: 'src/shaders' }),
     nodeResolve({
       jsnext: true,
       main: true,
