@@ -25,6 +25,8 @@ module.exports = {
   rules: {
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/explicit-member-accessibility': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
 
     'max-len': ['error', { 'code': 150 }],
     'no-shadow': 0,

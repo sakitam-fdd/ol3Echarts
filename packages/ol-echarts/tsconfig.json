@@ -3,7 +3,8 @@
     "paths": {
       "*": [
         "types/*"
-      ]
+      ],
+      "echarts": ["node_modules/echarts/dist/echarts.min.js"]
     },
     "baseUrl": ".",
     "esModuleInterop": true,
