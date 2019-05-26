@@ -2,20 +2,22 @@
   "name": "ol-echarts",
   "version": "1.3.6",
   "description": "a openlayers extension to echarts",
-  "author": "FDD <smileFDD@gmail.com>",
+  "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
   "private": false,
-  "main": "dist/ol-echarts.common.js",
+  "main": "dist/ol-echarts.js",
   "module": "dist/ol-echarts.esm.js",
   "unpkg": "dist/ol-echarts.js",
+  "commonjs": "dist/ol-echarts.common.js",
   "namespace": "EchartsLayer",
   "types": "types/index.d.ts",
-  "workspaces": [
-    "packages/*"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sakitam-fdd/ol3Echarts.git"
+    "url": "https://github.com/sakitam-fdd/ol3Echarts.git",
+    "directory": "packages/ol-echarts"
   },
   "bugs": {
     "url": "https://github.com/sakitam-fdd/ol3Echarts/issues"
@@ -29,8 +31,8 @@
     "ol"
   ],
   "scripts": {
-    "dev": "rollup -wm -c build/rollup-dev-config.js",
-    "build": "rollup -c build/rollup-prod-config.js"
+    "dev": "cross-env NODE_ENV=development modulePath=ol-echarts input=src/index.ts rollup -wm -c ../../rollup/rollup.dev.config.js",
+    "build": "cross-env NODE_ENV=production modulePath=ol-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js"
   },
   "peerDependencies": {
     "echarts": ">=4.0.1",

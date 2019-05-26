@@ -27,7 +27,6 @@ module.exports = {
   },
   module: {
     rules: [
-      // ...(process.env.USEESLINT ? [utils.createLintingRule()] : []),
       ...[utils.createLintingRule()],
       {
         test: /\.(js|jsx)$/,
@@ -35,7 +34,7 @@ module.exports = {
         include: [
           utils.resolve('website'),
           utils.resolve('packages'),
-          // utils.resolve('node_modules/webpack-dev-server/client')
+          utils.resolve('node_modules/webpack-dev-server/client')
         ],
       },
       {

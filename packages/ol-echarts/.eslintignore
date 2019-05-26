@@ -1,0 +1,9 @@
+build/*.js
+config/*.js
+test/**/*.js
+public/**
+dist/
+node_modules/
+.eslintrc.js
+babel.config.js
+types/**/*.ts

@@ -10,7 +10,6 @@
     "strictNullChecks": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "jsx": "react",
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,

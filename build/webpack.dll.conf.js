@@ -2,6 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 
 module.exports = {
@@ -18,6 +19,7 @@ module.exports = {
     library: '[name]'
   },
   plugins: [
+    new ProgressBarPlugin(),
     new CleanWebpackPlugin([
       'dll'
     ], {
