@@ -8,6 +8,7 @@ const common = {
   extend: false,
   globals: {
     ...ol,
+    'echarts': 'echarts',
   },
 };
 

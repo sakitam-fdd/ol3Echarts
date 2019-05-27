@@ -13,6 +13,8 @@ const ol = require('./ol/external');
 
 const input = process.env.input;
 
+console.log(__dirname);
+
 module.exports = {
   input: resolve(input),
   plugins: [
@@ -55,5 +57,6 @@ module.exports = {
   ],
   external: [
     ...ol,
+    'echarts'
   ]
 };

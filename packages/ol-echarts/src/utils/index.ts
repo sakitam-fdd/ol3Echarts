@@ -81,6 +81,14 @@ function bindAll(fns: string[] | number[], context: any) {
   });
 }
 
+/**
+ * remove node
+ * @param node
+ */
+function removeNode(node: HTMLElement) {
+  return node && node.parentNode ? node.parentNode.removeChild(node) : null;
+}
+
 export {
   merge,
   isObject,
@@ -88,4 +96,5 @@ export {
   arrayAdd,
   uuid,
   bindAll,
+  removeNode,
 };

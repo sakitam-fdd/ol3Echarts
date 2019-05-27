@@ -1,7 +1,73 @@
-declare class EChartsLayer {
-    private _options;
-    constructor(options: object);
-    getOptions(): object;
-    setOptions(options: object): void;
+import { Object } from 'ol';
+import { bindAll, removeNode } from './utils';
+import formatGeoJSON from './utils/formatGeoJSON';
+declare type Nullable<T> = T | null;
+declare type NoDef<T> = T | undefined;
+interface OptionsTypes {
+    source: string | object;
+    destination: string | object;
+    forcedRerender: boolean;
+    forcedPrecomposeRerender: boolean;
+    hideOnZooming: boolean;
+    hideOnMoving: boolean;
+    hideOnRotating: boolean;
+    convertTypes: string[] | number[];
+    insertFirst: boolean;
+}
+interface ConstructorParameters {
+    chartOptions?: NoDef<Nullable<object>>;
+    options: OptionsTypes;
+    map?: any;
+}
+declare class EChartsLayer extends Object {
+    static formatGeoJSON: typeof formatGeoJSON;
+    static bind: (func: Function, context: any, ...args: any[]) => Function;
+    static uuid: () => string;
+    static bindAll: typeof bindAll;
+    static arrayAdd: (array: any[], item: any) => any[];
+    static removeNode: typeof removeNode;
+    static isObject: (value: any) => boolean;
+    private _chartOptions;
+    private _isRegistered;
+    private _incremental;
+    private _coordinateSystem;
+    private coordinateSystemId;
+    private readonly _options;
+    private _initEvent;
+    $chart: Nullable<any>;
+    $container: NoDef<HTMLElement>;
+    _map: any;
+    constructor({ chartOptions, options, map }: ConstructorParameters);
+    appendTo(map: any): void;
+    getMap(): any;
+    setMap(map: any): void;
+    getChartOptions(): object | undefined | null;
+    setChartOptions(options?: object): this;
+    appendData(data: any, save?: boolean | undefined | null): this;
+    clear(): void;
+    remove(): void;
+    show(): void;
+    hide(): void;
+    isVisible(): boolean | undefined;
+    showLoading(): void;
+    hideLoading(): void;
+    render(): void;
+    redraw(): void;
+    updateViewSize(size: number[]): void;
+    private onResize;
+    private onZoomEnd;
+    private onDragRotateEnd;
+    private onMoveStart;
+    private onMoveEnd;
+    private onCenterChange;
+    private handleMapChanged;
+    private createLayerContainer;
+    private bindEvent;
+    private unBindEvent;
+    private clearAndRedraw;
+    private registerMap;
+    private convertData;
+    private getCoordinateSystem;
+    private dispatchEvent;
 }
 export default EChartsLayer;

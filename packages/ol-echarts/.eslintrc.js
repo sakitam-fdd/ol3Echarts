@@ -1,5 +1,7 @@
 // https://eslint.org/docs/user-guide/configuring
 
+console.log(__dirname);
+
 module.exports = {
   root: true,
   parserOptions: {

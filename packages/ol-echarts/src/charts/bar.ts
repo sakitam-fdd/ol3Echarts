@@ -1,4 +1,4 @@
-import { isObject } from '../helper';
+import { isObject } from '../utils';
 
 const bar = function (
   options: {

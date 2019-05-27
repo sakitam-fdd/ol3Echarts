@@ -5,8 +5,14 @@ import { transform } from 'ol/proj';
 // @ts-ignore
 import echarts from 'echarts';
 
-import { merge, isObject, arrayAdd, bind, uuid, bindAll } from './helper';
-import formatGeoJSON from './coordinate/formatGeoJSON';
+import {
+  isObject,
+  arrayAdd, bind,
+  uuid, bindAll,
+  removeNode,
+} from './utils';
+import formatGeoJSON from './utils/formatGeoJSON';
+
 import * as charts from './charts/index';
 
 const _options = {
@@ -16,32 +22,72 @@ const _options = {
   hideOnMoving: false, // when moving hide chart
   hideOnRotating: false, // // when Rotating hide chart
   convertTypes: ['pie', 'line', 'bar'],
+  insertFirst: false,
 };
 
+type Nullable<T> = T | null;
+type NoDef<T> = T | undefined;
+
+interface OptionsTypes {
+  source: string | object;
+  destination: string | object;
+  forcedRerender: boolean;
+  forcedPrecomposeRerender: boolean;
+  hideOnZooming: boolean;
+  hideOnMoving: boolean;
+  hideOnRotating: boolean;
+  convertTypes: string[] | number[];
+  insertFirst: boolean;
+}
+
 interface ConstructorParameters {
-  chartOptions?: object;
-  options: object;
+  chartOptions?: NoDef<Nullable<object>>;
+  options: OptionsTypes;
   map?: any;
 }
 
 class EChartsLayer extends Object {
-  static formatGeoJSON = formatGeoJSON;
-  private _chartOptions: object | undefined | null;
-  private $chart: null | any;
+  public static formatGeoJSON = formatGeoJSON;
+
+  public static bind = bind;
+
+  public static uuid = uuid;
+
+  public static bindAll = bindAll;
+
+  public static arrayAdd = arrayAdd;
+
+  public static removeNode = removeNode;
+
+  public static isObject = isObject;
+
+  private _chartOptions: NoDef<Nullable<object>>;
+
   private _isRegistered: boolean;
+
   private _incremental: any[];
-  private _coordinateSystem: null | any;
+
+  private _coordinateSystem: Nullable<any>;
+
   private coordinateSystemId: string;
-  private _options: object | undefined | null;
+
+  private readonly _options: OptionsTypes;
+
+  private _initEvent: boolean;
+
+  public $chart: Nullable<any>;
+
+  public $container: NoDef<HTMLElement>;
 
   public _map: any;
-  constructor ({ chartOptions, options, map }: ConstructorParameters) {
+
+  constructor({ chartOptions, options, map }: ConstructorParameters) {
     super(options);
 
     /**
      * layer options
      */
-    this._options = merge(_options, options);
+    this._options = Object.assign(_options, options);
 
     /**
      * chart options
@@ -55,11 +101,22 @@ class EChartsLayer extends Object {
     this.$chart = null;
 
     /**
+     * chart element
+     * @type {undefined}
+     */
+    this.$container = undefined;
+
+    /**
      * Whether the relevant configuration has been registered
      * @type {boolean}
      * @private
      */
     this._isRegistered = false;
+
+    /**
+     * check if init
+     */
+    this._initEvent = false;
 
     /**
      * 增量数据存放
@@ -82,37 +139,57 @@ class EChartsLayer extends Object {
 
     bindAll([
       'reRender', 'onResize', 'onZoomEnd', 'onCenterChange',
-      'onDragRotateEnd', 'onMoveStart', 'onMoveEnd'
+      'onDragRotateEnd', 'onMoveStart', 'onMoveEnd',
     ], this);
 
-    if (map) this.appendTo(map);
+    if (map) this.setMap(map);
   }
 
   /**
    * append layer to map
    * @param map
    */
-  appendTo (map: any) {
+  public appendTo(map: any) {
+    this.setMap(map);
+  }
+
+  /**
+   * get ol map
+   * @returns {ol.Map}
+   */
+  public getMap() {
+    return this._map;
+  }
+
+  /**
+   * set map
+   * @param map
+   */
+  public setMap(map: any) {
     if (map && map instanceof Map) {
-      this.setMap(map);
+      this._map = map;
+      this._map.once('postrender', () => {
+        this.handleMapChanged();
+      });
+      this._map.renderSync();
     } else {
-      throw new Error('not map object');
+      throw new Error('not ol map object');
     }
   }
 
   /**
    * get echarts options
    */
-  getChartOptions (): object | undefined | null {
+  public getChartOptions(): object | undefined | null {
     return this._chartOptions;
   }
 
   /**
-   * set echarts options and reRender
+   * set echarts options and redraw
    * @param options
    * @returns {EChartsLayer}
    */
-  setChartOptions (options: undefined | null | object = {}) {
+  public setChartOptions(options: object = {}) {
     this._chartOptions = options;
     this.clearAndRedraw();
     return this;
@@ -124,7 +201,7 @@ class EChartsLayer extends Object {
    * @param save
    * @returns {EChartsLayer}
    */
-  appendData (data: any, save: boolean | undefined | null = true) {
+  public appendData(data: any, save: boolean | undefined | null = true) {
     if (data) {
       if (save) {
         this._incremental = arrayAdd(this._incremental, {
@@ -144,25 +221,51 @@ class EChartsLayer extends Object {
   /**
    * clear layer
    */
-  clear () {
+  public clear() {
     this._incremental = [];
-    this.$chart.clear();
+    if (this.$chart) {
+      this.$chart.clear();
+    }
   }
 
   /**
    * remove layer
    */
-  remove () {
-    this.$chart.clear();
+  public remove() {
+    this.clear();
     this.$chart.dispose();
-    this._incremental = [];
     delete this.$chart;
+  }
+
+  /**
+   * show layer
+   */
+  public show() {
+    if (this.$container) {
+      this.$container.style.display = '';
+    }
+  }
+
+  /**
+   * hide layer
+   */
+  public hide() {
+    if (this.$container) {
+      this.$container.style.display = 'none';
+    }
+  }
+
+  /**
+   * check layer is visible
+   */
+  public isVisible() {
+    return this.$container && this.$container.style.display !== 'none';
   }
 
   /**
    * show loading bar
    */
-  showLoading () {
+  public showLoading() {
     if (this.$chart) {
       this.$chart.showLoading();
     }
@@ -171,7 +274,7 @@ class EChartsLayer extends Object {
   /**
    * hide loading bar
    */
-  hideLoading () {
+  public hideLoading() {
     if (this.$chart) {
       this.$chart.hideLoading();
     }
@@ -180,82 +283,255 @@ class EChartsLayer extends Object {
   /**
    * render
    */
-  render () {
-    console.log('11');
+  public render() {
     if (!this.$chart) {
-      // @ts-ignore
-      this.$chart = echarts.init(this.element);
+      this.$chart = echarts.init(this.$container);
       if (this._chartOptions) {
         this.registerMap();
-        this.$chart.setOption(this.reConverData(this._chartOptions), false);
+        this.$chart.setOption(this.convertData(this._chartOptions), false);
       }
     } else if (this.isVisible()) {
-      // this.$chart.resize();
-      this.clearAndRedraw();
+      this.redraw();
     }
   }
 
-  updateViewSize(size: number[]): void {
-    super.updateViewSize(size);
-    this.onResize();
+  /**
+   * redraw echarts layer
+   */
+  public redraw() {
+    this.clearAndRedraw();
   }
 
-  onResize () {
-    this.clearAndRedraw();
-    this.dispatchEvent({
-      type: 'change:size',
-      source: this,
-    });
+  /**
+   * update container size
+   * @param size
+   */
+  public updateViewSize(size: number[]): void {
+    if (!this.$container) return;
+    this.$container.style.width = `${size[0]}px`;
+    this.$container.style.height = `${size[1]}px`;
+    this.$container.setAttribute('width', String(size[0]));
+    this.$container.setAttribute('height', String(size[1]));
+  }
+
+  /**
+   * handle map view resize
+   */
+  private onResize() {
+    const map = this.getMap();
+    if (map) {
+      const size: number[] = map.getSize();
+      this.updateViewSize(size);
+      this.clearAndRedraw();
+      this.dispatchEvent({
+        type: 'change:size',
+        source: this,
+        value: size,
+      });
+    }
+  }
+
+  /**
+   * handle zoom end events
+   */
+  private onZoomEnd() {
+    this._options.hideOnZooming && this.show();
+    const map = this.getMap();
+    if (map && map.getView()) {
+      this.clearAndRedraw();
+      this.dispatchEvent({
+        type: 'zoomend',
+        source: this,
+        value: map.getView().getZoom(),
+      });
+    }
+  }
+
+  /**
+   * handle rotate end events
+   */
+  private onDragRotateEnd() {
+    this._options.hideOnRotating && this.show();
+    const map = this.getMap();
+    if (map && map.getView()) {
+      this.clearAndRedraw();
+      this.dispatchEvent({
+        type: 'change:rotation',
+        source: this,
+        value: map.getView().getRotation(),
+      });
+    }
+  }
+
+  /**
+   * handle move start events
+   */
+  private onMoveStart() {
+    this._options.hideOnMoving && this.hide();
+    const map = this.getMap();
+    if (map && map.getView()) {
+      this.dispatchEvent({
+        type: 'movestart',
+        source: this,
+      });
+    }
+  }
+
+  /**
+   * handle move end events
+   */
+  private onMoveEnd() {
+    this._options.hideOnMoving && this.show();
+    const map = this.getMap();
+    if (map && map.getView()) {
+      this.clearAndRedraw();
+      this.dispatchEvent({
+        type: 'moveend',
+        source: this,
+        value: map.getView().getCenter(),
+      });
+    }
+  }
+
+  /**
+   * handle center change
+   */
+  private onCenterChange() {
+    const map = this.getMap();
+    if (map && map.getView()) {
+      this.clearAndRedraw();
+      this.dispatchEvent({
+        type: 'change:center',
+        source: this,
+        value: map.getView().getCenter(),
+      });
+    }
+  }
+
+  /**
+   * handle map change
+   */
+  private handleMapChanged() {
+    const map = this.getMap();
+    if (this._initEvent && this.$container) {
+      this.$container && removeNode(this.$container);
+      this.unBindEvent();
+    }
+
+    if (!this.$container) {
+      this.createLayerContainer();
+      this.onResize();
+    }
+
+    if (map) {
+      const container = map.getOverlayContainer();
+      if (this._options.insertFirst) {
+        container.insertBefore(this.$container, container.childNodes[0] || null);
+      } else {
+        container.appendChild(this.$container);
+      }
+
+      this.render();
+      this.bindEvent(map);
+    }
+  }
+
+  /**
+   * create container
+   */
+  private createLayerContainer() {
+    this.$container = document.createElement('div');
+    this.$container.style.position = 'absolute';
+    this.$container.style.top = '0px';
+    this.$container.style.left = '0px';
+    this.$container.style.right = '0px';
+    this.$container.style.bottom = '0px';
+  }
+
+  /**
+   * register events
+   * @private
+   */
+  private bindEvent(map: any) {
+    // https://github.com/openlayers/openlayers/issues/7284
+    const view = map.getView();
+    if (this._options.forcedPrecomposeRerender) {
+      map.on('precompose', this.redraw);
+    }
+    map.on('change:size', this.onResize);
+    view.on('change:resolution', this.onZoomEnd);
+    view.on('change:center', this.onCenterChange);
+    view.on('change:rotation', this.onDragRotateEnd);
+    map.on('movestart', this.onMoveStart);
+    map.on('moveend', this.onMoveEnd);
+    this._initEvent = true;
+  }
+
+  /**
+   * un register events
+   * @private
+   */
+  private unBindEvent() {
+    const map = this.getMap();
+    if (!map) return;
+    const view = map.getView();
+    if (!view) return;
+    map.un('precompose', this.redraw);
+    map.un('change:size', this.onResize);
+    view.un('change:resolution', this.onZoomEnd);
+    view.un('change:center', this.onCenterChange);
+    view.un('change:rotation', this.onDragRotateEnd);
+    map.un('movestart', this.onMoveStart);
+    map.un('moveend', this.onMoveEnd);
+    this._initEvent = false;
   }
 
   /**
    * clear chart and redraw
    * @private
    */
-  private clearAndRedraw () {
-    if (!this.$chart || !this.isVisible()) {
-      return;
-    }
-    this.dispatchEvent({
-      type: 'redraw',
-      source: this,
-    });
-    // @ts-ignore
-    if (this.$options.forcedRerender) {
+  private clearAndRedraw() {
+    if (!this.$chart || !this.isVisible()) return;
+    if (this._options.forcedRerender) {
       this.$chart.clear();
     }
     this.$chart.resize();
     if (this._chartOptions) {
       this.registerMap();
-      this.$chart.setOption(this.reConverData(this._chartOptions), false);
+      this.$chart.setOption(this.convertData(this._chartOptions), false);
       if (this._incremental && this._incremental.length > 0) {
         for (let i = 0; i < this._incremental.length; i++) {
           this.appendData(this._incremental[i], false);
         }
       }
     }
+
+    this.dispatchEvent({
+      type: 'redraw',
+      source: this,
+    });
   }
 
   /**
    * register map coordinate system
    * @private
    */
-  private registerMap () {
+  private registerMap() {
     if (!this._isRegistered) {
       this.coordinateSystemId = `openlayers_${uuid()}`;
-      echarts.registerCoordinateSystem(this.coordinateSystemId, this.getCoordinateSystem(this.$options));
+      echarts.registerCoordinateSystem(this.coordinateSystemId, this.getCoordinateSystem(this._options));
       this._isRegistered = true;
     }
     // @ts-ignore
     const series = this._chartOptions && this._chartOptions.series;
     if (series && isObject(series)) {
       // @ts-ignore
-      const convertTypes = this.$options && this.$options.convertTypes;
+      const convertTypes = this._options && this._options.convertTypes;
       for (let i = series.length - 1; i >= 0; i--) {
-        if (!(convertTypes.indexOf(series[i]['type']) > -1)) {
-          series[i]['coordinateSystem'] = this.coordinateSystemId;
+        if (!(convertTypes.indexOf(series[i].type) > -1)) {
+          series[i].coordinateSystem = this.coordinateSystemId;
         }
-        series[i]['animation'] = false;
+        series[i].animation = false;
       }
     }
   }
@@ -265,20 +541,21 @@ class EChartsLayer extends Object {
    * @param options
    * @returns {*}
    */
-  private reConverData (options: object) {
-    const series = options['series'];
+  private convertData(options: object) {
+    // @ts-ignore
+    const series = options.series;
     if (series && series.length > 0) {
       if (!this._coordinateSystem) {
-        const Rc = this.getCoordinateSystem(this.$options);
+        const Rc = this.getCoordinateSystem(this._options);
         // @ts-ignore
         this._coordinateSystem = new Rc(this.getMap());
       }
       if (series && isObject(series)) {
-        const convertTypes = this.$options && this.$options.convertTypes;
+        const convertTypes = this._options && this._options.convertTypes;
         for (let i = series.length - 1; i >= 0; i--) {
-          if (convertTypes.indexOf(series[i]['type']) > -1) {
+          if (convertTypes.indexOf(series[i].type) > -1) {
             if (series[i] && series[i].hasOwnProperty('coordinates')) {
-              series[i] = charts[series[i]['type']](options, series[i], this._coordinateSystem);
+              series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
             }
           }
         }
@@ -287,7 +564,11 @@ class EChartsLayer extends Object {
     return options;
   }
 
-  private getCoordinateSystem (options?: object) {
+  /**
+   * register coordinateSystem
+   * @param options
+   */
+  private getCoordinateSystem(options?: OptionsTypes) {
     const map = this.getMap();
     const coordinateSystemId = this.coordinateSystemId;
 
@@ -341,7 +622,7 @@ class EChartsLayer extends Object {
       let coords;
       if (data && Array.isArray(data) && data.length > 0) {
         coords = data.map((item: string | number): number => {
-          let res: number = 0;
+          let res = 0;
           if (typeof item === 'string') {
             res = Number(item);
           } else {
@@ -350,8 +631,8 @@ class EChartsLayer extends Object {
           return res;
         });
       }
-      const source = options && options['source'] || 'EPSG:4326';
-      const destination = options && options['destination'] || this.projCode;
+      const source = (options && options.source) || 'EPSG:4326';
+      const destination = (options && options.destination) || this.projCode;
       const pixel = this.map.getPixelFromCoordinate(transform(coords, source, destination));
       const mapOffset = this._mapOffset;
       return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
@@ -391,7 +672,6 @@ class EChartsLayer extends Object {
       const rect = this.getViewRect();
       return {
         coordSys: {
-          // The name exposed to user is always 'cartesian2d' but not 'grid'.
           type: coordinateSystemId,
           x: rect.x,
           y: rect.y,
@@ -405,8 +685,8 @@ class EChartsLayer extends Object {
       };
     };
 
-    RegisterCoordinateSystem.create = function (echartModel: any) {
-      echartModel.eachSeries((seriesModel: any) => {
+    RegisterCoordinateSystem.create = function (echartsModel: any) {
+      echartsModel.eachSeries((seriesModel: any) => {
         if (seriesModel.get('coordinateSystem') === coordinateSystemId) {
           // @ts-ignore
           seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);
@@ -415,11 +695,10 @@ class EChartsLayer extends Object {
     };
 
     RegisterCoordinateSystem.getProjectionCode = function (map: any): string {
-      let code: string = '';
+      let code = '';
       if (map) {
-        code =
-          map.getView() &&
-          map
+        code = map.getView()
+          && map
             .getView()
             .getProjection()
             .getCode();
@@ -437,16 +716,24 @@ class EChartsLayer extends Object {
           const halfSize = dataSize[dimIdx] / 2;
           p1[dimIdx] = val - halfSize;
           p2[dimIdx] = val + halfSize;
-          p1[1 - dimIdx] = p2[1 - dimIdx] = dataItem[1 - dimIdx];
+          p1[1 - dimIdx] = dataItem[1 - dimIdx];
+          p2[1 - dimIdx] = dataItem[1 - dimIdx];
           // @ts-ignore
           const offset: number = this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx];
           return Math.abs(offset);
         },
-        this,
-      );
+        this);
     };
 
     return RegisterCoordinateSystem;
+  }
+
+  /**
+   * dispatch event
+   * @param args
+   */
+  private dispatchEvent(...args: any[]) {
+    return super.dispatchEvent(...args);
   }
 }
 
