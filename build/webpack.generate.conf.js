@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const path = require('path');
 const utils = require('./utils');
 const webpack = require('webpack');
@@ -121,15 +121,36 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
       name: 'manifest'
     },
     splitChunks: {
+      // 可填 async, initial, all. 顾名思义，async针对异步加载的chunk做切割，initial针对初始chunk，all针对所有chunk
+      chunks: 'all',
+      // 我们切割完要生成的新chunk要>30kb，否则不生成新chunk
+      minSize: 30000,
+      // 共享该module的最小chunk数
+      minChunks: 1,
+      // 最多有5个异步加载请求该module
+      maxAsyncRequests: 5,
+      // 初始化的时候最多有3个请求该module
+      maxInitialRequests: 3,
+      // 名字中间的间隔符
+      automaticNameDelimiter: '.',
+      // chunk的名字，如果设成true，会根据被提取的chunk自动生成。
+      name: true,
       cacheGroups: {
-        vendor: {
-          chunks: 'initial',
-          test: 'vendor',
-          name: 'vendor',
-          enforce: true
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          // 优先级高的chunk为被优先选择(说出来感觉好蠢),优先级一样的话，size大的优先被选择
+          priority: -10,
+          // 当module未变时，是否可以使用之前的chunk
+          reuseExistingChunk: true
+        },
+        default: {
+          // enforce: true,
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
         }
       }
-    }
+    },
   }
 });
 

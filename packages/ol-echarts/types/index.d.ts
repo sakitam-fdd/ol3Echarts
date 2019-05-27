@@ -1,4 +1,4 @@
-import { Object } from 'ol';
+import { Object as obj } from 'ol';
 import { bindAll, removeNode } from './utils';
 import formatGeoJSON from './utils/formatGeoJSON';
 declare type Nullable<T> = T | null;
@@ -13,13 +13,9 @@ interface OptionsTypes {
     hideOnRotating: boolean;
     convertTypes: string[] | number[];
     insertFirst: boolean;
+    stopEvent: boolean;
 }
-interface ConstructorParameters {
-    chartOptions?: NoDef<Nullable<object>>;
-    options: OptionsTypes;
-    map?: any;
-}
-declare class EChartsLayer extends Object {
+declare class EChartsLayer extends obj {
     static formatGeoJSON: typeof formatGeoJSON;
     static bind: (func: Function, context: any, ...args: any[]) => Function;
     static uuid: () => string;
@@ -37,7 +33,7 @@ declare class EChartsLayer extends Object {
     $chart: Nullable<any>;
     $container: NoDef<HTMLElement>;
     _map: any;
-    constructor({ chartOptions, options, map }: ConstructorParameters);
+    constructor(options: OptionsTypes, chartOptions?: NoDef<Nullable<object>>, map?: any);
     appendTo(map: any): void;
     getMap(): any;
     setMap(map: any): void;

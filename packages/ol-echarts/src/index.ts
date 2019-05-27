@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Map, Object } from 'ol';
+import { Map, Object as obj } from 'ol';
 // @ts-ignore
 import { transform } from 'ol/proj';
 // @ts-ignore
@@ -23,6 +23,7 @@ const _options = {
   hideOnRotating: false, // // when Rotating hide chart
   convertTypes: ['pie', 'line', 'bar'],
   insertFirst: false,
+  stopEvent: false,
 };
 
 type Nullable<T> = T | null;
@@ -38,15 +39,10 @@ interface OptionsTypes {
   hideOnRotating: boolean;
   convertTypes: string[] | number[];
   insertFirst: boolean;
+  stopEvent: boolean;
 }
 
-interface ConstructorParameters {
-  chartOptions?: NoDef<Nullable<object>>;
-  options: OptionsTypes;
-  map?: any;
-}
-
-class EChartsLayer extends Object {
+class EChartsLayer extends obj {
   public static formatGeoJSON = formatGeoJSON;
 
   public static bind = bind;
@@ -81,7 +77,7 @@ class EChartsLayer extends Object {
 
   public _map: any;
 
-  constructor({ chartOptions, options, map }: ConstructorParameters) {
+  constructor(options: OptionsTypes, chartOptions?: NoDef<Nullable<object>>, map?: any) {
     super(options);
 
     /**
@@ -138,7 +134,7 @@ class EChartsLayer extends Object {
     this.coordinateSystemId = '';
 
     bindAll([
-      'reRender', 'onResize', 'onZoomEnd', 'onCenterChange',
+      'redraw', 'onResize', 'onZoomEnd', 'onCenterChange',
       'onDragRotateEnd', 'onMoveStart', 'onMoveEnd',
     ], this);
 
@@ -290,6 +286,11 @@ class EChartsLayer extends Object {
         this.registerMap();
         this.$chart.setOption(this.convertData(this._chartOptions), false);
       }
+      this.dispatchEvent({
+        type: 'load',
+        source: this,
+        value: this.$chart,
+      });
     } else if (this.isVisible()) {
       this.redraw();
     }
@@ -424,7 +425,7 @@ class EChartsLayer extends Object {
     }
 
     if (map) {
-      const container = map.getOverlayContainer();
+      const container = this._options.stopEvent ? map.getOverlayContainerStopEvent() : map.getOverlayContainer();
       if (this._options.insertFirst) {
         container.insertBefore(this.$container, container.childNodes[0] || null);
       } else {

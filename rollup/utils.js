@@ -5,8 +5,6 @@ const resolve = _path => path.resolve(__dirname, `../packages/${modulePath}`, _p
 
 const pkg = require(`../packages/${modulePath}/package.json`);
 
-console.log(pkg)
-
 const time = new Date();
 const year = time.getFullYear();
 const banner = `/*!\n * author: ${pkg.author} 

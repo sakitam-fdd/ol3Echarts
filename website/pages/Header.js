@@ -1,35 +1,36 @@
-import React, { Component } from 'react'; // eslint-disable-line
+import React, { Component } from 'react';
 import logo from '../assets/images/logo.png';
 import github from '../assets/images/github.png';
-import '../assets/style/header.scss';
+import '../assets/style/header.less';
 
 class Header extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context);
-    this.state = {
-      isMobel: false
-    }
+    this.state = {};
   }
 
-  componentDidMount () {
+  componentDidMount() {
   }
 
-  handleDefEvent (event) {
+  handleDefEvent(event) {
     if (event.preventDefault) {
-      event.preventDefault()
+      event.preventDefault();
     } else {
-      event.returnValue = false
+      event.returnValue = false;
     }
   }
 
-  openDocs (event) {
-    window.open('./docs/index.html')
+  openDocs() {
+    window.open('./docs/index.html');
   }
 
-  render () {
+  render() {
     return (
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
       <div className="header clearfix" onClick={event => this.handleDefEvent(event)}>
         <div className="navbar-header">
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a href="" className="navbar-brand">
             <img src={logo} alt="logo" className="navbar-logo" />
           </a>
@@ -45,14 +46,15 @@ class Header extends Component {
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li id="nav-github">
+              {/* eslint-disable-next-line react/jsx-no-target-blank */}
               <a href="https://github.com/sakitam-fdd/ol3Echarts" target="_blank">
-                <img src={github} width="18" />
+                <img src={github} width="18" alt="github" />
               </a>
             </li>
           </ul>
         </div>
       </div>
-    )
+    );
   }
 }
 

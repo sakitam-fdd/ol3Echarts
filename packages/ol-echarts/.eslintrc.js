@@ -1,7 +1,5 @@
 // https://eslint.org/docs/user-guide/configuring
 
-console.log(__dirname);
-
 module.exports = {
   root: true,
   parserOptions: {
@@ -9,7 +7,7 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
     project: 'tsconfig.json',
-    tsconfigRootDir: './packages/ol-echarts/'
+    // tsconfigRootDir: './packages/ol-echarts/'
   },
   env: {
     browser: true,

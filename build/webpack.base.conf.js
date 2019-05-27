@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const path = require('path');
 const utils = require('./utils');
 
@@ -21,7 +21,7 @@ module.exports = {
       '.json'
     ],
     alias: {
-      'ol-echarts': utils.resolve('packages/ol-echarts/src/index.js'),
+      '@': utils.resolve('website'),
       'react-dom': '@hot-loader/react-dom' // https://github.com/gatsbyjs/gatsby/issues/11934
     }
   },
@@ -75,4 +75,4 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty'
   }
-}
+};

@@ -1,5 +1,5 @@
 const { uglify }  = require('rollup-plugin-uglify');
-const { banner, handleMinEsm } = require('./utils');
+const { banner, handleMinEsm, pkg, resolve } = require('./utils');
 const baseConfig = require('./rollup.base.config');
 const ol = require('./ol/globals');
 
@@ -12,13 +12,10 @@ const common = {
   },
 };
 
-const pkgfile = process.env.pkg;
-const pkg = require(pkgfile);
-
 const config = Object.assign(baseConfig, {
   output: [
     {
-      file: handleMinEsm(pkg.main),
+      file: resolve(handleMinEsm(pkg.main)),
       format: 'umd',
       name: pkg.namespace,
       ...common,

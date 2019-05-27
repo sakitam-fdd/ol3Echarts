@@ -12,4 +12,4 @@ before_script:
   - sleep 3 # give xvfb some time to start
 script:
 - yarn run build
-- yarn run karma.test
+#- yarn run karma.test

@@ -1,15 +1,13 @@
-import * as React from 'react'; // eslint-disable-line
-import * as ReactDOM from 'react-dom'; // eslint-disable-line
-import {HashRouter as Router} from 'react-router-dom'; // eslint-disable-line
-import { AppContainer } from 'react-hot-loader'; // eslint-disable-line
-import { createBrowserHistory } from 'history';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { HashRouter as Router } from 'react-router-dom';
+import { AppContainer } from 'react-hot-loader';
+// import { createBrowserHistory } from 'history';
 
 import routes from './routes/index';
 
 const env = process.env.NODE_ENV || 'development';
-const browserHistory = createBrowserHistory();
-
-console.log(browserHistory);
+// const browserHistory = createBrowserHistory();
 
 const RootApp = () => (
   <Router>
@@ -39,7 +37,7 @@ if (env === 'development') {
   window.onload = function () {
     ReactDOM.render(
       <RootApp />,
-      document.getElementById('app')
+      document.getElementById('app'),
     );
   };
 }

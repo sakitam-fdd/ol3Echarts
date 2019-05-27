@@ -19,7 +19,11 @@ module.exports = {
     'react/jsx-filename-extension': 0,
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
+    'react/no-array-index-key': 'off',
     'import/prefer-default-export': 0,
+    'import/no-extraneous-dependencies': 'off',
+
+    'class-methods-use-this': 'off',
 
     'no-plusplus': 0,
     'import/no-unresolved': 0,
