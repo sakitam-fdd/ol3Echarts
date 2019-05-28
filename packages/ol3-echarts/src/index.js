@@ -443,6 +443,33 @@ class ol3Echarts extends ol.Object {
   reRender () {
     this._clearAndRedraw();
   }
+
+  /**
+   * setZIndex
+   */
+  setZIndex (zIndex) {
+    if (this.$container) {
+      this.$container.style.zIndex = zIndex;
+    }
+  }
+
+  /**
+   * visible
+   */
+  setVisible (visible) {
+    if (visible) {
+        let options = this.get('options');
+        if (options) {
+          this.setChartOptions(options);
+          this.unset('options');
+        }
+    } else {
+        let options = this.getChartOptions();
+        this.set('options', options);
+        this.clear();
+        this.setChartOptions({});
+    }
+  }
 }
 
 export default ol3Echarts;
