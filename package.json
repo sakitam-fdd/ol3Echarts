@@ -8,8 +8,6 @@
     "build": "lerna run build",
     "clean": "lerna clean",
     "karma.test": "lerna run karma.test",
-    "karma.cover": "lerna run karma.cover",
-    "karma.tdd": "lerna run karma.tdd",
     "lint": "eslint --fix --ext .js,.jsx packages/ol-echarts/src packages/ol3-echarts/src",
     "bootstrap": "lerna bootstrap",
     "publish-packages": "lerna publish --force-publish",

@@ -1,9 +1,4 @@
 import EChartsLayer from 'ol-echarts';
-import {
-  describe, beforeEach,
-  afterEach, it,
-  expect,
-} from 'jasmine';
 
 describe('indexSpec', () => {
   beforeEach(() => {

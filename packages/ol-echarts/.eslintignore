@@ -1,6 +1,6 @@
 build/*.js
 config/*.js
-test/**/*.js
+packages/
 public/**
 dist/
 node_modules/
