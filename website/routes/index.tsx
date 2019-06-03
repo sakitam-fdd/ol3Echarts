@@ -1,3 +1,6 @@
+import 'ol/ol.css';
+import '../assets/style/art.less';
+
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 // import bar from '../pages/bar';
@@ -159,6 +162,7 @@ const mainRouter = [
 
 const routes = (
   <Switch>
+    // @ts-ignore
     {mainRouter.map((route) => <Route key={route.key} {...route.route} />)}
     <Redirect to="/index" />
   </Switch>

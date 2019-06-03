@@ -4,16 +4,16 @@ import formatGeoJSON from './utils/formatGeoJSON';
 declare type Nullable<T> = T | null;
 declare type NoDef<T> = T | undefined;
 interface OptionsTypes {
-    source: string | object;
-    destination: string | object;
-    forcedRerender: boolean;
-    forcedPrecomposeRerender: boolean;
-    hideOnZooming: boolean;
-    hideOnMoving: boolean;
-    hideOnRotating: boolean;
-    convertTypes: string[] | number[];
-    insertFirst: boolean;
-    stopEvent: boolean;
+    source?: string | object;
+    destination?: string | object;
+    forcedRerender?: boolean;
+    forcedPrecomposeRerender?: boolean;
+    hideOnZooming?: boolean;
+    hideOnMoving?: boolean;
+    hideOnRotating?: boolean;
+    convertTypes?: string[] | number[];
+    insertFirst?: boolean;
+    stopEvent?: boolean;
 }
 declare class EChartsLayer extends obj {
     static formatGeoJSON: typeof formatGeoJSON;

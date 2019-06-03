@@ -5,7 +5,7 @@ const utils = require('./utils');
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './website/index.js'
+    app: './website/index.tsx'
   },
   output: {
     path: utils.resolve('_site'),
@@ -28,6 +28,15 @@ module.exports = {
   module: {
     rules: [
       ...[utils.createLintingRule()],
+      {
+        test: /\.(ts|tsx)$/,
+        loader: 'ts-loader',
+        include: [
+          utils.resolve('packages'),
+          utils.resolve('website'),
+          utils.resolve('test'),
+        ]
+      },
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',

@@ -7,6 +7,7 @@ module.exports = {
       loose: true,
       modules: false,
     }],
+    '@babel/preset-typescript',
     '@babel/preset-react',
   ],
   plugins: [
@@ -23,7 +24,7 @@ module.exports = {
     'react-hot-loader/babel',
   ],
   ignore: [
-    'dist/*.js',
+    '_site/*.js',
   ],
   comments: false,
 };

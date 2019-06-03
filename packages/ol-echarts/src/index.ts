@@ -30,16 +30,16 @@ type Nullable<T> = T | null;
 type NoDef<T> = T | undefined;
 
 interface OptionsTypes {
-  source: string | object;
-  destination: string | object;
-  forcedRerender: boolean;
-  forcedPrecomposeRerender: boolean;
-  hideOnZooming: boolean;
-  hideOnMoving: boolean;
-  hideOnRotating: boolean;
-  convertTypes: string[] | number[];
-  insertFirst: boolean;
-  stopEvent: boolean;
+  source?: string | object;
+  destination?: string | object;
+  forcedRerender?: boolean;
+  forcedPrecomposeRerender?: boolean;
+  hideOnZooming?: boolean;
+  hideOnMoving?: boolean;
+  hideOnRotating?: boolean;
+  convertTypes?: string[] | number[];
+  insertFirst?: boolean;
+  stopEvent?: boolean;
 }
 
 class EChartsLayer extends obj {
@@ -280,7 +280,8 @@ class EChartsLayer extends obj {
    * render
    */
   public render() {
-    if (!this.$chart) {
+    if (!this.$chart && this.$container) {
+      // @ts-ignore
       this.$chart = echarts.init(this.$container);
       if (this._chartOptions) {
         this.registerMap();
@@ -520,19 +521,24 @@ class EChartsLayer extends obj {
   private registerMap() {
     if (!this._isRegistered) {
       this.coordinateSystemId = `openlayers_${uuid()}`;
+      // @ts-ignore
       echarts.registerCoordinateSystem(this.coordinateSystemId, this.getCoordinateSystem(this._options));
       this._isRegistered = true;
     }
-    // @ts-ignore
-    const series = this._chartOptions && this._chartOptions.series;
-    if (series && isObject(series)) {
+
+    if (this._chartOptions) {
       // @ts-ignore
-      const convertTypes = this._options && this._options.convertTypes;
-      for (let i = series.length - 1; i >= 0; i--) {
-        if (!(convertTypes.indexOf(series[i].type) > -1)) {
-          series[i].coordinateSystem = this.coordinateSystemId;
+      const series = this._chartOptions.series;
+      if (series && isObject(series)) {
+        const convertTypes = this._options.convertTypes;
+        if (convertTypes) {
+          for (let i = series.length - 1; i >= 0; i--) {
+            if (!(convertTypes.indexOf(series[i].type) > -1)) {
+              series[i].coordinateSystem = this.coordinateSystemId;
+            }
+            series[i].animation = false;
+          }
         }
-        series[i].animation = false;
       }
     }
   }
@@ -552,11 +558,13 @@ class EChartsLayer extends obj {
         this._coordinateSystem = new Rc(this.getMap());
       }
       if (series && isObject(series)) {
-        const convertTypes = this._options && this._options.convertTypes;
-        for (let i = series.length - 1; i >= 0; i--) {
-          if (convertTypes.indexOf(series[i].type) > -1) {
-            if (series[i] && series[i].hasOwnProperty('coordinates')) {
-              series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
+        const convertTypes = this._options.convertTypes;
+        if (convertTypes) {
+          for (let i = series.length - 1; i >= 0; i--) {
+            if (convertTypes.indexOf(series[i].type) > -1) {
+              if (series[i] && series[i].hasOwnProperty('coordinates')) {
+                series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
+              }
             }
           }
         }

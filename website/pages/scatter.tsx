@@ -1,19 +1,31 @@
-import * as React from 'react';
+import React from 'react';
+// @ts-ignore
 import { Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ';
+// @ts-ignore
+import { Tile as TileLayer } from 'ol/layer';
+// @ts-ignore
+import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
 import { getJSON } from '../helper';
-import 'ol/ol.css';
-import '../assets/style/art.less';
 
-class Index extends React.Component {
-  constructor(props, context) {
+interface PageProps {
+  charts: any[];
+}
+
+class Index extends React.Component<PageProps, object> {
+  private map: any | null;
+
+  private chart: any | null;
+
+  private container: HTMLElement | null;
+
+  constructor(props: PageProps, context: any) {
     super(props, context);
     this.state = {};
 
     this.container = null;
     this.map = null;
+    this.chart = null;
   }
 
   componentDidMount() {
@@ -34,11 +46,11 @@ class Index extends React.Component {
       ],
     });
 
-    getJSON('./static/json/scatter.json', res => {
+    getJSON('./static/json/scatter.json', (res: any) => {
       if (res) {
         const data = res.locations;
         const geoCoordMap = res.coordinates;
-        const convertData = (_data) => {
+        const convertData = (_data: any[]) => {
           const _res = [];
           for (let i = 0; i < _data.length; i++) {
             const geoCoord = geoCoordMap[_data[i].name];
@@ -79,7 +91,7 @@ class Index extends React.Component {
               name: 'pm2.5',
               type: 'scatter',
               data: convertData(data),
-              symbolSize(val) {
+              symbolSize(val: number[]) {
                 return val[2] / 10;
               },
               label: {
@@ -101,8 +113,15 @@ class Index extends React.Component {
             {
               name: 'Top 5',
               type: 'effectScatter',
-              data: convertData(data.sort((a, b) => b.value - a.value).slice(0, 6)),
-              symbolSize(val) {
+              data: convertData(data.sort((
+                a: {
+                  value: number;
+                },
+                b: {
+                  value: number;
+                },
+              ) => b.value - a.value).slice(0, 6)),
+              symbolSize(val: number[]) {
                 return val[2] / 10;
               },
               showEffectOn: 'render',
@@ -145,7 +164,7 @@ class Index extends React.Component {
   /**
    * 初始化
    */
-  initChart(option) {
+  initChart(option: any) {
     this.chart = new EChartsLayer({
       stopEvent: false,
       hideOnMoving: false,
@@ -153,8 +172,10 @@ class Index extends React.Component {
       forcedPrecomposeRerender: false,
     }, option);
 
-    this.chart.on('load', ({ value }) => {
-      value.on('click', event => {
+    this.chart.on('load', (data: {
+      value: any;
+    }) => {
+      data.value.on('click', (event: Event) => {
         console.log(event);
       });
     });
@@ -163,6 +184,7 @@ class Index extends React.Component {
   }
 
   render() {
+    // @ts-ignore
     return (<div ref={this.setRef} className="map-content" />);
   }
 }

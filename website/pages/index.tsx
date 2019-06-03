@@ -1,12 +1,31 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import Header from './Header';
+
+import Header from '../components/Header';
 import { getJSON } from '../helper';
+
 import magnifier from '../assets/images/magnifier.png';
 import '../assets/style/index.less';
 
-class Index extends Component {
-  constructor(props, context) {
+interface ItemType {
+  imgSrc: string;
+  link: string;
+  url: string;
+  chart_name: string | number;
+  chart_author: string | number;
+  chart_time: string | number;
+}
+
+interface PageState {
+  charts: any[];
+}
+
+interface PageProps {
+  charts: any[];
+}
+
+class IndexPage extends React.Component<PageProps, PageState> {
+  constructor(props: PageProps, context: any) {
     super(props, context);
     this.state = {
       charts: [],
@@ -14,7 +33,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    getJSON('./static/json/config.json', data => {
+    getJSON('./static/json/config.json', (data: any) => {
       if (data) {
         this.setState({
           charts: data,
@@ -29,7 +48,7 @@ class Index extends Component {
    */
   getArtList() {
     const { charts } = this.state;
-    return charts.map((item, index) => (
+    return charts.map((item: ItemType, index: number) => (
       <li className="chart" key={index}>
         <div className="chart_wrap">
           <span
@@ -39,9 +58,10 @@ class Index extends Component {
             }}
           >
             <div className="chart_hover animation clearfix">
-              {/* eslint-disable-next-line max-len */}
-              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-              <div className="chart_magnifier_left" onClick={event => this.handleClick(event, 'origin', item)}>
+              <div
+                className="chart_magnifier_left"
+                onClick={event => this.handleClick(event, 'origin', item)}
+              >
                 <div>
                   <img src={magnifier} alt="logo" />
                 </div>
@@ -75,7 +95,7 @@ class Index extends Component {
     ));
   }
 
-  handleClick = (event, type, item) => {
+  handleClick = (event: any, type: string, item: ItemType) => {
     if (event.preventDefault) {
       event.preventDefault();
     } else {
@@ -106,4 +126,4 @@ class Index extends Component {
   }
 }
 
-export default Index;
+export default IndexPage;

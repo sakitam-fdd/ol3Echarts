@@ -2,20 +2,38 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
-    sourceType: 'module'
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+    project: 'tsconfig.json',
+    ecmaFeatures: {
+      "jsx": true
+    },
+    useJSXTextNode: true,
+    extraFileExtensions: [".tsx"]
   },
   env: {
     browser: true
   },
-  extends: 'airbnb',
+  extends: [
+    'airbnb',
+    'plugin:@typescript-eslint/recommended'
+  ],
   plugins: [
+    'react',
     'jsx-a11y',
-    'react'
+    '@typescript-eslint',
   ],
   // add your custom rules here
   rules: {
+    '@typescript-eslint/indent': 0,
+    '@typescript-eslint/explicit-member-accessibility': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
+
     'react/jsx-filename-extension': 0,
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
@@ -39,6 +57,7 @@ module.exports = {
     'no-underscore-dangle': 0,
     'implicit-arrow-linebreak': 0,
     // allow debugger during development
+    'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   },
   globals: {}

@@ -31,7 +31,14 @@
     "react-dom": "^16.8.3",
     "react-hot-loader": "^4.7.2",
     "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "^4.3.1",
+    "@types/lodash": "^4.14.119",
+    "@types/react": "^16.7.0",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-hot-loader": "^4.1.0",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/history": "^4.7.2",
+    "@loadable/component": "^5.10.1"
   },
   "devDependencies": {
     "autoprefixer": "^9.4.3",
@@ -81,6 +88,7 @@
     "less-loader": "^4.1.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
+    "ts-loader": "^6.0.1",
     "gh-pages": "^1.2.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",

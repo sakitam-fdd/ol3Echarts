@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
+
 import logo from '../assets/images/logo.png';
 import github from '../assets/images/github.png';
 import '../assets/style/header.less';
 
-class Header extends Component {
-  constructor(props, context) {
+class Header extends React.Component {
+  constructor(props: object, context: any) {
     super(props, context);
     this.state = {};
   }
@@ -12,7 +13,7 @@ class Header extends Component {
   componentDidMount() {
   }
 
-  handleDefEvent(event) {
+  handleDefEvent(event: Event) {
     if (event.preventDefault) {
       event.preventDefault();
     } else {
@@ -26,9 +27,10 @@ class Header extends Component {
 
   render() {
     return (
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
-      <div className="header clearfix" onClick={event => this.handleDefEvent(event)}>
+      <div
+        className="header clearfix"
+        onClick={(event: any) => this.handleDefEvent(event)}
+      >
         <div className="navbar-header">
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a href="" className="navbar-brand">
@@ -41,7 +43,7 @@ class Header extends Component {
               <a href="./">首页</a>
             </li>
             <li id="nav-doc" className="dropdown">
-              <a href="./docs/" target="_blank" onClick={event => this.openDocs(event)}>文档</a>
+              <a href="./docs/" target="_blank" onClick={() => this.openDocs()}>文档</a>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">

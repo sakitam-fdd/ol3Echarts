@@ -2,12 +2,24 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { HashRouter as Router } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
-// import { createBrowserHistory } from 'history';
-
 import routes from './routes/index';
 
 const env = process.env.NODE_ENV || 'development';
-// const browserHistory = createBrowserHistory();
+
+interface NodeModule {
+  hot: any;
+  exports: any;
+  // eslint-disable-next-line no-undef
+  require: NodeRequireFunction;
+  id: string;
+  filename: string;
+  loaded: boolean;
+  parent: NodeModule | null;
+  children: NodeModule[];
+  paths: string[];
+}
+
+declare const module: NodeModule;
 
 const RootApp = () => (
   <Router>
@@ -17,8 +29,8 @@ const RootApp = () => (
 
 // Render the main component into the dom
 if (env === 'development') {
-  window.onload = function () {
-    const render = Component => {
+  window.onload = () => {
+    const render = (Component: any) => {
       ReactDOM.render(
         <AppContainer>
           <Component />
@@ -34,7 +46,7 @@ if (env === 'development') {
     }
   };
 } else {
-  window.onload = function () {
+  window.onload = () => {
     ReactDOM.render(
       <RootApp />,
       document.getElementById('app'),
