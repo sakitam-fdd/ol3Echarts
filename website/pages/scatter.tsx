@@ -9,7 +9,7 @@ import EChartsLayer from 'ol-echarts';
 import { getJSON } from '../helper';
 
 interface PageProps {
-  charts: any[];
+  chart: any[];
 }
 
 class Index extends React.Component<PageProps, object> {

@@ -47,6 +47,9 @@ declare class EChartsLayer extends obj {
     isVisible(): boolean | undefined;
     showLoading(): void;
     hideLoading(): void;
+    setZIndex(zIndex: string | number | null): void;
+    getZIndex(): string | null | undefined;
+    setVisible(visible: boolean): void;
     render(): void;
     redraw(): void;
     updateViewSize(size: number[]): void;
@@ -64,6 +67,9 @@ declare class EChartsLayer extends obj {
     private registerMap;
     private convertData;
     private getCoordinateSystem;
-    private dispatchEvent;
+    dispatchEvent(...args: any[]): any;
+    set(...args: any[]): any;
+    get(...args: any[]): any;
+    unset(...args: any[]): any;
 }
 export default EChartsLayer;

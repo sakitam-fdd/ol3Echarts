@@ -277,6 +277,48 @@ class EChartsLayer extends obj {
   }
 
   /**
+   * set zindex
+   * @param zIndex
+   */
+  public setZIndex (zIndex: string | number | null) {
+    if (this.$container) {
+      if (typeof zIndex === 'number') {
+        zIndex = String(zIndex);
+      }
+      this.$container.style.zIndex = zIndex;
+    }
+  }
+
+  /**
+   * get zindex
+   */
+  public getZIndex() {
+    return this.$container && this.$container.style.zIndex;
+  }
+
+  /**
+   * set visible
+   * from: https://github.com/sakitam-fdd/ol3Echarts/blob/3929ad72f562661ba3511d4d9e360dee5ac793c2/
+   * packages/ol-echarts/src/index.js
+   * author: https://github.com/ChenGuanglin0924
+   * @param visible
+   */
+  public setVisible(visible: boolean) {
+    if (visible) {
+      const options = this.get('options');
+      if (options) {
+        this.setChartOptions(options);
+        this.unset('options');
+      }
+    } else {
+      const options = this.getChartOptions();
+      this.set('options', options);
+      this.clear();
+      this.setChartOptions({});
+    }
+  }
+
+  /**
    * render
    */
   public render() {
@@ -741,8 +783,20 @@ class EChartsLayer extends obj {
    * dispatch event
    * @param args
    */
-  private dispatchEvent(...args: any[]) {
+  public dispatchEvent(...args: any[]) {
     return super.dispatchEvent(...args);
+  }
+
+  public set(...args: any[]) {
+    return super.set(...args);
+  }
+
+  public get(...args: any[]) {
+    return super.get(...args);
+  }
+
+  public unset(...args: any[]) {
+    return super.unset(...args);
   }
 }
 

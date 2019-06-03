@@ -4,14 +4,14 @@ import '../assets/style/art.less';
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 // import bar from '../pages/bar';
-// import pie from '../pages/pie';
+import pie from '../pages/pie';
 import Index from '../pages/index';
-// import lineBus from '../pages/lineBus';
+import lineBus from '../pages/lineBus';
 import scatter from '../pages/scatter';
 // import migration from '../pages/migration';
 // import traffic from '../pages/traffic';
 // import chinaMigration from '../pages/chinaMigration';
-// import heatmap from '../pages/heatmap';
+import heatmap from '../pages/heatmap';
 // import mapbin from '../pages/mapbin';
 // import weibo from '../pages/weibo';
 // import wchartgl from '../pages/wchartgl';
@@ -46,14 +46,14 @@ const mainRouter = [
   //     component: migration,
   //   },
   // },
-  // {
-  //   name: 'lineBus',
-  //   key: 'lineBus',
-  //   route: {
-  //     path: '/lineBus',
-  //     component: lineBus,
-  //   },
-  // },
+  {
+    name: 'lineBus',
+    key: 'lineBus',
+    route: {
+      path: '/lineBus',
+      component: lineBus,
+    },
+  },
   // {
   //   name: 'traffic',
   //   key: 'traffic',
@@ -78,22 +78,22 @@ const mainRouter = [
   //     component: bar,
   //   },
   // },
-  // {
-  //   name: 'pie',
-  //   key: 'pie',
-  //   route: {
-  //     path: '/pie',
-  //     component: pie,
-  //   },
-  // },
-  // {
-  //   name: 'heatmap',
-  //   key: 'heatmap',
-  //   route: {
-  //     path: '/heatmap',
-  //     component: heatmap,
-  //   },
-  // },
+  {
+    name: 'pie',
+    key: 'pie',
+    route: {
+      path: '/pie',
+      component: pie,
+    },
+  },
+  {
+    name: 'heatmap',
+    key: 'heatmap',
+    route: {
+      path: '/heatmap',
+      component: heatmap,
+    },
+  },
   // {
   //   name: 'mapbin',
   //   key: 'mapbin',
