@@ -10,16 +10,16 @@ import lineBus from '../pages/lineBus';
 import scatter from '../pages/scatter';
 // import migration from '../pages/migration';
 // import traffic from '../pages/traffic';
-// import chinaMigration from '../pages/chinaMigration';
+import chinaMigration from '../pages/chinaMigration';
 import heatmap from '../pages/heatmap';
-// import mapbin from '../pages/mapbin';
+import mapbin from '../pages/mapbin';
 // import weibo from '../pages/weibo';
 // import wchartgl from '../pages/wchartgl';
-// import wind from '../pages/flowgl';
-// import aireline from '../pages/aireline';
+import wind from '../pages/flowgl';
+import aireline from '../pages/aireline';
 // import tourism from '../pages/tourism';
 // import trackline from '../pages/track-line';
-// import incremental from '../pages/lines-ny';
+import incremental from '../pages/lines-ny';
 
 const mainRouter = [
   {
@@ -62,14 +62,14 @@ const mainRouter = [
   //     component: traffic,
   //   },
   // },
-  // {
-  //   name: 'chinaMigration',
-  //   key: 'chinaMigration',
-  //   route: {
-  //     path: '/chinaMigration',
-  //     component: chinaMigration,
-  //   },
-  // },
+  {
+    name: 'chinaMigration',
+    key: 'chinaMigration',
+    route: {
+      path: '/chinaMigration',
+      component: chinaMigration,
+    },
+  },
   // {
   //   name: 'bar',
   //   key: 'bar',
@@ -94,14 +94,14 @@ const mainRouter = [
       component: heatmap,
     },
   },
-  // {
-  //   name: 'mapbin',
-  //   key: 'mapbin',
-  //   route: {
-  //     path: '/mapbin',
-  //     component: mapbin,
-  //   },
-  // },
+  {
+    name: 'mapbin',
+    key: 'mapbin',
+    route: {
+      path: '/mapbin',
+      component: mapbin,
+    },
+  },
   // {
   //   name: 'weibo',
   //   key: 'weibo',
@@ -118,22 +118,22 @@ const mainRouter = [
   //     component: wchartgl,
   //   },
   // },
-  // {
-  //   name: 'wind',
-  //   key: 'wind',
-  //   route: {
-  //     path: '/wind',
-  //     component: wind,
-  //   },
-  // },
-  // {
-  //   name: 'aireline',
-  //   key: 'aireline',
-  //   route: {
-  //     path: '/aireline',
-  //     component: aireline,
-  //   },
-  // },
+  {
+    name: 'wind',
+    key: 'wind',
+    route: {
+      path: '/wind',
+      component: wind,
+    },
+  },
+  {
+    name: 'aireline',
+    key: 'aireline',
+    route: {
+      path: '/aireline',
+      component: aireline,
+    },
+  },
   // {
   //   name: 'tourism',
   //   key: 'tourism',
@@ -150,14 +150,14 @@ const mainRouter = [
   //     component: trackline,
   //   },
   // },
-  // {
-  //   name: 'incremental',
-  //   key: 'incremental',
-  //   route: {
-  //     path: '/incremental',
-  //     component: incremental,
-  //   },
-  // },
+  {
+    name: 'incremental',
+    key: 'incremental',
+    route: {
+      path: '/incremental',
+      component: incremental,
+    },
+  },
 ];
 
 const routes = (

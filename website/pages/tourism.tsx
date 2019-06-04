@@ -1,58 +1,77 @@
 import * as React from 'react';
-import echarts from 'echarts';
-import {Map, View} from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ';
+// @ts-ignore
+import { Map, View } from 'ol';
+// @ts-ignore
+import { Tile as TileLayer } from 'ol/layer';
+// @ts-ignore
+import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
+// @ts-ignore
+import echarts from 'echarts';
 import { getJSON } from '../helper';
-import 'ol/ol.css';
-import '../assets/style/art.scss'
 
-class Index extends React.Component {
-  constructor (props, context) {
+interface PageProps {
+  chart: any[];
+}
+
+interface PageState {
+  zoom: number;
+  bearing: number;
+  center: number[];
+}
+
+class Index extends React.Component<PageProps, PageState> {
+  private map: any | null;
+
+  private chart: any | null;
+
+  private container: HTMLElement | null;
+
+  constructor(props: PageProps, context: any) {
     super(props, context);
     this.state = {
-      zoom: 14,
-      fov: 0,
-      pitch: 0,
-      bearing: 0
+      zoom: 5,
+      bearing: 0,
+      center: [113.53450137499999, 34.44104525],
     };
 
     this.container = null;
     this.map = null;
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.map = new Map({
       target: this.container,
       view: new View({
-        center: [113.53450137499999, 34.44104525],
+        ...this.state,
         projection: 'EPSG:4326',
-        zoom: 5
       }),
       layers: [
         new TileLayer({
           source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline' +
-            'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
-          })
-        })
-      ]
+            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+          }),
+        }),
+      ],
     });
 
-    const echartslayer = new EChartsLayer(null, {
-      hideOnMoving: false
+    this.chart = new EChartsLayer({
+      hideOnMoving: false,
+      hideOnZooming: false,
     });
-    echartslayer.appendTo(this.map);
-    getJSON('./static/json/toursim.json', function (allData) {
-      var option = {
+
+    this.chart.appendTo(this.map);
+
+    getJSON('./static/json/toursim.json', (allData: any) => {
+      const option = {
         backgroundColor: 'transparent',
         title: {
           text: '湘西旅游景点客源分布图_城规所',
           left: 'center',
           textStyle: {
-            color: '#fff'
-          }
+            color: '#fff',
+          },
         },
         legend: {
           show: false,
@@ -61,8 +80,8 @@ class Index extends React.Component {
           left: 'right',
           data: ['地点', '线路'],
           textStyle: {
-            color: '#fff'
-          }
+            color: '#fff',
+          },
         },
         series: [
           {
@@ -70,23 +89,23 @@ class Index extends React.Component {
             type: 'effectScatter',
             zlevel: 2,
             rippleEffect: {
-              brushType: 'stroke'
+              brushType: 'stroke',
             },
             label: {
               emphasis: {
                 show: true,
                 position: 'right',
-                formatter: '{b}'
-              }
+                formatter: '{b}',
+              },
             },
             symbolSize: 2,
             showEffectOn: 'render',
             itemStyle: {
               normal: {
-                color: '#46bee9'
-              }
+                color: '#46bee9',
+              },
             },
-            data: allData.citys
+            data: allData.citys,
           },
           {
             name: '线路',
@@ -98,25 +117,25 @@ class Index extends React.Component {
               constantSpeed: 30,
               symbol: 'pin',
               symbolSize: 3,
-              trailLength: 0
+              trailLength: 0,
             },
             lineStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0, color: '#58B3CC'
+                  offset: 0, color: '#58B3CC',
                 }, {
-                  offset: 1, color: '#F58158'
+                  offset: 1, color: '#F58158',
                 }], false),
                 width: 1,
                 opacity: 0.2,
-                curveness: 0.1
-              }
+                curveness: 0.1,
+              },
             },
-            data: allData.moveLines
-          }
-        ]
+            data: allData.moveLines,
+          },
+        ],
       };
-      echartslayer.setChartOptions(option);
+      this.chart.setChartOptions(option);
     });
   }
 
@@ -124,8 +143,9 @@ class Index extends React.Component {
     this.container = x;
   };
 
-  render () {
-    return (<div ref={this.setRef} className="map-content"></div>);
+  render() {
+    // @ts-ignore
+    return (<div ref={this.setRef} className="map-content" />);
   }
 }
 
