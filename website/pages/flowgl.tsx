@@ -14,7 +14,7 @@ interface PageProps {
 
 interface PageState {
   zoom: number;
-  bearing: number;
+  rotation: number;
   center: number[];
 }
 
@@ -29,7 +29,7 @@ class Index extends React.Component<PageProps, PageState> {
     super(props, context);
     this.state = {
       zoom: 5,
-      bearing: 0,
+      rotation: 0,
       center: [113.53450137499999, 34.44104525],
     };
 

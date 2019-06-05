@@ -13,7 +13,7 @@ interface PageProps {
 
 interface PageState {
   zoom: number;
-  bearing: number;
+  rotation: number;
   center: number[];
 }
 
@@ -28,7 +28,7 @@ class Index extends React.Component<PageProps, PageState> {
     super(props, context);
     this.state = {
       zoom: 9,
-      bearing: 0,
+      rotation: 0,
       center: [116.28245, 39.92121],
     };
 
@@ -53,7 +53,15 @@ class Index extends React.Component<PageProps, PageState> {
       ],
     });
 
-    const options = {
+    const options: {
+      color: string[];
+      tooltip: any;
+      legend: any;
+      grid: any[];
+      xAxis: any[];
+      yAxis: any[];
+      series: any[];
+    } = {
       color: ['#3398DB'],
       tooltip: {
         trigger: 'axis',
@@ -121,16 +129,16 @@ class Index extends React.Component<PageProps, PageState> {
       },
     ];
 
-    // @ts-ignore-all
     series.forEach((item, index) => {
-      options.grid.push({
+      const grid = {
         show: true,
         containLabel: false,
         borderWidth: 0,
         borderColor: '#fff',
         width: 150,
         height: 80,
-      });
+      };
+      options.grid.push(grid);
       options.xAxis.push({
         type: 'category',
         show: true,

@@ -7,7 +7,10 @@ import { Tile as TileLayer } from 'ol/layer';
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
 // @ts-ignore
-import echarts from 'echarts';
+import echarts from 'echarts'; // eslint-disable-line
+// @ts-ignore
+import * as echartsgl from 'echarts-gl'; // eslint-disable-line
+
 import { getJSON } from '../helper';
 
 interface PageProps {
@@ -18,6 +21,7 @@ interface PageState {
   zoom: number;
   rotation: number;
   center: number[];
+  [propName: string]: any;
 }
 
 class Index extends React.Component<PageProps, PageState> {
@@ -37,6 +41,7 @@ class Index extends React.Component<PageProps, PageState> {
 
     this.container = null;
     this.map = null;
+    console.log(echartsgl, echarts);
   }
 
   componentDidMount() {
@@ -57,81 +62,79 @@ class Index extends React.Component<PageProps, PageState> {
     });
 
     this.chart = new EChartsLayer({
-      hideOnMoving: false,
-      hideOnZooming: false,
+      hideOnMoving: true,
+      hideOnZooming: true,
     });
-
     this.chart.appendTo(this.map);
 
-    getJSON('./static/json/toursim.json', (allData: any) => {
+    getJSON('./static/json/weibo-gl.json', (rawData: any[]) => {
+      const weiboData = rawData.map((serieData: number[]): any[] => {
+        let px = serieData[0] / 1000;
+        let py = serieData[1] / 1000;
+        const res = [[px, py]];
+        for (let i = 2; i < serieData.length; i += 2) {
+          const dx = serieData[i] / 1000;
+          const dy = serieData[i + 1] / 1000;
+          const x: number = px + dx;
+          const y: number = py + dy;
+          const ptx: number = parseFloat(x.toFixed(2));
+          const pty: number = parseFloat(y.toFixed(2));
+          res.push([ptx, pty, 1]);
+          px = x;
+          py = y;
+        }
+        return res;
+      });
       const option = {
-        backgroundColor: 'transparent',
         title: {
-          text: '湘西旅游景点客源分布图_城规所',
+          text: '微博签到数据点亮中国',
           left: 'center',
+          top: 'top',
           textStyle: {
             color: '#fff',
           },
         },
+        tooltip: {},
         legend: {
-          show: false,
-          orient: 'vertical',
-          top: 'top',
           left: 'right',
-          data: ['地点', '线路'],
+          data: ['强', '中', '弱'],
           textStyle: {
-            color: '#fff',
+            color: '#ccc',
           },
         },
         series: [
           {
-            name: '地点',
-            type: 'effectScatter',
-            zlevel: 2,
-            rippleEffect: {
-              brushType: 'stroke',
-            },
-            label: {
-              emphasis: {
-                show: true,
-                position: 'right',
-                formatter: '{b}',
-              },
-            },
-            symbolSize: 2,
-            showEffectOn: 'render',
+            name: '弱',
+            type: 'scatterGL',
+            symbolSize: 1,
             itemStyle: {
-              normal: {
-                color: '#46bee9',
-              },
+              shadowBlur: 2,
+              shadowColor: 'rgba(37, 140, 249, 0.8)',
+              color: 'rgba(37, 140, 249, 0.8)',
             },
-            data: allData.citys,
+            data: weiboData[0],
           },
           {
-            name: '线路',
-            type: 'lines',
-            zlevel: 2,
-            large: true,
-            effect: {
-              show: true,
-              constantSpeed: 30,
-              symbol: 'pin',
-              symbolSize: 3,
-              trailLength: 0,
+            name: '中',
+            type: 'scatterGL',
+            symbolSize: 1,
+            itemStyle: {
+              shadowBlur: 2,
+              shadowColor: 'rgba(14, 241, 242, 0.8)',
+              color: 'rgba(14, 241, 242, 0.8)',
             },
-            lineStyle: {
-              normal: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0, color: '#58B3CC',
-                }, {
-                  offset: 1, color: '#F58158',
-                }], false),
-                width: 1,
-                opacity: 0.2,
-                curveness: 0.1,
-              },
+            data: weiboData[1],
+          },
+          {
+            name: '强',
+            type: 'scatterGL',
+            symbolSize: 1,
+            itemStyle: {
+              shadowBlur: 2,
+              shadowColor: 'rgba(255, 255, 255, 0.8)',
+              color: 'rgba(255, 255, 255, 0.8)',
             },
-            data: allData.moveLines,
+            data: weiboData[2],
           },
         ],
       };
