@@ -56,7 +56,7 @@ class Index extends React.Component<PageProps, PageState> {
       ],
     });
 
-    this.chart = new EChartsLayer({
+    this.chart = new EChartsLayer(null, {
       hideOnMoving: false,
       hideOnZooming: false,
     });
@@ -135,6 +135,7 @@ class Index extends React.Component<PageProps, PageState> {
           },
         ],
       };
+
       this.chart.setChartOptions(option);
     });
   }

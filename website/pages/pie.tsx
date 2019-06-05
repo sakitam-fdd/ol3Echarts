@@ -52,7 +52,7 @@ class Index extends React.Component<PageProps, PageState> {
         }),
       ],
     });
-    this.chart = new EChartsLayer({}, {
+    this.chart = new EChartsLayer({
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',

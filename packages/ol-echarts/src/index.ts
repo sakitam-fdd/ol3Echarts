@@ -77,13 +77,14 @@ class EChartsLayer extends obj {
 
   public _map: any;
 
-  constructor(options: OptionsTypes, chartOptions?: NoDef<Nullable<object>>, map?: any) {
-    super(options);
+  constructor(chartOptions?: NoDef<Nullable<object>>, options?: NoDef<Nullable<OptionsTypes>>, map?: any) {
+    const opts = Object.assign(_options, options);
+    super(opts);
 
     /**
      * layer options
      */
-    this._options = Object.assign(_options, options);
+    this._options = opts;
 
     /**
      * chart options

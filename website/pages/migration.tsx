@@ -310,10 +310,10 @@ class Index extends React.Component<PageProps, PageState> {
       ],
     });
 
-    this.chart = new EChartsLayer({
+    this.chart = new EChartsLayer(getOption(), {
       hideOnMoving: false,
       hideOnZooming: false,
-    }, getOption());
+    });
 
     this.chart.appendTo(this.map);
   }

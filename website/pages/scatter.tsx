@@ -165,12 +165,12 @@ class Index extends React.Component<PageProps, object> {
    * 初始化
    */
   initChart(option: any) {
-    this.chart = new EChartsLayer({
+    this.chart = new EChartsLayer(option, {
       stopEvent: false,
       hideOnMoving: false,
       hideOnZooming: false,
       forcedPrecomposeRerender: false,
-    }, option);
+    });
 
     this.chart.on('load', (data: {
       value: any;
