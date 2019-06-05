@@ -138,7 +138,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
-          // 优先级高的chunk为被优先选择(说出来感觉好蠢),优先级一样的话，size大的优先被选择
+          // 优先级高的chunk为被优先选择,优先级一样的话，size大的优先被选择
           priority: -10,
           // 当module未变时，是否可以使用之前的chunk
           reuseExistingChunk: true
