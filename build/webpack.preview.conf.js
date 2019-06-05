@@ -1,11 +1,13 @@
+'use strict';
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-const utils = require('./utils');
 const portfinder = require('portfinder');
+
+const utils = require('./utils');
 const baseWebpackConfig = require('./webpack.base.conf');
 
 const HOST = process.env.HOST || '127.0.0.1';
@@ -46,14 +48,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     overlay: { warnings: false, errors: true },
     publicPath: '/',
     quiet: true, // necessary for FriendlyErrorsPlugin
+    disableHostCheck: true,
     watchOptions: {
       poll: false
     }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    // new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
-    // new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
+    new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html',

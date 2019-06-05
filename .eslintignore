@@ -1,6 +1,9 @@
 build/*.js
-config/*.js
+rollup/*.js
 test/**/*.js
+test/**/*.ts
 dist/
 node_modules/
-packages/**/node_modules/
+packages/**/*.js
+packages/**/*.d.ts
+

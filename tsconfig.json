@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "*": [
+        "types/*"
+      ],
+      "echarts": ["node_modules/echarts/dist/echarts.min.js"],
+      "echarts-gl": ["node_modules/echarts-gl/dist/echarts-gl.min.js"],
+      "ol": ["node_modules/ol/index.js"],
+      "ol/layer": ["node_modules/ol/layer/index.js"],
+      "ol/source": ["node_modules/ol/source/index.js"]
+    },
+    "baseUrl": "./",
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "lib",
+    "module": "ESNext",
+    "sourceMap": true,
+    "rootDirs": [
+      "website"
+    ],
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es2018",
+    "lib": [
+      "es2018",
+      "dom"
+    ]
+  },
+  "include": [
+    "website",
+    "packages"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

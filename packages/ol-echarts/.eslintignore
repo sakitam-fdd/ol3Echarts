@@ -1,5 +1,9 @@
 build/*.js
 config/*.js
-test/**/*.js
+packages/
+public/**
 dist/
 node_modules/
+.eslintrc.js
+babel.config.js
+types/**/*.ts
