@@ -56,10 +56,11 @@ class Index extends React.Component<PageProps, PageState> {
       ],
     });
 
-    this.chart = new EChartsLayer({
+    this.chart = new EChartsLayer(null, {
       hideOnMoving: true,
       hideOnZooming: true,
     });
+
     this.chart.appendTo(this.map);
 
     getJSON('./static/json/weibo-gl.json', (rawData: any[]) => {

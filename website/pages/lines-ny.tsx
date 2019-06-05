@@ -56,10 +56,6 @@ class Index extends React.Component<PageProps, PageState> {
     });
 
     this.chart = new EChartsLayer({
-      hideOnMoving: true,
-      hideOnZooming: true,
-    },
-    {
       progressive: 20000,
       backgroundColor: 'transparent',
       series: [{
@@ -75,6 +71,9 @@ class Index extends React.Component<PageProps, PageState> {
           opacity: 0.3,
         },
       }],
+    }, {
+      hideOnMoving: true,
+      hideOnZooming: true,
     });
 
     this.chart.appendTo(this.map);

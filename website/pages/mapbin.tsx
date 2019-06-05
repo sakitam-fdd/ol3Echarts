@@ -101,9 +101,6 @@ class Index extends React.Component<PageProps, PageState> {
 
     getJSON('./static/json/bin.json', (data: any) => {
       this.chart = new EChartsLayer({
-        hideOnMoving: true,
-        hideOnZooming: true,
-      }, {
         tooltip: {
           formatter(params: {
             value: any;
@@ -157,6 +154,9 @@ class Index extends React.Component<PageProps, PageState> {
             data,
           },
         ],
+      }, {
+        hideOnMoving: true,
+        hideOnZooming: true,
       });
 
       this.chart.appendTo(this.map);
