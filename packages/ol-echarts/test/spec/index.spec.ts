@@ -316,13 +316,18 @@ describe('indexSpec', () => {
 
       layer.on('change:size', (event: any) => {
         expect(event.value).toEqual([900, 700]);
+        layer.remove();
         done();
       });
 
-      map.setSize([size[0] + 100, size[1] + 100]);
+      layer.on('load', () => {
+        setTimeout(() => {
+          map.setSize([size[0] + 100, size[1] + 100]);
+        })
+      });
 
       layer.appendTo(map);
-    });
+    }, 50000);
 
     it('resize', (done) => {
       const layer = new EChartsLayer(options, {
@@ -334,17 +339,22 @@ describe('indexSpec', () => {
 
       const size = map.getSize();
 
-      expect(size).toBe([800, 600]);
+      expect(size).toEqual([800, 600]);
 
       layer.on('change:size', (event: any) => {
-        expect(event.value).toBe([900, 700]);
+        expect(event.value).toEqual([900, 700]);
+        layer.remove();
         done();
       });
 
-      map.setSize([size[0] + 100, size[1] + 100]);
+      layer.on('load', () => {
+        setTimeout(() => {
+          map.setSize([size[0] + 100, size[1] + 100]);
+        })
+      });
 
       layer.appendTo(map);
-    });
+    }, 50000);
 
     it('zoomEnd', (done) => {
       const layer = new EChartsLayer(options, {
@@ -356,13 +366,18 @@ describe('indexSpec', () => {
 
       layer.on('zoomend', (event: any) => {
         expect(event.value).toBe(12);
+        layer.remove();
         done();
       });
 
-      map.getView().setZoom(12);
+      layer.on('load', () => {
+        setTimeout(() => {
+          map.getView().setZoom(12);
+        }, 1000)
+      });
 
       layer.appendTo(map);
-    });
+    }, 50000);
 
     it('onDragRotateEnd', (done) => {
       const layer = new EChartsLayer(options, {
@@ -374,13 +389,18 @@ describe('indexSpec', () => {
 
       layer.on('change:rotation', (event: any) => {
         expect(event.value).toBe((90 / 180) * Math.PI);
+        layer.remove();
         done();
       });
 
-      map.getView().setRotation((90 / 180) * Math.PI);
+      layer.on('load', () => {
+        setTimeout(() => {
+          map.getView().setRotation((90 / 180) * Math.PI);
+        }, 1000)
+      });
 
       layer.appendTo(map);
-    });
+    }, 50000);
 
     it('onMoveStart', (done) => {
       const layer = new EChartsLayer(options, {
@@ -390,20 +410,22 @@ describe('indexSpec', () => {
         forcedPrecomposeRerender: false,
       });
 
-      let center = map.getView().getCenter();
-      map.getView().animate({
-        center: [center[0] + 0.8, center[1] + 0.4],
-        duration: 1000
+      layer.on('load', () => {
+        let center = map.getView().getCenter();
+        map.getView().animate({
+          center: [center[0] + 0.8, center[1] + 0.4],
+          duration: 500,
+        });
+        expect(layer.isVisible()).toBe(false);
+        setTimeout(() => {
+          expect(layer.isVisible()).toBe(true);
+          layer.remove();
+          done();
+        }, 1000)
       });
 
-      expect(layer.isVisible()).toBe(false);
-      setTimeout(function () {
-        expect(layer.isVisible()).toBe(true);
-        done();
-      }, 1000);
-
       layer.appendTo(map);
-    });
+    }, 50000);
 
     it('onMoveEnd', (done) => {
       const layer = new EChartsLayer(options, {
@@ -416,14 +438,20 @@ describe('indexSpec', () => {
       let center = map.getView().getCenter();
 
       layer.on('moveend', (event: any) => {
-        expect(event.value).toBe([center[0] + 0.8, center[1] + 0.4]);
+        console.log('move', center, event.value, map.getView().getCenter());
+        expect(event.value).toEqual([center[0] + 0.8, center[1] + 0.4]);
+        layer.remove();
         done();
       });
 
-      map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
+      layer.on('load', () => {
+        setTimeout(() => {
+          map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
+        }, 1000)
+      });
 
       layer.appendTo(map);
-    });
+    }, 50000);
 
     it('onCenterChange', (done) => {
       const layer = new EChartsLayer(options, {
@@ -436,30 +464,18 @@ describe('indexSpec', () => {
       let center = map.getView().getCenter();
 
       layer.on('change:center', (event: any) => {
-        expect(event.value).toBe([center[0] + 0.8, center[1] + 0.4]);
+        expect(event.value).toEqual([center[0] + 0.8, center[1] + 0.4]);
+        layer.remove();
         done();
       });
 
-      map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
-
-      layer.appendTo(map);
-    });
-  });
-
-  describe('layer types', () => {
-    it('create pie', () => {
-      const layer = new EChartsLayer(options, {
-        stopEvent: false,
-        hideOnMoving: false,
-        hideOnZooming: false,
-        forcedPrecomposeRerender: false,
+      layer.on('load', () => {
+        setTimeout(() => {
+          map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
+        }, 1000);
       });
 
-      expect(layer).toBeDefined();
-
       layer.appendTo(map);
-
-      expect(layer instanceof EChartsLayer).toBe(true);
-    });
+    }, 50000);
   });
 });

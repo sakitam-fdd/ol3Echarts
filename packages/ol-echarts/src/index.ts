@@ -430,6 +430,7 @@ class EChartsLayer extends obj {
       this.dispatchEvent({
         type: 'movestart',
         source: this,
+        value: map.getView().getCenter(),
       });
     }
   }

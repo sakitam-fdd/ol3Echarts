@@ -184,12 +184,19 @@ class Index extends React.Component<PageProps, object> {
 
     this.chart.appendTo(this.map);
 
+    const center = this.map.getView().getCenter();
+
     setTimeout(() => {
       this.chart.on('change:size', (event: any) => {
         console.log(event);
       });
 
+      this.chart.on('change:center', (event: any) => {
+        console.log(event);
+      });
+
       this.map.setSize([size[0] + 100, size[1] + 100]);
+      this.map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
     }, 2000);
   }
 
