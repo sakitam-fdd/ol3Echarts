@@ -18,6 +18,7 @@ interface OptionsTypes {
 declare class EChartsLayer extends obj {
     static formatGeoJSON: typeof formatGeoJSON;
     static bind: (func: Function, context: any, ...args: any[]) => Function;
+    static merge: (a: object, b: object) => object;
     static uuid: () => string;
     static bindAll: typeof bindAll;
     static arrayAdd: (array: any[], item: any) => any[];
@@ -71,5 +72,7 @@ declare class EChartsLayer extends obj {
     set(...args: any[]): any;
     get(...args: any[]): any;
     unset(...args: any[]): any;
+    on(...args: any[]): any;
+    un(...args: any[]): any;
 }
 export default EChartsLayer;

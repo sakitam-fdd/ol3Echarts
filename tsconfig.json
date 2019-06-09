@@ -6,9 +6,7 @@
       ],
       "echarts": ["node_modules/echarts/dist/echarts.min.js"],
       "echarts-gl": ["node_modules/echarts-gl/dist/echarts-gl.min.js"],
-      "ol": ["node_modules/ol/index.js"],
-      "ol/layer": ["node_modules/ol/layer/index.js"],
-      "ol/source": ["node_modules/ol/source/index.js"]
+      "ol/*": ["node_modules/ol/*"]
     },
     "baseUrl": "./",
     "strictNullChecks": true,

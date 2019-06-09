@@ -6,7 +6,7 @@ import { transform } from 'ol/proj';
 import echarts from 'echarts';
 
 import {
-  isObject,
+  isObject, merge,
   arrayAdd, bind,
   uuid, bindAll,
   removeNode,
@@ -46,6 +46,8 @@ class EChartsLayer extends obj {
   public static formatGeoJSON = formatGeoJSON;
 
   public static bind = bind;
+
+  public static merge = merge;
 
   public static uuid = uuid;
 
@@ -230,26 +232,30 @@ class EChartsLayer extends obj {
    */
   public remove() {
     this.clear();
-    this.$chart.dispose();
+    if (this.$chart) {
+      this.$chart.dispose();
+    }
+
+    if (this._initEvent && this.$container) {
+      this.$container && removeNode(this.$container);
+      this.unBindEvent();
+    }
     delete this.$chart;
+    delete this._map;
   }
 
   /**
    * show layer
    */
   public show() {
-    if (this.$container) {
-      this.$container.style.display = '';
-    }
+    this.setVisible(true);
   }
 
   /**
    * hide layer
    */
   public hide() {
-    if (this.$container) {
-      this.$container.style.display = 'none';
-    }
+    this.setVisible(false);
   }
 
   /**
@@ -306,12 +312,18 @@ class EChartsLayer extends obj {
    */
   public setVisible(visible: boolean) {
     if (visible) {
+      if (this.$container) {
+        this.$container.style.display = '';
+      }
       const options = this.get('options');
       if (options) {
         this.setChartOptions(options);
         this.unset('options');
       }
     } else {
+      if (this.$container) {
+        this.$container.style.display = 'none';
+      }
       const options = this.getChartOptions();
       this.set('options', options);
       this.clear();
@@ -798,6 +810,14 @@ class EChartsLayer extends obj {
 
   public unset(...args: any[]) {
     return super.unset(...args);
+  }
+
+  public on(...args: any[]) {
+    return super.on(...args);
+  }
+
+  public un(...args: any[]) {
+    return super.un(...args);
   }
 }
 

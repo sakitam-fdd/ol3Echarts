@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     "paths": {
-      "*": [
-        "types/*"
-      ],
+      "ol/*": ["node_modules/ol/*"],
       "echarts": ["node_modules/echarts/dist/echarts.min.js"]
     },
     "target": "es2018",

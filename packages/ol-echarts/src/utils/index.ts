@@ -49,6 +49,7 @@ const arrayAdd = function (array: any[], item: any): any[] {
   for (; i < length; i++) {
     if (array[i].seriesIndex === item.seriesIndex) {
       index = i;
+      break;
     }
   }
   if (index === undefined) {

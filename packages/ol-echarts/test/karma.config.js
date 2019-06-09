@@ -18,7 +18,7 @@ module.exports = function (config) {
       { pattern: 'src/**/*.ts' },
       // { pattern: '../src/**/*.+(ts|tsx)' },
       // { pattern: '../test/**/*.+(ts|tsx)' },
-      { pattern: './spec/**/*.ts' },
+      { pattern: 'test/spec/**/*.ts' },
       // '../src/**/*.ts', '../test/**/*.ts'
     ],
 
@@ -32,7 +32,7 @@ module.exports = function (config) {
     preprocessors: {
       'src/**/*.ts': ['karma-typescript'],
       // '../src/**/*.ts': ['rollup', 'coverage'],
-      'spec/**/*.ts': ['karma-typescript'],
+      'test/spec/**/*.ts': ['karma-typescript'],
     },
 
     karmaTypescriptConfig: {
@@ -48,6 +48,7 @@ module.exports = function (config) {
       },
       coverageOptions: {
         exclude: [
+          /^node_modules/,
           // we don't cover declaration or test files
           /\.(d|spec|test)\.ts/i,
           // we don't want to cover barrel files
@@ -142,7 +143,7 @@ module.exports = function (config) {
     // },
 
     // How long does Karma wait for a browser to reconnect (in ms).
-    browserDisconnectTimeout: 5000,
+    browserDisconnectTimeout: 50000,
 
 
     // Continuous Integration mode
