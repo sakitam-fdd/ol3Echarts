@@ -35,6 +35,7 @@ class Index extends React.Component<PageProps, object> {
         center: [113.53450137499999, 34.44104525],
         projection: 'EPSG:4326',
         zoom: 5, // resolution
+        rotation: 0,
       }),
       layers: [
         new TileLayer({
@@ -165,11 +166,12 @@ class Index extends React.Component<PageProps, object> {
    * 初始化
    */
   initChart(option: any) {
+    const size = this.map.getSize();
     this.chart = new EChartsLayer(option, {
       stopEvent: false,
       hideOnMoving: false,
       hideOnZooming: false,
-      forcedPrecomposeRerender: false,
+      forcedPrecomposeRerender: true,
     });
 
     this.chart.on('load', (data: {
@@ -181,6 +183,21 @@ class Index extends React.Component<PageProps, object> {
     });
 
     this.chart.appendTo(this.map);
+
+    const center = this.map.getView().getCenter();
+
+    setTimeout(() => {
+      this.chart.on('change:size', (event: any) => {
+        console.log(event);
+      });
+
+      this.chart.on('change:center', (event: any) => {
+        console.log(event);
+      });
+
+      this.map.setSize([size[0] + 100, size[1] + 100]);
+      this.map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
+    }, 2000);
   }
 
   render() {

@@ -1,6 +1,6 @@
-import { Object as obj } from 'ol';
 import { bindAll, removeNode } from './utils';
 import formatGeoJSON from './utils/formatGeoJSON';
+declare const obj: any;
 declare type Nullable<T> = T | null;
 declare type NoDef<T> = T | undefined;
 interface OptionsTypes {

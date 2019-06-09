@@ -1,7 +1,5 @@
 // @ts-ignore
-import { Map, Object as obj } from 'ol';
-// @ts-ignore
-import { transform } from 'ol/proj';
+import ol from 'openlayers';
 // @ts-ignore
 import echarts from 'echarts';
 
@@ -14,6 +12,10 @@ import {
 import formatGeoJSON from './utils/formatGeoJSON';
 
 import * as charts from './charts/index';
+
+const Map = ol.Map;
+const obj = ol.Object;
+const transform = ol.proj.transform;
 
 const _options = {
   forcedRerender: false, // Force re-rendering
