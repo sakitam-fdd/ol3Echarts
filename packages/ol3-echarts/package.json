@@ -32,8 +32,7 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development modulePath=ol3-echarts input=src/index.ts rollup -wm -c ../../rollup/rollup.dev.config.js",
-    "build": "cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js",
-    "karma.test": "karma start test/karma.config.js"
+    "build": "cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js"
   },
   "peerDependencies": {
     "echarts": ">=4.0.1",
