@@ -5,7 +5,7 @@ module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '../',
+    basePath: '.',
 
 
     // frameworks to use
@@ -41,7 +41,7 @@ module.exports = function (config) {
         // needed for importing es6 modules from npm packages
         transforms: [require('karma-typescript-es6-transform')()],
         resolve: {
-          directories: ["src", "node_modules", "test"]
+          directories: ["node_modules", "src", "test"]
         }
       },
       compilerOptions: {
@@ -70,37 +70,8 @@ module.exports = function (config) {
         },
         text: null,
       },
-      tsconfig: '../tsconfig.test.json',
+      tsconfig: 'tsconfig.test.json',
     },
-
-    // karmaTypescriptConfig: {
-    //   compilerOptions: {
-    //     // allowJs: true,
-    //     emitDecoratorMetadata: true,
-    //     experimentalDecorators: true,
-    //     module: "commonjs",
-    //     sourceMap: true,
-    //     target: "ES5",
-    //     lib: [
-    //       "es5",
-    //       "es6",
-    //       "dom"
-    //     ],
-    //   },
-    // },
-
-    // rollupPreprocessor: Object.assign(baseConfig, {
-    //   output: {
-    //     file: 'maptalks.wind.js',
-    //     format: 'umd',
-    //     name: 'maptalks',
-    //     extend: true,
-    //     globals: {
-    //       'maptalks': 'maptalks'
-    //     }
-    //   },
-    // }),
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

@@ -40,6 +40,7 @@ interface OptionsTypes {
   convertTypes?: string[] | number[];
   insertFirst?: boolean;
   stopEvent?: boolean;
+  [key: string]: any;
 }
 
 class EChartsLayer extends obj {

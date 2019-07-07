@@ -14,7 +14,7 @@ const isObject = (value: any): boolean => {
  * @param b
  * @returns {*}
  */
-const merge = (a: object, b: object): object => {
+const merge = (a: any, b: any): any => {
   Object.keys(b).forEach(key => {
     if (isObject(b[key]) && isObject(a[key])) {
       merge(a[key], b[key]);

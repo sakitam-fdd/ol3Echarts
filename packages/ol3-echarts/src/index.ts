@@ -17,6 +17,26 @@ const Map = ol.Map;
 const obj = ol.Object;
 const transform = ol.proj.transform;
 
+// polyfill functions: should fix me
+Map.prototype.getOverlayContainer = function() {
+  const viewport = this.getViewport();
+  if (viewport) {
+    const overlays = viewport.getElementsByClassName('ol-overlaycontainer');
+    return overlays && overlays.length > 0 ? overlays[0] : null;
+  }
+  return null;
+};
+
+// polyfill functions: should fix me
+Map.prototype.getOverlayContainerStopEvent = function() {
+  const viewport = this.getViewport();
+  if (viewport) {
+    const overlays = viewport.getElementsByClassName('ol-overlaycontainer-stopevent');
+    return overlays && overlays.length > 0 ? overlays[0] : null;
+  }
+  return null;
+};
+
 const _options = {
   forcedRerender: false, // Force re-rendering
   forcedPrecomposeRerender: false, // force pre re-render
@@ -42,6 +62,7 @@ interface OptionsTypes {
   convertTypes?: string[] | number[];
   insertFirst?: boolean;
   stopEvent?: boolean;
+  [key: string]: any;
 }
 
 class EChartsLayer extends obj {
