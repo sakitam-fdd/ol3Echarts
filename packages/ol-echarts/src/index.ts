@@ -15,6 +15,8 @@ import formatGeoJSON from './utils/formatGeoJSON';
 
 import * as charts from './charts/index';
 
+type charts = any;
+
 const _options = {
   forcedRerender: false, // Force re-rendering
   forcedPrecomposeRerender: false, // force pre re-render
@@ -620,6 +622,7 @@ class EChartsLayer extends obj {
           for (let i = series.length - 1; i >= 0; i--) {
             if (convertTypes.indexOf(series[i].type) > -1) {
               if (series[i] && series[i].hasOwnProperty('coordinates')) {
+                // @ts-ignore
                 series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
               }
             }
