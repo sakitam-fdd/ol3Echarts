@@ -20,9 +20,9 @@
 <div id="map"></div>
 <script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<!--<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <script src="../ajax.js"></script>
-<script src="../../../../packages/ol3-echarts/dist/ol3Echarts.js"></script>
+<!--<script src="../../../../packages/ol3-echarts/dist/ol3Echarts.js"></script>-->
 <script>
   var map = new HMap('map', {
     controls: {
@@ -165,11 +165,33 @@
           }]
       };
       var echartslayer = new ol3Echarts(option, {
-        hideOnMoving: false,
-        hideOnZooming: false,
-        forcedPrecomposeRerender: true
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
       });
-      echartslayer.appendTo(map.getMap())
+
+      echartslayer.on('load', () => {
+        let center = map.getMap().getView().getCenter();
+        map.getMap().getView().animate({
+          center: [center[0] + 0.8, center[1] + 0.4],
+          duration: 1000,
+        });
+
+        console.log(echartslayer.isVisible());
+
+        setTimeout(() => {
+          console.log(echartslayer.isVisible());
+          // echartslayer.remove();
+        }, 500)
+
+        setTimeout(() => {
+          console.log(echartslayer.isVisible());
+          // echartslayer.remove();
+        }, 2500)
+      });
+
+      echartslayer.appendTo(map.getMap());
     }
   });
 </script>

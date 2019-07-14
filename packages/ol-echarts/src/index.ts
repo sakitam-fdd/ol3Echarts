@@ -377,17 +377,19 @@ class EChartsLayer extends obj {
   /**
    * handle map view resize
    */
-  private onResize() {
+  private onResize(event?: any) {
     const map = this.getMap();
     if (map) {
       const size: number[] = map.getSize();
       this.updateViewSize(size);
       this.clearAndRedraw();
-      this.dispatchEvent({
-        type: 'change:size',
-        source: this,
-        value: size,
-      });
+      if (event) { // ignore events
+        this.dispatchEvent({
+          type: 'change:size',
+          source: this,
+          value: size,
+        });
+      }
     }
   }
 
@@ -481,7 +483,7 @@ class EChartsLayer extends obj {
 
     if (!this.$container) {
       this.createLayerContainer();
-      this.onResize();
+      this.onResize(false);
     }
 
     if (map) {

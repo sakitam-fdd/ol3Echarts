@@ -397,17 +397,19 @@ class EChartsLayer extends obj {
   /**
    * handle map view resize
    */
-  private onResize() {
+  private onResize(event?: any) {
     const map = this.getMap();
     if (map) {
       const size: number[] = map.getSize();
       this.updateViewSize(size);
       this.clearAndRedraw();
-      this.dispatchEvent({
-        type: 'change:size',
-        source: this,
-        value: size,
-      });
+      if (event) { // ignore events
+        this.dispatchEvent({
+          type: 'change:size',
+          source: this,
+          value: size,
+        });
+      }
     }
   }
 
@@ -501,7 +503,7 @@ class EChartsLayer extends obj {
 
     if (!this.$container) {
       this.createLayerContainer();
-      this.onResize();
+      this.onResize(false);
     }
 
     if (map) {
@@ -642,6 +644,7 @@ class EChartsLayer extends obj {
           for (let i = series.length - 1; i >= 0; i--) {
             if (convertTypes.indexOf(series[i].type) > -1) {
               if (series[i] && series[i].hasOwnProperty('coordinates')) {
+                // @ts-ignore
                 series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
               }
             }

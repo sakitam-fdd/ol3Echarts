@@ -87,7 +87,7 @@ export default function (json: { UTF8Encoding: any; UTF8Scale?: any; features?: 
     echarts.util.filter(geoJson.features,
       (featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
         // Output of mapshaper may have geometry null
-         featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0),
+        featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0),
     (featureObj: { properties: any; geometry: any }) => {
       const properties = featureObj.properties;
       const geo = featureObj.geometry;
