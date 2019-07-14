@@ -14,11 +14,12 @@ interface OptionsTypes {
     convertTypes?: string[] | number[];
     insertFirst?: boolean;
     stopEvent?: boolean;
+    [key: string]: any;
 }
 declare class EChartsLayer extends obj {
     static formatGeoJSON: typeof formatGeoJSON;
     static bind: (func: Function, context: any, ...args: any[]) => Function;
-    static merge: (a: object, b: object) => object;
+    static merge: (a: any, b: any) => any;
     static uuid: () => string;
     static bindAll: typeof bindAll;
     static arrayAdd: (array: any[], item: any) => any[];

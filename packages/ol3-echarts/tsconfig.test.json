@@ -10,6 +10,7 @@
       "es2018",
       "dom"
     ],
+    "allowJs": true,
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,
@@ -25,7 +26,8 @@
   ],
   "exclude": [
     "node_modules",
-    "./dist",
-    "**/*.d.ts"
+    "dist",
+    "**/*.d.ts",
+    "node_modules/@types/**"
   ]
 }

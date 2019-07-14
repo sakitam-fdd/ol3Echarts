@@ -14,6 +14,7 @@ interface OptionsTypes {
     convertTypes?: string[] | number[];
     insertFirst?: boolean;
     stopEvent?: boolean;
+    [key: string]: any;
 }
 declare class EChartsLayer extends obj {
     static formatGeoJSON: typeof formatGeoJSON;

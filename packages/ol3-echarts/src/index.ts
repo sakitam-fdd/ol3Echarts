@@ -17,6 +17,26 @@ const Map = ol.Map;
 const obj = ol.Object;
 const transform = ol.proj.transform;
 
+// polyfill functions: should fix me
+Map.prototype.getOverlayContainer = function() {
+  const viewport = this.getViewport();
+  if (viewport) {
+    const overlays = viewport.getElementsByClassName('ol-overlaycontainer');
+    return overlays && overlays.length > 0 ? overlays[0] : null;
+  }
+  return null;
+};
+
+// polyfill functions: should fix me
+Map.prototype.getOverlayContainerStopEvent = function() {
+  const viewport = this.getViewport();
+  if (viewport) {
+    const overlays = viewport.getElementsByClassName('ol-overlaycontainer-stopevent');
+    return overlays && overlays.length > 0 ? overlays[0] : null;
+  }
+  return null;
+};
+
 const _options = {
   forcedRerender: false, // Force re-rendering
   forcedPrecomposeRerender: false, // force pre re-render
@@ -42,6 +62,7 @@ interface OptionsTypes {
   convertTypes?: string[] | number[];
   insertFirst?: boolean;
   stopEvent?: boolean;
+  [key: string]: any;
 }
 
 class EChartsLayer extends obj {
@@ -376,17 +397,19 @@ class EChartsLayer extends obj {
   /**
    * handle map view resize
    */
-  private onResize() {
+  private onResize(event?: any) {
     const map = this.getMap();
     if (map) {
       const size: number[] = map.getSize();
       this.updateViewSize(size);
       this.clearAndRedraw();
-      this.dispatchEvent({
-        type: 'change:size',
-        source: this,
-        value: size,
-      });
+      if (event) { // ignore events
+        this.dispatchEvent({
+          type: 'change:size',
+          source: this,
+          value: size,
+        });
+      }
     }
   }
 
@@ -480,7 +503,7 @@ class EChartsLayer extends obj {
 
     if (!this.$container) {
       this.createLayerContainer();
-      this.onResize();
+      this.onResize(false);
     }
 
     if (map) {
@@ -621,6 +644,7 @@ class EChartsLayer extends obj {
           for (let i = series.length - 1; i >= 0; i--) {
             if (convertTypes.indexOf(series[i].type) > -1) {
               if (series[i] && series[i].hasOwnProperty('coordinates')) {
+                // @ts-ignore
                 series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
               }
             }

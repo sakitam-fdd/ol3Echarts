@@ -8,6 +8,7 @@
       "echarts": ["node_modules/echarts/dist/echarts.min.js"]
     },
     "baseUrl": ".",
+    "allowJs": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
     "moduleResolution": "node",

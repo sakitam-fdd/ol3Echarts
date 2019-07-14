@@ -1,6 +1,6 @@
 {
   "name": "ol-echarts",
-  "version": "1.3.6",
+  "version": "2.0.0",
   "description": "a openlayers extension to echarts",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
@@ -33,7 +33,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development modulePath=ol-echarts input=src/index.ts rollup -wm -c ../../rollup/rollup.dev.config.js",
     "build": "cross-env NODE_ENV=production modulePath=ol-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js",
-    "karma.test": "karma start test/karma.config.js"
+    "prepublishOnly": "npm run karma.single",
+    "karma.test": "karma start karma.config.js",
+    "karma.single": "karma start karma.config.js --single-run"
   },
   "peerDependencies": {
     "echarts": ">=4.0.1",

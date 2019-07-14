@@ -165,11 +165,33 @@
           }]
       };
       var echartslayer = new ol3Echarts(option, {
-        hideOnMoving: false,
-        hideOnZooming: false,
-        forcedPrecomposeRerender: true
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
       });
-      echartslayer.appendTo(map.getMap())
+
+      echartslayer.on('load', () => {
+        let center = map.getMap().getView().getCenter();
+        map.getMap().getView().animate({
+          center: [center[0] + 0.8, center[1] + 0.4],
+          duration: 1000,
+        });
+
+        console.log(echartslayer.isVisible());
+
+        setTimeout(() => {
+          console.log(echartslayer.isVisible());
+          // echartslayer.remove();
+        }, 500)
+
+        setTimeout(() => {
+          console.log(echartslayer.isVisible());
+          // echartslayer.remove();
+        }, 2500)
+      });
+
+      echartslayer.appendTo(map.getMap());
     }
   });
 </script>

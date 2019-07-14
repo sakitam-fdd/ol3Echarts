@@ -40,7 +40,7 @@ module.exports = {
     nodeResolve({
       mainFields: ['module', 'main'], // Default: ['module', 'main']
       browser: true,  // Default: false
-      extensions: [ '.mjs', '.js', '.json', '.node', 'jsx' ],  // Default: [ '.mjs', '.js', '.json', '.node' ]
+      extensions: [ '.mjs', '.js', '.json', '.node', 'jsx', 'ts' ],  // Default: [ '.mjs', '.js', '.json', '.node' ]
       preferBuiltins: true,  // Default: true
       // Any additional options that should be passed through
       // to node-resolve

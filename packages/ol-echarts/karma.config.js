@@ -1,3 +1,4 @@
+const path = require('path');
 // Karma configuration
 // Generated on Sun Jun 02 2019 15:47:55 GMT+0800 (GMT+08:00)
 
@@ -5,7 +6,7 @@ module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '../',
+    basePath: path.resolve(__dirname, './'),
 
 
     // frameworks to use
@@ -41,8 +42,11 @@ module.exports = function (config) {
         // needed for importing es6 modules from npm packages
         transforms: [require('karma-typescript-es6-transform')()],
         resolve: {
-          directories: ["src", "node_modules", "test"]
-        }
+          directories: ["src", "test", "node_modules"]
+        },
+        exclude: [
+          'node_modules/@types/**'
+        ]
       },
       compilerOptions: {
         // karma doesn't like es6 modules, so we compile to commonjs
@@ -60,61 +64,25 @@ module.exports = function (config) {
       },
       reports: {
         html: {
-          directory: 'coverage',
+          directory: path.resolve(__dirname, 'coverage'),
           subdirectory: () => '',
         },
         lcovonly: {
-          directory: 'coverage',
+          directory: path.resolve(__dirname, 'coverage'),
           subdirectory: () => '',
           filename: 'lcov.info',
         },
         text: null,
       },
-      tsconfig: '../tsconfig.test.json',
+      tsconfig: 'tsconfig.test.json',
+      exclude: ['node_modules'],
+      // include: ['test/**/*.ts', 'src/**/*.ts']
     },
-
-    // karmaTypescriptConfig: {
-    //   compilerOptions: {
-    //     // allowJs: true,
-    //     emitDecoratorMetadata: true,
-    //     experimentalDecorators: true,
-    //     module: "commonjs",
-    //     sourceMap: true,
-    //     target: "ES5",
-    //     lib: [
-    //       "es5",
-    //       "es6",
-    //       "dom"
-    //     ],
-    //   },
-    // },
-
-    // rollupPreprocessor: Object.assign(baseConfig, {
-    //   output: {
-    //     file: 'maptalks.wind.js',
-    //     format: 'umd',
-    //     name: 'maptalks',
-    //     extend: true,
-    //     globals: {
-    //       'maptalks': 'maptalks'
-    //     }
-    //   },
-    // }),
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['mocha', 'karma-typescript'],
-    // reporters: ['progress', 'coverage'],
-    // coverageReporter: {
-    //   type: 'html',
-    //   dir: 'coverage/',
-    //   instrumenterOptions: {
-    //     istanbul: { noCompact: true }
-    //   }
-    // },
-
 
     // web server port
     port: 9876,
