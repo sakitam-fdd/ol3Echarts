@@ -290,7 +290,7 @@ class EChartsLayer extends obj {
    * set zindex
    * @param zIndex
    */
-  public setZIndex (zIndex: string | number | null) {
+  public setZIndex(zIndex: string | number | null) {
     if (this.$container) {
       if (typeof zIndex === 'number') {
         zIndex = String(zIndex);

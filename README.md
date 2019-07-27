@@ -1,19 +1,19 @@
-# ol3-echarts / ol-echarts
-
-* ol3-echarts： 基于openlayers(3/4)新版扩展的echarts图表插件，暂时支持echarts的所有map组件类型，对普通不支持坐标系的图表正在兼容（饼图，柱状图，折线图已兼容）
-* ol-echarts：基于 openlayers5(ol package)扩展的数据可视化插件，功能和 ``ol3-echarts`` 保持一致。
+# Bridger for openlayers and echarts
 
 [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts)
 [![codecov](https://codecov.io/gh/sakitam-fdd/ol3Echarts/branch/master/graph/badge.svg)](https://codecov.io/gh/sakitam-fdd/ol3Echarts)
-[![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts)
-[![](https://data.jsdelivr.com/v1/package/npm/ol3-echarts/badge)](https://www.jsdelivr.com/package/npm/ol3-echarts)
 ![JS gzip size](http://img.badgesize.io/https://unpkg.com/ol3-echarts/dist/ol3Echarts.js?compression=gzip&label=gzip%20size:%20JS)
-[![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts)
 [![GitHub stars](https://img.shields.io/github/stars/sakitam-fdd/ol3Echarts.svg)](https://github.com/sakitam-fdd/ol3Echarts/stargazers)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/LICENSE)
 
-## 下载
+## Support
 
+| Project | Status | Version | Npm | CDN | Description |
+|---------|--------|---------|-----|------|-------------|
+| [ol3-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol3-echarts) | [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts) | [![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol3-echarts/badge)](https://www.jsdelivr.com/package/npm/ol3-echarts) | support for openlayers3-4 |
+| [ol-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol-echarts) | [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts) | [![Npm package](https://img.shields.io/npm/v/ol-echarts.svg)](https://www.npmjs.org/package/ol-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol-echarts.svg)](https://npmjs.org/package/ol-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol-echarts/badge)](https://www.jsdelivr.com/package/npm/ol-echarts) | support for openlayers5+ |
+
+## 下载
 
 ```bash
 git clone https://github.com/sakitam-fdd/ol3Echarts.git
@@ -21,7 +21,6 @@ yarn run bootstrap
 yarn run dev
 yarn run build
 yarn run karma.test
-yarn run karma.cover
 ```
 
 ### 安装

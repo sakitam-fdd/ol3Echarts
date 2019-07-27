@@ -18,7 +18,7 @@ const obj = ol.Object;
 const transform = ol.proj.transform;
 
 // polyfill functions: should fix me
-Map.prototype.getOverlayContainer = function() {
+Map.prototype.getOverlayContainer = function () {
   const viewport = this.getViewport();
   if (viewport) {
     const overlays = viewport.getElementsByClassName('ol-overlaycontainer');
@@ -28,7 +28,7 @@ Map.prototype.getOverlayContainer = function() {
 };
 
 // polyfill functions: should fix me
-Map.prototype.getOverlayContainerStopEvent = function() {
+Map.prototype.getOverlayContainerStopEvent = function () {
   const viewport = this.getViewport();
   if (viewport) {
     const overlays = viewport.getElementsByClassName('ol-overlaycontainer-stopevent');
@@ -310,7 +310,7 @@ class EChartsLayer extends obj {
    * set zindex
    * @param zIndex
    */
-  public setZIndex (zIndex: string | number | null) {
+  public setZIndex(zIndex: string | number | null) {
     if (this.$container) {
       if (typeof zIndex === 'number') {
         zIndex = String(zIndex);

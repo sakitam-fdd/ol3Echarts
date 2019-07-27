@@ -8,6 +8,6 @@ declare const bar: (options: {
         };
     };
 }, serie: any, coordinateSystem: {
-    dataToPoint: (arg0: any) => void;
+    dataToPoint: (arg0: any) => any;
 }) => any;
 export default bar;
