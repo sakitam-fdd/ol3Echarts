@@ -14,6 +14,7 @@ interface OptionsTypes {
     convertTypes?: string[] | number[];
     insertFirst?: boolean;
     stopEvent?: boolean;
+    polyfillEvents?: boolean;
     [key: string]: any;
 }
 declare class EChartsLayer extends obj {
@@ -60,6 +61,9 @@ declare class EChartsLayer extends obj {
     private onDragRotateEnd;
     private onMoveStart;
     private onMoveEnd;
+    private onClick;
+    private mouseDown;
+    private mouseUp;
     private onCenterChange;
     private handleMapChanged;
     private createLayerContainer;

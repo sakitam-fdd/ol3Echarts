@@ -8,7 +8,7 @@
       "echarts": ["node_modules/echarts/dist/echarts.min.js"]
     },
     "baseUrl": ".",
-    "allowJs": true,
+    "allowJs": false,
     "esModuleInterop": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
@@ -16,7 +16,7 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,
-    "declaration": false,
+    "declaration": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "declarationDir": "types",

@@ -8,7 +8,9 @@
   "useWorkspaces": true,
   "command": {
     "bootstrap": {
-      "npmClientArgs": ["--no-lockfile"]
+      "npmClientArgs": [
+        "--no-lockfile"
+      ]
     }
   },
   "changelog": {
