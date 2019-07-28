@@ -27,13 +27,17 @@ Maps.map instanceof ol.Map // true
 
 ```javascript
 params = {
-  target: '',
   source: '',
   destination: '',
   forcedRerender: false,
+  forcedPrecomposeRerender: true,
   hideOnZooming: false, // when zooming hide chart
   hideOnMoving: false, // when moving hide chart
   hideOnRotating: false, // // when Rotating hide chart
+  convertTypes: [], // 支持非地理空间坐标的图表类型，不需要配置
+  insertFirst: true, // https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html
+  stopEvent: false, // https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html
+  polyfillEvents: false, // 代理echrats图层的 mousedown mouseup click 事件
 }
 ```
 
@@ -41,7 +45,6 @@ params = {
 
 | 配置项 | 简介 | 类型 | 备注 |
 | --- | --- | --- | --- |
-| target | echarts图层的父容器 | `String` or `Object` | 传入的为 `className` or `id` or `TagName`, 不传时默认放入地图容器 |
 | source | 数据源投影 | `String` | 投影系 `code` 常用 EPSG:4326, EPSG:3857 |
 | destination | 数据目标投影 | `String` | 渲染数据的目标投影，不传时从地图视图获取 |
 | forcedRerender | 是否开启强制重新渲染 | `boolean` | 默认 `false`, 注意开启后可能会造成性能损失，建议不开启。 |
@@ -49,6 +52,9 @@ params = {
 | hideOnZooming | 缩放时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
 | hideOnMoving | 拖动时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
 | hideOnRotating | 旋转时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
+| insertFirst | 是否插入到前方 | `boolean` | 默认 `false`, 详细内容请查看`https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html` |
+| stopEvent | 是否阻止事件传递到地图上 | `boolean` | 默认 `false`, 详细内容请查看 `https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html` |
+| polyfillEvents | 代理echrats图层的 mousedown mouseup click 事件 | `boolean` | 默认 `false`, 仅作为在事件捕获异常时配置开启 |
 
 ### 事件
 
@@ -62,6 +68,7 @@ echartslayer.on('redraw', function (event) {
 
 | 事件名 | 简介 | 类型 | 备注 |
 | --- | --- | --- | --- |
+| load | echarts图层创建完成后厨房 | `String` | 此时`echarts`实例也已创建完毕，可以在此事件回调内添加`echarts`的事件监听 |
 | redraw | 图层重新渲染事件 | `String` | 注意：因为耦合原因, 每次重绘事件可能不只触发一次 |
 | change:size | 地图大小变化事件 | `String` | -- |
 | zoomend | 地图缩放结束事件 | `String` | -- |

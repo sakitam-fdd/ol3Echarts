@@ -115,7 +115,7 @@
     "rollup-plugin-glslify": "^1.1.0",
     "rollup-plugin-typescript2": "^0.19.3",
     "tslib": "^1.9.3",
-    "typescript": "^3.2.2",
+    "typescript": "3.4.5",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.2.0",
     "stylelint-processor-html": "^1.0.0",

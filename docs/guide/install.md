@@ -10,8 +10,11 @@ npm install ol-echarts --save
 import EChartsLayer from 'ol-echarts'
 
 // 指定版本安装
-npm install ol3-echarts@1.2.0 --save
+npm install ol3-echarts@2.0.0 --save
 import ol3Echarts from 'ol3-echarts'
+
+npm install ol-echarts@2.0.0 --save
+import EChartsLayer from 'ol-echarts'
 
 ```
 #### cdn
@@ -22,8 +25,8 @@ import ol3Echarts from 'ol3-echarts'
 
 ```bash
 // jsdelivr (jsdelivr由于缓存原因最好锁定版本号)
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.5/dist/ol3Echarts.js
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.5/dist/ol3Echarts.min.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@2.0.0/dist/ol3Echarts.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@2.0.0/dist/ol3Echarts.min.js
 // npm
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.js
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js

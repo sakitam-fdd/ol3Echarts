@@ -178,8 +178,78 @@ class Index extends React.Component<PageProps, object> {
       value: any;
     }) => {
       data.value.on('click', (event: Event) => {
-        console.log(event);
+        console.log('click', event);
       });
+
+      data.value.on('dblclick', (event: Event) => {
+        console.log('dblclick', event);
+      });
+
+      data.value.on('mousedown', (event: Event) => {
+        console.log('mousedown', event);
+      });
+
+      data.value.on('mousemove', (event: Event) => {
+        console.log('mousemove', event);
+      });
+
+      data.value.on('mouseup', (event: Event) => {
+        console.log('mouseup', event);
+      });
+
+      data.value.on('mouseover', (event: Event) => {
+        console.log('mouseover', event);
+      });
+
+      data.value.on('mouseout', (event: Event) => {
+        console.log('mouseout', event);
+      });
+
+      data.value.on('globalout', (event: Event) => {
+        console.log('globalout', event);
+      });
+
+      data.value.on('contextmenu', (event: Event) => {
+        console.log('contextmenu', event);
+      });
+
+      // @ts-ignore
+      // this.map.on('pointerdown', event => {
+      //   console.log(event);
+      //
+      //   function mockEvent(type: string) {
+      //     const e = new MouseEvent(type, {
+      //       button: event.pointerEvent.button,
+      //       buttons: event.pointerEvent.buttons,
+      //       clientX: event.pointerEvent.clientX,
+      //       clientY: event.pointerEvent.clientY,
+      //       // @ts-ignore
+      //       zrX: event.pointerEvent.offsetX,
+      //       zrY: event.pointerEvent.offsetY,
+      //       movementX: event.pointerEvent.movementX,
+      //       movementY: event.pointerEvent.movementY,
+      //       relatedTarget: event.pointerEvent.relatedTarget,
+      //       screenX: event.pointerEvent.screenX,
+      //       screenY: event.pointerEvent.screenY,
+      //       view: window,
+      //     });
+      //     e.zrX = event.pointerEvent.offsetX;
+      //     e.zrY = event.pointerEvent.offsetY;
+      //     e.event = e;
+      //     return e;
+      //   }
+      //
+      //   this.chart.$container.dispatchEvent(mockEvent('mousedown'));
+      //
+      //   this.chart.$container.dispatchEvent(mockEvent('mouseup'));
+      //
+      //   this.chart.$container.dispatchEvent(mockEvent('click'));
+      // });
+
+      // @ts-ignore
+      // data.value._zr.on('click', (event) => {
+      //   console.log(event);
+      // }, this);
     });
 
     this.chart.appendTo(this.map);
