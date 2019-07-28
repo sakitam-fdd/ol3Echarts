@@ -54,5 +54,6 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "73bbd50c01a5264358fa72e02f9eb59cf2559cb9"
 }
