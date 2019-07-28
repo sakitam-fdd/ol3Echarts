@@ -10,6 +10,7 @@ import {
   arrayAdd, bind,
   uuid, bindAll,
   removeNode,
+  mockEvent,
 } from './utils';
 import formatGeoJSON from './utils/formatGeoJSON';
 
@@ -26,6 +27,7 @@ const _options = {
   convertTypes: ['pie', 'line', 'bar'],
   insertFirst: false,
   stopEvent: false,
+  polyfillEvents: true, // fix echarts mouse events
 };
 
 type Nullable<T> = T | null;
@@ -42,6 +44,7 @@ interface OptionsTypes {
   convertTypes?: string[] | number[];
   insertFirst?: boolean;
   stopEvent?: boolean;
+  polyfillEvents?: boolean;
   [key: string]: any;
 }
 
@@ -142,6 +145,7 @@ class EChartsLayer extends obj {
     bindAll([
       'redraw', 'onResize', 'onZoomEnd', 'onCenterChange',
       'onDragRotateEnd', 'onMoveStart', 'onMoveEnd',
+      'mouseDown', 'mouseUp', 'onClick',
     ], this);
 
     if (map) this.setMap(map);
@@ -457,6 +461,36 @@ class EChartsLayer extends obj {
   }
 
   /**
+   * on mouse click
+   * @param event
+   */
+  private onClick(event: any) {
+    if (this.$container) {
+      this.$container.dispatchEvent(mockEvent('click', event));
+    }
+  }
+
+  /**
+   * on mouse down
+   * @param event
+   */
+  private mouseDown(event: any) {
+    if (this.$container) {
+      this.$container.dispatchEvent(mockEvent('mousedown', event));
+    }
+  }
+
+  /**
+   * mouse up
+   * @param event
+   */
+  private mouseUp(event: any) {
+    if (this.$container) {
+      this.$container.dispatchEvent(mockEvent('mouseup', event));
+    }
+  }
+
+  /**
    * handle center change
    */
   private onCenterChange() {
@@ -527,6 +561,11 @@ class EChartsLayer extends obj {
     view.on('change:rotation', this.onDragRotateEnd);
     map.on('movestart', this.onMoveStart);
     map.on('moveend', this.onMoveEnd);
+    if (this._options.polyfillEvents) {
+      map.on('pointerdown', this.mouseDown);
+      map.on('pointerup', this.mouseUp);
+      map.on('click', this.onClick);
+    }
     this._initEvent = true;
   }
 
@@ -546,6 +585,11 @@ class EChartsLayer extends obj {
     view.un('change:rotation', this.onDragRotateEnd);
     map.un('movestart', this.onMoveStart);
     map.un('moveend', this.onMoveEnd);
+    if (this._options.polyfillEvents) {
+      map.un('pointerdown', this.mouseDown);
+      map.un('pointerup', this.mouseUp);
+      map.un('click', this.onClick);
+    }
     this._initEvent = false;
   }
 

@@ -27,7 +27,7 @@ class Index extends React.Component<PageProps, PageState> {
   constructor(props: PageProps, context: any) {
     super(props, context);
     this.state = {
-      zoom: 9,
+      zoom: 3,
       rotation: 0,
       center: [116.28245, 39.92121],
     };

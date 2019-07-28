@@ -192,7 +192,6 @@
 
 ### 尝试编辑它
 
-
 <iframe width="100%" height="430" src="//jsfiddle.net/sakitamfdd/pjz8cuxw/embedded/result,html,js/?bodyColor=fff" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 ## 从1.2.0升级到1.3.0
@@ -207,3 +206,10 @@
 * 修复了 ``echarts-gl`` 兼容问题，相关示例正在添加。
 
 ## 新增 ``ol`` package 的兼容类库。
+
+## 升级到2.0+
+
+好吧，2.0版本又修改了一些参数，主要是新增一些配置项，移除了自定义容器`target`的配置, 默认只允许添加到`ol-overlaycontainer`和`ol-overlaycontainer-stopevent`容器，
+这样能保证了事件的正确捕获。同样针对 `openlayers5+`出现的事件捕获异常添加了一个polyfill, 可以通过配置项`polyfillEvents` 进行开启，如果没有碰到此问题可以忽略此参数。
+并且修复了多地图容器时自定义坐标系不起作用的问题，另外较大的改变是支持了`typescript`。其他相关配置项的改变详见 `API` 文档。
+jin

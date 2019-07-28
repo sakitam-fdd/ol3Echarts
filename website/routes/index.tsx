@@ -72,6 +72,14 @@ const mainRouter = [
     },
   },
   {
+    name: 'line',
+    key: 'line',
+    route: {
+      path: '/line',
+      component: loadable(() => import(/* webpackChunkName: 'line' */ '../pages/line')),
+    },
+  },
+  {
     name: 'heatmap',
     key: 'heatmap',
     route: {

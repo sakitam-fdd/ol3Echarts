@@ -128,6 +128,14 @@
     "chart_time": "2018.01.01"
   },
   {
+    "imgSrc": "./static/images/line.jpg",
+    "link": "/line",
+    "url": "./static/examples/line/line.html",
+    "chart_name": "折线图",
+    "chart_author": "FDD",
+    "chart_time": "2018.01.01"
+  },
+  {
     "imgSrc": "./static/images/world.jpg",
     "link": "/city",
     "url": "./static/examples/map/city.html",

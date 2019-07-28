@@ -90,6 +90,33 @@ function removeNode(node: HTMLElement) {
   return node && node.parentNode ? node.parentNode.removeChild(node) : null;
 }
 
+/**
+ * mock zrender mouse event
+ * @param type
+ * @param event
+ */
+function mockEvent(type: string, event: any) {
+  const e = new MouseEvent(type, {
+    button: event.pointerEvent.button,
+    buttons: event.pointerEvent.buttons,
+    clientX: event.pointerEvent.clientX,
+    clientY: event.pointerEvent.clientY,
+    // @ts-ignore
+    zrX: event.pointerEvent.offsetX,
+    zrY: event.pointerEvent.offsetY,
+    movementX: event.pointerEvent.movementX,
+    movementY: event.pointerEvent.movementY,
+    relatedTarget: event.pointerEvent.relatedTarget,
+    screenX: event.pointerEvent.screenX,
+    screenY: event.pointerEvent.screenY,
+    view: window,
+  });
+  e.zrX = event.pointerEvent.offsetX;
+  e.zrY = event.pointerEvent.offsetY;
+  e.event = e;
+  return e;
+}
+
 export {
   merge,
   isObject,
@@ -98,4 +125,5 @@ export {
   uuid,
   bindAll,
   removeNode,
+  mockEvent,
 };
