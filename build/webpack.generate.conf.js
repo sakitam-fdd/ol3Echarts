@@ -97,7 +97,7 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
     new AddAssetHtmlPlugin({
       filepath: path.resolve(__dirname, '../dll/extlib.dll.*.js'),
       publicPath: './static/scripts',
-      outputPath: '../dist/static/scripts',
+      outputPath: '../_site/static/scripts',
       includeSourcemap: false
     }),
 
