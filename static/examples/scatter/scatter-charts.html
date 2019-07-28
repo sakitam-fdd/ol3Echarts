@@ -165,11 +165,82 @@
           }]
       };
       var echartslayer = new ol3Echarts(option, {
-        hideOnMoving: false,
-        hideOnZooming: false,
-        forcedPrecomposeRerender: true
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
       });
-      echartslayer.appendTo(map.getMap())
+
+      echartslayer.on('load', (data) => {
+        let center = map.getMap().getView().getCenter();
+        map.getMap().getView().animate({
+          center: [center[0] + 0.8, center[1] + 0.4],
+          duration: 1000,
+        });
+
+        console.log(echartslayer.isVisible());
+
+        setTimeout(() => {
+          console.log(echartslayer.isVisible());
+          // echartslayer.remove();
+        }, 500)
+
+        setTimeout(() => {
+          console.log(echartslayer.isVisible());
+          // echartslayer.remove();
+        }, 2500);
+
+        setTimeout(() => {
+          data.value._zr.on('click', (event) => {
+            console.log(event);
+          }, this)
+          // data.value.dispatchAction({
+          //   type: 'click',
+          //   start: 20,
+          //   end: 30
+          // });
+        }, 3000)
+      });
+
+      echartslayer.on('load', (data) => {
+        data.value.on('click', (event) => {
+          console.log('click', event);
+        });
+
+        data.value.on('dblclick', (event) => {
+          console.log('dblclick', event);
+        });
+
+        data.value.on('mousedown', (event) => {
+          console.log('mousedown', event);
+        });
+
+        data.value.on('mousemove', (event) => {
+          console.log('mousemove', event);
+        });
+
+        data.value.on('mouseup', (event) => {
+          console.log('mouseup', event);
+        });
+
+        data.value.on('mouseover', (event) => {
+          console.log('mouseover', event);
+        });
+
+        data.value.on('mouseout', (event) => {
+          console.log('mouseout', event);
+        });
+
+        data.value.on('globalout', (event) => {
+          console.log('globalout', event);
+        });
+
+        data.value.on('contextmenu', (event) => {
+          console.log('contextmenu', event);
+        });
+      });
+
+      echartslayer.appendTo(map.getMap());
     }
   });
 </script>
