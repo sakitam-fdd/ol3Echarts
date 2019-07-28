@@ -5,4 +5,5 @@ declare const arrayAdd: (array: any[], item: any) => any[];
 declare const uuid: () => string;
 declare function bindAll(fns: string[] | number[], context: any): void;
 declare function removeNode(node: HTMLElement): HTMLElement | null;
-export { merge, isObject, bind, arrayAdd, uuid, bindAll, removeNode, };
+declare function mockEvent(type: string, event: any): any;
+export { merge, isObject, bind, arrayAdd, uuid, bindAll, removeNode, mockEvent, };
