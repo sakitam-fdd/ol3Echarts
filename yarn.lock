@@ -1379,6 +1379,16 @@
   dependencies:
     any-observable "^0.3.0"
 
+"@types/arcgis-rest-api@*":
+  version "10.4.4"
+  resolved "https://registry.yarnpkg.com/@types/arcgis-rest-api/-/arcgis-rest-api-10.4.4.tgz#c84b26ac7f01deb2829bff10ebbe544c2310fbcd"
+
+"@types/echarts@^4.4.1":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.4.1.tgz#d5b257d38d7af62b7bba8cca952e814f610b1f03"
+  dependencies:
+    "@types/zrender" "*"
+
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "http://registry.npm.taobao.org/@types/estree/download/@types/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
@@ -1386,6 +1396,10 @@
 "@types/events@*":
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/@types/events/download/@types/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
+
+"@types/geojson@*":
+  version "7946.0.7"
+  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.7.tgz#c8fa532b60a0042219cdf173ca21a975ef0666ad"
 
 "@types/glob@^7.1.1":
   version "7.1.1"
@@ -1422,6 +1436,18 @@
 "@types/node@^12.0.2":
   version "12.0.2"
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.0.2.tgz#3452a24edf9fea138b48fad4a0a028a683da1e40"
+
+"@types/ol@^5.3.6":
+  version "5.3.6"
+  resolved "https://registry.yarnpkg.com/@types/ol/-/ol-5.3.6.tgz#9899f6df9088843c5e8c6020a50fd33c996a7e89"
+  dependencies:
+    "@types/arcgis-rest-api" "*"
+    "@types/geojson" "*"
+    "@types/topojson-specification" "*"
+
+"@types/openlayers@^4.6.17":
+  version "4.6.17"
+  resolved "https://registry.yarnpkg.com/@types/openlayers/-/openlayers-4.6.17.tgz#39a8dce631e284a26cf0958664509932e6cd7c7d"
 
 "@types/prop-types@*":
   version "15.7.1"
@@ -1468,6 +1494,12 @@
   dependencies:
     "@types/node" "*"
 
+"@types/topojson-specification@*":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/topojson-specification/-/topojson-specification-1.0.1.tgz#a80cb294290b79f2d674d3f5938c544ed2bd9d80"
+  dependencies:
+    "@types/geojson" "*"
+
 "@types/unist@*", "@types/unist@^2.0.0":
   version "2.0.3"
   resolved "https://registry.npm.taobao.org/@types/unist/download/@types/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
@@ -1486,6 +1518,10 @@
     "@types/node" "*"
     "@types/unist" "*"
     "@types/vfile-message" "*"
+
+"@types/zrender@*":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/zrender/-/zrender-4.0.0.tgz#a6806f12ec4eccaaebd9b0d816f049aca6188fbd"
 
 "@typescript-eslint/eslint-plugin@^1.9.0":
   version "1.9.0"
@@ -8074,9 +8110,9 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
-lodash._reinterpolate@~3.0.0:
+lodash._reinterpolate@^3.0.0:
   version "3.0.0"
-  resolved "http://registry.npm.taobao.org/lodash._reinterpolate/download/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
+  resolved "https://registry.yarnpkg.com/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
 
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
@@ -8111,17 +8147,17 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.npm.taobao.org/lodash.sortby/download/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
 
 lodash.template@^4.0.2:
-  version "4.4.0"
-  resolved "http://registry.npm.taobao.org/lodash.template/download/lodash.template-4.4.0.tgz#e73a0385c8355591746e020b99679c690e68fba0"
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.template/-/lodash.template-4.5.0.tgz#f976195cf3f347d0d5f52483569fe8031ccce8ab"
   dependencies:
-    lodash._reinterpolate "~3.0.0"
+    lodash._reinterpolate "^3.0.0"
     lodash.templatesettings "^4.0.0"
 
 lodash.templatesettings@^4.0.0:
-  version "4.1.0"
-  resolved "http://registry.npm.taobao.org/lodash.templatesettings/download/lodash.templatesettings-4.1.0.tgz#2b4d4e95ba440d915ff08bc899e4553666713316"
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.templatesettings/-/lodash.templatesettings-4.2.0.tgz#e481310f049d3cf6d47e912ad09313b154f0fb33"
   dependencies:
-    lodash._reinterpolate "~3.0.0"
+    lodash._reinterpolate "^3.0.0"
 
 lodash.unescape@4.0.1:
   version "4.0.1"
