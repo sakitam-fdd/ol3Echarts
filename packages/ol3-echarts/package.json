@@ -1,6 +1,6 @@
 {
   "name": "ol3-echarts",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "a openlayers extension to echarts",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
@@ -43,7 +43,8 @@
   },
   "devDependencies": {
     "echarts": "^4.0.1",
-    "openlayers": "4.6.5"
+    "openlayers": "4.6.5",
+    "@types/openlayers": "^4.6.17"
   },
   "engines": {
     "node": ">= 4.0.0",

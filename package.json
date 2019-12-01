@@ -28,7 +28,7 @@
   "dependencies": {
     "echarts": "^4.1.0",
     "echarts-gl": "^1.0.0",
-    "ol": "^5.1.3",
+    "ol": "^6.1.1",
     "history": "^4.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -59,6 +59,7 @@
     "@types/jasmine": "^3.3.13",
     "@babel/types": "^7.3.4",
     "@types/node": "^10.12.18",
+    "@types/echarts": "^4.4.1",
     "@babel/preset-react": "^7.0.0",
     "@hot-loader/react-dom": "^16.8.3",
     "codecov": "^3.0.0",

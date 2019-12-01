@@ -1,11 +1,12 @@
+import ol, { GlobalObject } from 'openlayers';
 import { bindAll, removeNode } from './utils';
 import formatGeoJSON from './utils/formatGeoJSON';
-declare const obj: any;
+declare const obj: typeof ol.Object;
 declare type Nullable<T> = T | null;
 declare type NoDef<T> = T | undefined;
 interface OptionsTypes {
-    source?: string | object;
-    destination?: string | object;
+    source?: ol.ProjectionLike;
+    destination?: ol.ProjectionLike;
     forcedRerender?: boolean;
     forcedPrecomposeRerender?: boolean;
     hideOnZooming?: boolean;
@@ -73,11 +74,11 @@ declare class EChartsLayer extends obj {
     private registerMap;
     private convertData;
     private getCoordinateSystem;
-    dispatchEvent(...args: any[]): any;
-    set(...args: any[]): any;
-    get(...args: any[]): any;
-    unset(...args: any[]): any;
-    on(...args: any[]): any;
-    un(...args: any[]): any;
+    dispatchEvent(event: (GlobalObject | ol.events.Event | string)): void;
+    set(key: string, value: any, optSilent?: boolean): void;
+    get(key: string): any;
+    unset(key: string, optSilent?: boolean): void;
+    on(type: (string | string[]), listener: ol.EventsListenerFunctionType, optThis?: GlobalObject): ol.GlobalObject | ol.GlobalObject[];
+    un(type: (string | string[]), listener: ol.EventsListenerFunctionType, optThis?: GlobalObject): void;
 }
 export default EChartsLayer;

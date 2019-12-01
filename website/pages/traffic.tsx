@@ -1,9 +1,6 @@
 import * as React from 'react';
-// @ts-ignore
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
 
@@ -47,7 +44,7 @@ class Index extends React.Component<PageProps, PageState> {
 
   private chart: any | null;
 
-  private container: HTMLElement | null;
+  private container: React.RefObject<HTMLDivElement>;
 
   constructor(props: PageProps, context: any) {
     super(props, context);
@@ -57,91 +54,88 @@ class Index extends React.Component<PageProps, PageState> {
       center: [120.76264061813247, 30.74805248565917],
     };
 
-    this.container = null;
+    this.container = React.createRef();
     this.map = null;
   }
 
   componentDidMount() {
-    this.map = new Map({
-      target: this.container,
-      view: new View({
-        ...this.state,
-        projection: 'EPSG:4326',
-      }),
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-          }),
+    if (this.container.current) {
+      this.map = new Map({
+        target: this.container.current,
+        view: new View({
+          ...this.state,
+          projection: 'EPSG:4326',
         }),
-      ],
-    });
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+            }),
+          }),
+        ],
+      });
 
-    this.chart = new EChartsLayer(null, {
-      hideOnMoving: false,
-      hideOnZooming: false,
-    });
+      this.chart = new EChartsLayer(null, {
+        hideOnMoving: false,
+        hideOnZooming: false,
+      });
 
-    this.chart.appendTo(this.map);
+      this.chart.appendTo(this.map);
 
-    getJSON('./static/json/traffic.json', (data: any) => {
-      if (data) {
-        // 配置项
-        const option = {
-          visualMap: {
-            type: 'piecewise',
-            left: 'right',
-            top: 'top',
-            min: 0,
-            max: 15,
-            splitNumber: 5,
-            maxOpen: true,
-            color: ['red', 'yellow', 'green'],
-          },
-          tooltip: {
-            formatter(params: {
-              value: any;
-            }) {
-              return `拥堵指数:${params.value}`;
+      getJSON('./static/json/traffic.json', (data: any) => {
+        if (data) {
+          // 配置项
+          const option = {
+            visualMap: {
+              type: 'piecewise',
+              left: 'right',
+              top: 'top',
+              min: 0,
+              max: 15,
+              splitNumber: 5,
+              maxOpen: true,
+              color: ['red', 'yellow', 'green'],
             },
-            trigger: 'item',
-          },
-          series: [
-            {
-              type: 'lines',
-              polyline: true,
-              lineStyle: {
-                normal: {
-                  opacity: 1,
-                  width: 4,
-                },
-                emphasis: {
-                  width: 6,
-                },
+            tooltip: {
+              formatter(params: {
+                value: any;
+              }) {
+                return `拥堵指数:${params.value}`;
               },
-              effect: {
-                show: true,
-                symbolSize: 2,
-                color: 'white',
-              },
-              data: convertData(data),
+              trigger: 'item',
             },
-          ],
-        };
+            series: [
+              {
+                type: 'lines',
+                polyline: true,
+                lineStyle: {
+                  normal: {
+                    opacity: 1,
+                    width: 4,
+                  },
+                  emphasis: {
+                    width: 6,
+                  },
+                },
+                effect: {
+                  show: true,
+                  symbolSize: 2,
+                  color: 'white',
+                },
+                data: convertData(data),
+              },
+            ],
+          };
 
-        this.chart.setChartOptions(option);
-      }
-    });
+          this.chart.setChartOptions(option);
+        }
+      });
+    }
   }
 
-  setRef = (x = null) => {
-    this.container = x;
-  };
-
   render() {
-    // @ts-ignore
-    return (<div ref={this.setRef} className="map-content" />);
+    return (<div ref={this.container} className="map-content" />);
   }
 }
 

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "paths": {
-      "openlayers": ["node_modules/openlayers/dist/ol.js"],
       "echarts": ["node_modules/echarts/dist/echarts.min.js"]
     },
     "target": "es2018",

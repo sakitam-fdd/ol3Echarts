@@ -1,6 +1,4 @@
-// @ts-ignore
-import ol from 'openlayers';
-// @ts-ignore
+import ol, { GlobalObject } from 'openlayers';
 import echarts from 'echarts';
 
 import {
@@ -19,8 +17,10 @@ const obj = ol.Object;
 const transform = ol.proj.transform;
 
 // polyfill functions: should fix me
+// @ts-ignore
 if (!Map.prototype.getOverlayContainer) {
-  Map.prototype.getOverlayContainer = function (className?: string | number) {
+  // @ts-ignore
+  Map.prototype.getOverlayContainer = function (className?: string) {
     className = className || 'ol-overlaycontainer';
     const viewport = this.getViewport();
     if (viewport) {
@@ -32,8 +32,10 @@ if (!Map.prototype.getOverlayContainer) {
 }
 
 // polyfill functions: should fix me
+// @ts-ignore
 if (!Map.prototype.getOverlayContainerStopEvent) {
-  Map.prototype.getOverlayContainerStopEvent = function (className?: string | number) {
+  // @ts-ignore
+  Map.prototype.getOverlayContainerStopEvent = function (className?: string) {
     className = className || 'ol-overlaycontainer-stopevent';
     const viewport = this.getViewport();
     if (viewport) {
@@ -60,8 +62,8 @@ type Nullable<T> = T | null;
 type NoDef<T> = T | undefined;
 
 interface OptionsTypes {
-  source?: string | object;
-  destination?: string | object;
+  source?: ol.ProjectionLike;
+  destination?: ol.ProjectionLike;
   forcedRerender?: boolean;
   forcedPrecomposeRerender?: boolean;
   hideOnZooming?: boolean;
@@ -760,9 +762,10 @@ class EChartsLayer extends obj {
      * @returns {}
      */
     RegisterCoordinateSystem.prototype.dataToPoint = function (data: []): number[] {
-      let coords;
+      let coords: ol.Coordinate;
       if (data && Array.isArray(data) && data.length > 0) {
-        coords = data.map((item: string | number): number => {
+        // @ts-ignore
+        coords = data.map((item: string | number) => {
           let res = 0;
           if (typeof item === 'string') {
             res = Number(item);
@@ -771,12 +774,15 @@ class EChartsLayer extends obj {
           }
           return res;
         });
+
+        const source: ol.ProjectionLike = (options && options.source) || 'EPSG:4326';
+        const destination: ol.ProjectionLike = (options && options.destination) || this.projCode;
+        const pixel = this.map.getPixelFromCoordinate(transform(coords, source, destination));
+        const mapOffset = this._mapOffset;
+        return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
       }
-      const source = (options && options.source) || 'EPSG:4326';
-      const destination = (options && options.destination) || this.projCode;
-      const pixel = this.map.getPixelFromCoordinate(transform(coords, source, destination));
-      const mapOffset = this._mapOffset;
-      return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
+
+      return [0, 0];
     };
 
     /**
@@ -795,6 +801,7 @@ class EChartsLayer extends obj {
      */
     RegisterCoordinateSystem.prototype.getViewRect = function () {
       const size = this.map.getSize();
+      // @ts-ignore
       return new echarts.graphic.BoundingRect(0, 0, size[0], size[1]);
     };
 
@@ -802,6 +809,7 @@ class EChartsLayer extends obj {
      * create matrix
      */
     RegisterCoordinateSystem.prototype.getRoamTransform = function () {
+      // @ts-ignore
       return echarts.matrix.create();
     };
 
@@ -850,7 +858,7 @@ class EChartsLayer extends obj {
     };
 
     RegisterCoordinateSystem.dataToCoordsSize = function (dataSize: number[], dataItem: number[] = [0, 0]) {
-      return echarts.util.map([0, 1], (dimIdx: number) => {
+      return [0, 1].map((dimIdx: number) => {
           const val = dataItem[dimIdx];
           const p1: number[] = [];
           const p2: number[] = [];
@@ -871,30 +879,30 @@ class EChartsLayer extends obj {
 
   /**
    * dispatch event
-   * @param args
+   * @param event
    */
-  public dispatchEvent(...args: any[]) {
-    return super.dispatchEvent(...args);
+  public dispatchEvent(event: (GlobalObject| ol.events.Event | string)) {
+    return super.dispatchEvent(event);
   }
 
-  public set(...args: any[]) {
-    return super.set(...args);
+  public set(key: string, value: any, optSilent?: boolean) {
+    return super.set(key, value, optSilent);
   }
 
-  public get(...args: any[]) {
-    return super.get(...args);
+  public get(key: string) {
+    return super.get(key);
   }
 
-  public unset(...args: any[]) {
-    return super.unset(...args);
+  public unset(key: string, optSilent?: boolean) {
+    return super.unset(key, optSilent);
   }
 
-  public on(...args: any[]) {
-    return super.on(...args);
+  public on(type: (string | string[]), listener: ol.EventsListenerFunctionType, optThis?: GlobalObject) {
+    return super.on(type, listener, optThis);
   }
 
-  public un(...args: any[]) {
-    return super.un(...args);
+  public un(type: (string | string[]), listener: ol.EventsListenerFunctionType, optThis?: GlobalObject) {
+    return super.un(type, listener, optThis);
   }
 }
 

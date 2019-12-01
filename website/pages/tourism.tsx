@@ -1,12 +1,8 @@
 import * as React from 'react';
-// @ts-ignore
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
-// @ts-ignore
 import echarts from 'echarts';
 import { getJSON } from '../helper';
 
@@ -25,7 +21,7 @@ class Index extends React.Component<PageProps, PageState> {
 
   private chart: any | null;
 
-  private container: HTMLElement | null;
+  private container: React.RefObject<HTMLDivElement>;
 
   constructor(props: PageProps, context: any) {
     super(props, context);
@@ -35,118 +31,115 @@ class Index extends React.Component<PageProps, PageState> {
       center: [113.53450137499999, 34.44104525],
     };
 
-    this.container = null;
+    this.container = React.createRef();
     this.map = null;
   }
 
   componentDidMount() {
-    this.map = new Map({
-      target: this.container,
-      view: new View({
-        ...this.state,
-        projection: 'EPSG:4326',
-      }),
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-          }),
+    if (this.container.current) {
+      this.map = new Map({
+        target: this.container.current,
+        view: new View({
+          ...this.state,
+          projection: 'EPSG:4326',
         }),
-      ],
-    });
-
-    this.chart = new EChartsLayer(null, {
-      hideOnMoving: false,
-      hideOnZooming: false,
-    });
-
-    this.chart.appendTo(this.map);
-
-    getJSON('./static/json/toursim.json', (allData: any) => {
-      const option = {
-        backgroundColor: 'transparent',
-        title: {
-          text: '湘西旅游景点客源分布图_城规所',
-          left: 'center',
-          textStyle: {
-            color: '#fff',
-          },
-        },
-        legend: {
-          show: false,
-          orient: 'vertical',
-          top: 'top',
-          left: 'right',
-          data: ['地点', '线路'],
-          textStyle: {
-            color: '#fff',
-          },
-        },
-        series: [
-          {
-            name: '地点',
-            type: 'effectScatter',
-            zlevel: 2,
-            rippleEffect: {
-              brushType: 'stroke',
-            },
-            label: {
-              emphasis: {
-                show: true,
-                position: 'right',
-                formatter: '{b}',
-              },
-            },
-            symbolSize: 2,
-            showEffectOn: 'render',
-            itemStyle: {
-              normal: {
-                color: '#46bee9',
-              },
-            },
-            data: allData.citys,
-          },
-          {
-            name: '线路',
-            type: 'lines',
-            zlevel: 2,
-            large: true,
-            effect: {
-              show: true,
-              constantSpeed: 30,
-              symbol: 'pin',
-              symbolSize: 3,
-              trailLength: 0,
-            },
-            lineStyle: {
-              normal: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0, color: '#58B3CC',
-                }, {
-                  offset: 1, color: '#F58158',
-                }], false),
-                width: 1,
-                opacity: 0.2,
-                curveness: 0.1,
-              },
-            },
-            data: allData.moveLines,
-          },
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+            }),
+          }),
         ],
-      };
+      });
 
-      this.chart.setChartOptions(option);
-    });
+      this.chart = new EChartsLayer(null, {
+        hideOnMoving: false,
+        hideOnZooming: false,
+      });
+
+      this.chart.appendTo(this.map);
+
+      getJSON('./static/json/toursim.json', (allData: any) => {
+        const option = {
+          backgroundColor: 'transparent',
+          title: {
+            text: '湘西旅游景点客源分布图_城规所',
+            left: 'center',
+            textStyle: {
+              color: '#fff',
+            },
+          },
+          legend: {
+            show: false,
+            orient: 'vertical',
+            top: 'top',
+            left: 'right',
+            data: ['地点', '线路'],
+            textStyle: {
+              color: '#fff',
+            },
+          },
+          series: [
+            {
+              name: '地点',
+              type: 'effectScatter',
+              zlevel: 2,
+              rippleEffect: {
+                brushType: 'stroke',
+              },
+              label: {
+                emphasis: {
+                  show: true,
+                  position: 'right',
+                  formatter: '{b}',
+                },
+              },
+              symbolSize: 2,
+              showEffectOn: 'render',
+              itemStyle: {
+                normal: {
+                  color: '#46bee9',
+                },
+              },
+              data: allData.citys,
+            },
+            {
+              name: '线路',
+              type: 'lines',
+              zlevel: 2,
+              large: true,
+              effect: {
+                show: true,
+                constantSpeed: 30,
+                symbol: 'pin',
+                symbolSize: 3,
+                trailLength: 0,
+              },
+              lineStyle: {
+                normal: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0, color: '#58B3CC',
+                  }, {
+                    offset: 1, color: '#F58158',
+                  }], false),
+                  width: 1,
+                  opacity: 0.2,
+                  curveness: 0.1,
+                },
+              },
+              data: allData.moveLines,
+            },
+          ],
+        };
+
+        this.chart.setChartOptions(option);
+      });
+    }
   }
 
-  setRef = (x = null) => {
-    this.container = x;
-  };
-
   render() {
-    // @ts-ignore
-    return (<div ref={this.setRef} className="map-content" />);
+    return (<div ref={this.container} className="map-content" />);
   }
 }
 

@@ -1,13 +1,8 @@
 import * as React from 'react';
-// @ts-ignore
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { XYZ } from 'ol/source';
-// @ts-ignore
 import { fromLonLat } from 'ol/proj';
-// @ts-ignore
 import echarts from 'echarts';
 import EChartsLayer from 'ol-echarts';
 
@@ -24,7 +19,7 @@ interface PageState {
 class Index extends React.Component<PageProps, PageState> {
   private map: any | null;
 
-  private container: HTMLElement | null;
+  private container: React.RefObject<HTMLDivElement>;
 
   constructor(props: PageProps, context: any) {
     super(props, context);
@@ -34,28 +29,30 @@ class Index extends React.Component<PageProps, PageState> {
       center: fromLonLat([11.48534081107986, 48.55595569334055]),
     };
 
-    this.container = null;
+    this.container = React.createRef();
     this.map = null;
   }
 
   componentDidMount() {
-    this.map = new Map({
-      target: this.container,
-      view: new View({
-        ...this.state,
-        projection: 'EPSG:3857',
-      }),
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-          }),
+    if (this.container.current) {
+      this.map = new Map({
+        target: this.container.current,
+        view: new View({
+          ...this.state,
+          projection: 'EPSG:3857',
         }),
-      ],
-    });
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+            }),
+          }),
+        ],
+      });
 
-    this.renderEachCity();
+      this.renderEachCity();
+    }
   }
 
   // eslint-disable-next-line react/sort-comp
@@ -242,6 +239,7 @@ class Index extends React.Component<PageProps, PageState> {
       xAxisCategory.push(`${+inflationYearStart + i}`);
     }
 
+    // @ts-ignore
     echarts.util.each(rawData, (dataItem: any, idx: number | string) => {
       const coordinates = geoCoordMap[dataItem[0]];
       idx += '';
@@ -318,13 +316,8 @@ class Index extends React.Component<PageProps, PageState> {
     console.timeEnd('time');
   }
 
-  setRef = (x = null) => {
-    this.container = x;
-  };
-
   render() {
-    // @ts-ignore
-    return (<div ref={this.setRef} className="map-content" />);
+    return (<div ref={this.container} className="map-content" />);
   }
 }
 

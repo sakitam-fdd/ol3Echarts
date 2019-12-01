@@ -4,7 +4,6 @@
       "*": [
         "types/*"
       ],
-      "openlayers": ["node_modules/openlayers/dist/ol.js"],
       "echarts": ["node_modules/echarts/dist/echarts.min.js"]
     },
     "baseUrl": ".",

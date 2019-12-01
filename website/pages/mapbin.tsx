@@ -1,9 +1,6 @@
 import * as React from 'react';
-// @ts-ignore
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
 
@@ -68,7 +65,7 @@ class Index extends React.Component<PageProps, PageState> {
 
   private chart: any | null;
 
-  private container: HTMLElement | null;
+  private container: React.RefObject<HTMLDivElement>;
 
   constructor(props: PageProps, context: any) {
     super(props, context);
@@ -78,98 +75,95 @@ class Index extends React.Component<PageProps, PageState> {
       center: [116.28245, 39.92121],
     };
 
-    this.container = null;
+    this.container = React.createRef();
     this.map = null;
   }
 
   componentDidMount() {
-    this.map = new Map({
-      target: this.container,
-      view: new View({
-        ...this.state,
-        projection: 'EPSG:4326',
-      }),
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-          }),
+    if (this.container.current) {
+      this.map = new Map({
+        target: this.container.current,
+        view: new View({
+          ...this.state,
+          projection: 'EPSG:4326',
         }),
-      ],
-    });
-
-    getJSON('./static/json/bin.json', (data: any) => {
-      this.chart = new EChartsLayer({
-        tooltip: {
-          formatter(params: {
-            value: any;
-          }) {
-            return params.value;
-          },
-          trigger: 'item',
-        },
-        visualMap: {
-          type: 'piecewise',
-          inverse: true,
-          top: 10,
-          right: 10,
-          pieces: [
-            {
-              value: 0, color: COLORS[0],
-            }, {
-              value: 1, color: COLORS[1],
-            }, {
-              value: 2, color: COLORS[2],
-            }, {
-              value: 3, color: COLORS[3],
-            }, {
-              value: 4, color: COLORS[4],
-            }, {
-              value: 5, color: COLORS[5],
-            },
-          ],
-          borderColor: '#ccc',
-          borderWidth: 2,
-          backgroundColor: '#eee',
-          dimension: 2,
-          inRange: {
-            color: COLORS,
-            opacity: 0.7,
-          },
-        },
-        series: [
-          {
-            type: 'custom',
-            renderItem,
-            animation: false,
-            itemStyle: {
-              emphasis: {
-                color: 'yellow',
-              },
-            },
-            encode: {
-              tooltip: 2,
-            },
-            data,
-          },
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+            }),
+          }),
         ],
-      }, {
-        hideOnMoving: true,
-        hideOnZooming: true,
       });
 
-      this.chart.appendTo(this.map);
-    });
+      getJSON('./static/json/bin.json', (data: any) => {
+        this.chart = new EChartsLayer({
+          tooltip: {
+            formatter(params: {
+              value: any;
+            }) {
+              return params.value;
+            },
+            trigger: 'item',
+          },
+          visualMap: {
+            type: 'piecewise',
+            inverse: true,
+            top: 10,
+            right: 10,
+            pieces: [
+              {
+                value: 0, color: COLORS[0],
+              }, {
+                value: 1, color: COLORS[1],
+              }, {
+                value: 2, color: COLORS[2],
+              }, {
+                value: 3, color: COLORS[3],
+              }, {
+                value: 4, color: COLORS[4],
+              }, {
+                value: 5, color: COLORS[5],
+              },
+            ],
+            borderColor: '#ccc',
+            borderWidth: 2,
+            backgroundColor: '#eee',
+            dimension: 2,
+            inRange: {
+              color: COLORS,
+              opacity: 0.7,
+            },
+          },
+          series: [
+            {
+              type: 'custom',
+              renderItem,
+              animation: false,
+              itemStyle: {
+                emphasis: {
+                  color: 'yellow',
+                },
+              },
+              encode: {
+                tooltip: 2,
+              },
+              data,
+            },
+          ],
+        }, {
+          hideOnMoving: true,
+          hideOnZooming: true,
+        });
+
+        this.chart.appendTo(this.map);
+      });
+    }
   }
 
-  setRef = (x = null) => {
-    this.container = x;
-  };
-
   render() {
-    // @ts-ignore
-    return (<div ref={this.setRef} className="map-content" />);
+    return (<div ref={this.container} className="map-content" />);
   }
 }
 

@@ -1,7 +1,6 @@
 /**
  * form https://github.com/ecomfe/echarts/blob/master/src/coord/geo/parseGeoJson.js
  */
-// @ts-ignore
 import echarts from 'echarts';
 
 /**
@@ -83,7 +82,9 @@ const decode = (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any }) =>
  */
 export default function (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any }) {
   const geoJson = decode(json);
+  // @ts-ignore
   const _features = echarts.util.map(
+    // @ts-ignore
     echarts.util.filter(geoJson.features,
       (featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
         // Output of mapshaper may have geometry null
@@ -97,6 +98,7 @@ export default function (json: { UTF8Encoding: any; UTF8Scale?: any; features?: 
         geometries.push(coordinates[0]);
       }
       if (geo.type === 'MultiPolygon') {
+        // @ts-ignore
         echarts.util.each(coordinates, (item: any[]) => {
           if (item[0]) {
             geometries.push(item[0]);

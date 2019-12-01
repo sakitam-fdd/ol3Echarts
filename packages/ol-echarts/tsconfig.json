@@ -3,9 +3,7 @@
     "paths": {
       "*": [
         "types/*"
-      ],
-      "ol/*": ["node_modules/ol/*"],
-      "echarts": ["node_modules/echarts/dist/echarts.min.js"]
+      ]
     },
     "baseUrl": ".",
     "allowJs": false,

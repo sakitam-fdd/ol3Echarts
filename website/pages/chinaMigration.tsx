@@ -1,9 +1,6 @@
 import * as React from 'react';
-// @ts-ignore
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
 
@@ -54,7 +51,7 @@ class Index extends React.Component<PageProps, PageState> {
 
   private chart: any | null;
 
-  private container: HTMLElement | null;
+  private container: React.RefObject<HTMLDivElement>;
 
   constructor(props: PageProps, context: any) {
     super(props, context);
@@ -64,121 +61,118 @@ class Index extends React.Component<PageProps, PageState> {
       center: [113.53450137499999, 34.44104525],
     };
 
-    this.container = null;
+    this.container = React.createRef();
     this.map = null;
   }
 
   componentDidMount() {
-    this.map = new Map({
-      target: this.container,
-      view: new View({
-        ...this.state,
-        projection: 'EPSG:4326',
-      }),
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-          }),
+    if (this.container.current) {
+      this.map = new Map({
+        target: this.container.current,
+        view: new View({
+          ...this.state,
+          projection: 'EPSG:4326',
         }),
-      ],
-    });
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+            }),
+          }),
+        ],
+      });
 
-    this.chart = new EChartsLayer(null, {
-      hideOnMoving: false,
-      hideOnZooming: false,
-    });
+      this.chart = new EChartsLayer(null, {
+        hideOnMoving: false,
+        hideOnZooming: false,
+      });
 
-    this.chart.appendTo(this.map);
+      this.chart.appendTo(this.map);
 
-    getJSON('./static/json/china-migration.json', (geoCoord: any) => {
-      if (geoCoord) {
-        getJSON('./static/json/china-airline.json', (data: any) => {
-          if (data) {
-            const option = {
-              backgroundColor: 'transparent',
-              title: {
-                text: '春节人口迁徙',
-                x: 'center',
-                y: 'top',
-                textStyle: {
-                  color: 'white',
-                },
-              },
-              legend: {
-                show: true,
-                selected: {},
-                x: 'left',
-                orient: 'vertical',
-                textStyle: {
-                  color: 'white',
-                },
-                data: [],
-              },
-              series: [
-                {
-                  name: 'Migration',
-                  type: 'lines',
-                  effect: {
-                    constantSpeed: 30,
-                    show: true,
-                    trailLength: 1,
-                    symbolSize: 1.5,
-                    color: 'rgba(204, 246, 255, 1)',
+      getJSON('./static/json/china-migration.json', (geoCoord: any) => {
+        if (geoCoord) {
+          getJSON('./static/json/china-airline.json', (data: any) => {
+            if (data) {
+              const option = {
+                backgroundColor: 'transparent',
+                title: {
+                  text: '春节人口迁徙',
+                  x: 'center',
+                  y: 'top',
+                  textStyle: {
+                    color: 'white',
                   },
+                },
+                legend: {
+                  show: true,
+                  selected: {},
+                  x: 'left',
+                  orient: 'vertical',
+                  textStyle: {
+                    color: 'white',
+                  },
+                  data: [],
+                },
+                series: [
+                  {
+                    name: 'Migration',
+                    type: 'lines',
+                    effect: {
+                      constantSpeed: 30,
+                      show: true,
+                      trailLength: 1,
+                      symbolSize: 1.5,
+                      color: 'rgba(204, 246, 255, 1)',
+                    },
 
-                  itemStyle: {
-                    normal: {
-                      lineStyle: {
-                        color: 'rgba(2, 166, 253, 1)',
-                        type: 'solid',
-                        width: 0.5,
-                        opacity: 0.4,
+                    itemStyle: {
+                      normal: {
+                        lineStyle: {
+                          color: 'rgba(2, 166, 253, 1)',
+                          type: 'solid',
+                          width: 0.5,
+                          opacity: 0.4,
+                        },
                       },
                     },
-                  },
-                  data: [],
-                }, {
-                  symbol: 'circle',
-                  type: 'effectScatter',
-                  symbolSize: 1.5,
-                  itemStyle: {
-                    normal: {
-                      color: 'rgba(255, 0, 0, 1)',
+                    data: [],
+                  }, {
+                    symbol: 'circle',
+                    type: 'effectScatter',
+                    symbolSize: 1.5,
+                    itemStyle: {
+                      normal: {
+                        color: 'rgba(255, 0, 0, 1)',
+                      },
                     },
+                    data: [],
                   },
-                  data: [],
-                },
-              ],
-            };
-            data.allLine
-              .sort((a: any, b: any) => b.num - a.num)
-              .slice(0, 3000)
-              .forEach((line: any) => {
-                const callData = getLineCoord(geoCoord, line.start, line.end);
-                if (callData) {
-                  option.series[0].data.push();
-                }
-            });
-            option.series[1].data = data.topCityOut.map((point: any) => ({
+                ],
+              };
+              data.allLine
+                .sort((a: any, b: any) => b.num - a.num)
+                .slice(0, 3000)
+                .forEach((line: any) => {
+                  const callData = getLineCoord(geoCoord, line.start, line.end);
+                  if (callData) {
+                    option.series[0].data.push();
+                  }
+                });
+              option.series[1].data = data.topCityOut.map((point: any) => ({
                 value: getGeoCoord(geoCoord, point.name),
               }));
 
-            this.chart.setChartOptions(option);
-          }
-        });
-      }
-    });
+              this.chart.setChartOptions(option);
+            }
+          });
+        }
+      });
+    }
   }
 
-  setRef = (x = null) => {
-    this.container = x;
-  };
-
   render() {
-    // @ts-ignore
-    return (<div ref={this.setRef} className="map-content" />);
+    return (<div ref={this.container} className="map-content" />);
   }
 }
 

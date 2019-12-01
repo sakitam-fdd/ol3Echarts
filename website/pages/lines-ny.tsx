@@ -1,9 +1,6 @@
 import * as React from 'react';
-// @ts-ignore
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
 
@@ -24,7 +21,7 @@ class Index extends React.Component<PageProps, PageState> {
 
   private chart: any | null;
 
-  private container: HTMLElement | null;
+  private container: React.RefObject<HTMLDivElement>;
 
   constructor(props: PageProps, context: any) {
     super(props, context);
@@ -34,56 +31,54 @@ class Index extends React.Component<PageProps, PageState> {
       center: [-74.04327099998152, 40.86737600240287],
     };
 
-    this.container = null;
+    this.container = React.createRef();
     this.map = null;
   }
 
   componentDidMount() {
-    this.map = new Map({
-      target: this.container,
-      view: new View({
-        ...this.state,
-        projection: 'EPSG:4326',
-      }),
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-              + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-          }),
+    if (this.container.current) {
+      this.map = new Map({
+        target: this.container.current,
+        view: new View({
+          ...this.state,
+          projection: 'EPSG:4326',
         }),
-      ],
-    });
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
+                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
+            }),
+          }),
+        ],
+      });
 
-    this.chart = new EChartsLayer({
-      progressive: 20000,
-      backgroundColor: 'transparent',
-      series: [{
-        type: 'lines',
-        blendMode: 'lighter',
-        dimensions: ['value'],
-        data: new Float64Array(),
-        polyline: true,
-        large: true,
-        lineStyle: {
-          color: 'orange',
-          width: 0.5,
-          opacity: 0.3,
-        },
-      }],
-    }, {
-      hideOnMoving: true,
-      hideOnZooming: true,
-    });
+      this.chart = new EChartsLayer({
+        progressive: 20000,
+        backgroundColor: 'transparent',
+        series: [{
+          type: 'lines',
+          blendMode: 'lighter',
+          dimensions: ['value'],
+          data: new Float64Array(),
+          polyline: true,
+          large: true,
+          lineStyle: {
+            color: 'orange',
+            width: 0.5,
+            opacity: 0.3,
+          },
+        }],
+      }, {
+        hideOnMoving: true,
+        hideOnZooming: true,
+      });
 
-    this.chart.appendTo(this.map);
+      this.chart.appendTo(this.map);
 
-    this.fetchData(0);
+      this.fetchData(0);
+    }
   }
-
-  setRef = (x = null) => {
-    this.container = x;
-  };
 
   fetchData(idx: number) {
     if (idx >= CHUNK_COUNT) {
@@ -119,8 +114,7 @@ class Index extends React.Component<PageProps, PageState> {
   }
 
   render() {
-    // @ts-ignore
-    return (<div ref={this.setRef} className="map-content" />);
+    return (<div ref={this.container} className="map-content" />);
   }
 }
 

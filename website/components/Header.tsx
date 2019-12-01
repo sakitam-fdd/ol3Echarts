@@ -22,7 +22,7 @@ class Header extends React.Component {
   }
 
   openDocs() {
-    window.open('./docs/index.html');
+    window.open('./docs/');
   }
 
   render() {
