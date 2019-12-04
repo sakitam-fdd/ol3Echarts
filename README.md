@@ -60,7 +60,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 #### [示例](//sakitam-fdd.github.io/ol3Echarts/)
 #### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/)
 
-##### openlayers
+#### openlayers
 
 ``` javascript
 <div id="map"></div>
@@ -84,7 +84,6 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
     })
   });
   var echartslayer = new ol3Echarts(echartsOption, {
-    target: '.ol-overlaycontainer',
     source: '',
     destination: '',
     hideOnMoving: true,
@@ -95,7 +94,112 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 </script>
 ```
 
-#### ol package & react 
+#### 对于 ol version >= 5 && >=6 的版本
+
+如果你已经对 ol 执行构建 `build-legacy` 那么你将能够获取一个可以通过 `script` 引入的 `ol.js` 包，这样的话你也可以使用
+`ol-echarts` 下的 `ol-echarts.js`, 如果碰到鼠标事件问题，请参照 issues [#45](https://github.com/sakitam-fdd/ol3Echarts/issues/45)
+
+```html
+<div id="map"></div>
+<script src="https://sakitam-1255686840.cos.ap-beijing.myqcloud.com/cdn/ol/v6.1.1/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://unpkg.com/ol-echarts/dist/ol-echarts.js"></script>
+<script>
+  var osm = new ol.layer.Tile({
+    source: new ol.source.OSM()
+  });
+
+  var map = new ol.Map({
+    target: 'map',
+    layers: [
+      osm,
+    ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([108.18095703125005, 34.34141675361363]),
+      projection: 'EPSG:3857',
+      zoom: 5
+    })
+  });
+
+  var echartslayer = new EChartsLayer({
+    tooltip: {
+      trigger: "item",
+      formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+      orient: "vertical",
+      left: "right",
+      data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"]
+    },
+    series: [
+      {
+        name: "访问来源",
+        type: "pie",
+        radius: "30",
+        coordinates: [110.53450137499999, 33.44104525],
+        data: [
+          { value: 335, name: "直接访问" },
+          { value: 310, name: "邮件营销" },
+          { value: 234, name: "联盟广告" },
+          { value: 135, name: "视频广告" },
+          { value: 1548, name: "搜索引擎" }
+        ],
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)"
+          }
+        }
+      },
+      {
+        name: "访问来源",
+        type: "pie",
+        radius: "30",
+        coordinates: [113.53450137499999, 34.44104525],
+        data: [
+          { value: 335, name: "直接访问" },
+          { value: 310, name: "邮件营销" },
+          { value: 234, name: "联盟广告" },
+          { value: 135, name: "视频广告" },
+          { value: 1548, name: "搜索引擎" }
+        ],
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)"
+          }
+        }
+      },
+      {
+        name: "访问来源",
+        type: "pie",
+        radius: "30",
+        coordinates: [110.53450137499999, 38.44104525],
+        data: [
+          { value: 335, name: "直接访问" },
+          { value: 310, name: "邮件营销" },
+          { value: 234, name: "联盟广告" },
+          { value: 135, name: "视频广告" },
+          { value: 1548, name: "搜索引擎" }
+        ],
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)"
+          }
+        }
+      }
+    ]
+  });
+
+  echartslayer.appendTo(map);
+</script>
+```
+
+#### ol package & react
 
 ```jsx harmony
 import * as React from 'react';
@@ -211,7 +315,6 @@ class Index extends React.Component {
     ]
   });
   var echartslayer = new ol3Echarts(echartsOption, {
-    target: '.ol-overlaycontainer',
     source: '',
     destination: '',
     hideOnMoving: true,

@@ -9,7 +9,7 @@
   "module": "dist/ol-echarts.esm.js",
   "unpkg": "dist/ol-echarts.js",
   "commonjs": "dist/ol-echarts.common.js",
-  "namespace": "EchartsLayer",
+  "namespace": "EChartsLayer",
   "types": "types/index.d.ts",
   "publishConfig": {
     "access": "public"

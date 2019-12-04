@@ -85,7 +85,6 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
     })
   });
   var echartslayer = new ol3Echarts(echartsOption, {
-    target: '.ol-overlaycontainer',
     source: '',
     destination: '',
     hideOnMoving: true,
@@ -96,7 +95,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 </script>
 ```
 
-#### ol package & react 
+#### ol package & react
 
 ```jsx harmony
 import * as React from 'react';
@@ -212,7 +211,6 @@ class Index extends React.Component {
     ]
   });
   var echartslayer = new ol3Echarts(echartsOption, {
-    target: '.ol-overlaycontainer',
     source: '',
     destination: '',
     hideOnMoving: true,
