@@ -136,6 +136,18 @@ const webpackConfig = merge(require('./webpack.base.conf'), {
       // chunk的名字，如果设成true，会根据被提取的chunk自动生成。
       name: true,
       cacheGroups: {
+        ol: {
+          name: 'chunk-ol', // split elementUI into a single package
+          priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+          test: /[\\/]?node_modules[\\/]ol[\\/][\S]*?(\.js)?/, // in order to adapt to cnpm
+          chunks: 'initial', // only package third parties that are initially dependent
+        },
+        echarts: {
+          name: 'chunk-echarts', // split elementUI into a single package
+          priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+          test: /[\\/]?node_modules[\\/]echarts[\\/][\S]*?(\.js)?/, // in order to adapt to cnpm
+          chunks: 'initial', // only package third parties that are initially dependent
+        },
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           // 优先级高的chunk为被优先选择,优先级一样的话，size大的优先被选择

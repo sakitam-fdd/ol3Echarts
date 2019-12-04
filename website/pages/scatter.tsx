@@ -161,7 +161,6 @@ class Index extends React.Component<PageProps, object> {
    * 初始化
    */
   initChart(option: any) {
-    const size = this.map.getSize();
     this.chart = new EChartsLayer(option, {
       stopEvent: false,
       hideOnMoving: false,
@@ -207,62 +206,9 @@ class Index extends React.Component<PageProps, object> {
       data.value.on('contextmenu', (event: Event) => {
         console.log('contextmenu', event);
       });
-
-      // @ts-ignore
-      // this.map.on('pointerdown', event => {
-      //   console.log(event);
-      //
-      //   function mockEvent(type: string) {
-      //     const e = new MouseEvent(type, {
-      //       button: event.pointerEvent.button,
-      //       buttons: event.pointerEvent.buttons,
-      //       clientX: event.pointerEvent.clientX,
-      //       clientY: event.pointerEvent.clientY,
-      //       // @ts-ignore
-      //       zrX: event.pointerEvent.offsetX,
-      //       zrY: event.pointerEvent.offsetY,
-      //       movementX: event.pointerEvent.movementX,
-      //       movementY: event.pointerEvent.movementY,
-      //       relatedTarget: event.pointerEvent.relatedTarget,
-      //       screenX: event.pointerEvent.screenX,
-      //       screenY: event.pointerEvent.screenY,
-      //       view: window,
-      //     });
-      //     e.zrX = event.pointerEvent.offsetX;
-      //     e.zrY = event.pointerEvent.offsetY;
-      //     e.event = e;
-      //     return e;
-      //   }
-      //
-      //   this.chart.$container.dispatchEvent(mockEvent('mousedown'));
-      //
-      //   this.chart.$container.dispatchEvent(mockEvent('mouseup'));
-      //
-      //   this.chart.$container.dispatchEvent(mockEvent('click'));
-      // });
-
-      // @ts-ignore
-      // data.value._zr.on('click', (event) => {
-      //   console.log(event);
-      // }, this);
     });
 
     this.chart.appendTo(this.map);
-
-    const center = this.map.getView().getCenter();
-
-    setTimeout(() => {
-      this.chart.on('change:size', (event: any) => {
-        console.log(event);
-      });
-
-      this.chart.on('change:center', (event: any) => {
-        console.log(event);
-      });
-
-      this.map.setSize([size[0] + 100, size[1] + 100]);
-      this.map.getView().setCenter([center[0] + 0.8, center[1] + 0.4]);
-    }, 2000);
   }
 
   render() {
