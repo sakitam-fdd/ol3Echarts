@@ -42,9 +42,9 @@
     "ol": ">=5.0.0"
   },
   "devDependencies": {
+    "@types/ol": "^5.3.6",
     "echarts": "^4.0.1",
-    "ol": "^5.1.3",
-    "@types/ol": "^5.3.6"
+    "ol": "^5.1.3"
   },
   "engines": {
     "node": ">= 4.0.0",

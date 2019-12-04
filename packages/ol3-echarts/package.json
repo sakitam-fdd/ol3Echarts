@@ -42,9 +42,9 @@
     "openlayers": ">=3.0.0"
   },
   "devDependencies": {
+    "@types/openlayers": "^4.6.17",
     "echarts": "^4.0.1",
-    "openlayers": "4.6.5",
-    "@types/openlayers": "^4.6.17"
+    "openlayers": "4.6.5"
   },
   "engines": {
     "node": ">= 4.0.0",
