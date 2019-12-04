@@ -1,8 +1,4 @@
-export default function (json: {
-    UTF8Encoding: any;
-    UTF8Scale?: any;
-    features?: any;
-}): {
+export default function (json: any): {
     type: string;
     crs: {};
     features: any;

@@ -8,7 +8,7 @@ import echarts from 'echarts';
  * @param json
  * @returns {boolean}
  */
-const checkDecoded = (json: { UTF8Encoding: any }) => !json.UTF8Encoding;
+const checkDecoded = (json: any) => !json.UTF8Encoding;
 
 /**
  * decode polygon
@@ -47,7 +47,7 @@ const decodePolygon = (
  * @param json
  * @returns {*}
  */
-const decode = (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any }) => {
+const decode = (json: any) => {
   if (checkDecoded(json)) {
     return json;
   }
@@ -80,7 +80,7 @@ const decode = (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any }) =>
  * decode geoJson
  * @param json
  */
-export default function (json: { UTF8Encoding: any; UTF8Scale?: any; features?: any }) {
+export default function (json: any) {
   const geoJson = decode(json);
   // @ts-ignore
   const _features = echarts.util.map(
