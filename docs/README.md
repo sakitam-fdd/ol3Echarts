@@ -50,8 +50,8 @@ import EChartsLayer from 'ol-echarts'
 
 ```bash
 // jsdelivr (jsdelivr由于缓存原因最好锁定版本号)
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.6/dist/ol3Echarts.js
-https://cdn.jsdelivr.net/npm/ol3-echarts@1.3.6/dist/ol3Echarts.min.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@2.0.1/dist/ol3Echarts.js
+https://cdn.jsdelivr.net/npm/ol3-echarts@2.0.1/dist/ol3Echarts.min.js
 // npm
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.js
 https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
@@ -59,6 +59,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 
 #### [示例](//sakitam-fdd.github.io/ol3Echarts/)
 #### [文档](//sakitam-fdd.github.io/ol3Echarts/docs/)
+#### [实现原理](//sakitam-fdd.cn/ol3Echarts/docs/#/guide/core)
 
 ##### openlayers
 
@@ -84,7 +85,6 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
     })
   });
   var echartslayer = new ol3Echarts(echartsOption, {
-    target: '.ol-overlaycontainer',
     source: '',
     destination: '',
     hideOnMoving: true,
@@ -95,7 +95,7 @@ https://unpkg.com/ol3-echarts/dist/ol3Echarts.min.js
 </script>
 ```
 
-#### ol package & react 
+#### ol package & react
 
 ```jsx harmony
 import * as React from 'react';
@@ -211,7 +211,6 @@ class Index extends React.Component {
     ]
   });
   var echartslayer = new ol3Echarts(echartsOption, {
-    target: '.ol-overlaycontainer',
     source: '',
     destination: '',
     hideOnMoving: true,
