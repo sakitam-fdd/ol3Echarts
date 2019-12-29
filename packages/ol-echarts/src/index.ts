@@ -464,8 +464,8 @@ class EChartsLayer extends obj {
    * @param event
    */
   private onClick(event: any) {
-    if (this.$container) {
-      this.$container.dispatchEvent(mockEvent('click', event));
+    if (this.$chart) {
+      this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('click', event));
     }
   }
 
@@ -474,8 +474,8 @@ class EChartsLayer extends obj {
    * @param event
    */
   private mouseDown(event: any) {
-    if (this.$container) {
-      this.$container.dispatchEvent(mockEvent('mousedown', event));
+    if (this.$chart) {
+      this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('mousedown', event));
     }
   }
 
@@ -484,8 +484,8 @@ class EChartsLayer extends obj {
    * @param event
    */
   private mouseUp(event: any) {
-    if (this.$container) {
-      this.$container.dispatchEvent(mockEvent('mouseup', event));
+    if (this.$chart) {
+      this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('mouseup', event));
     }
   }
 
