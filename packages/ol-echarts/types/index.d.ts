@@ -66,6 +66,7 @@ declare class EChartsLayer extends obj {
     private onClick;
     private mouseDown;
     private mouseUp;
+    private mouseMove;
     private onCenterChange;
     private handleMapChanged;
     private createLayerContainer;

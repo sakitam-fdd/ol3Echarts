@@ -144,7 +144,7 @@ class EChartsLayer extends obj {
     bindAll([
       'redraw', 'onResize', 'onZoomEnd', 'onCenterChange',
       'onDragRotateEnd', 'onMoveStart', 'onMoveEnd',
-      'mouseDown', 'mouseUp', 'onClick',
+      'mouseDown', 'mouseUp', 'onClick', 'mouseMove',
     ], this);
 
     if (map) this.setMap(map);
@@ -464,8 +464,8 @@ class EChartsLayer extends obj {
    * @param event
    */
   private onClick(event: any) {
-    if (this.$container) {
-      this.$container.dispatchEvent(mockEvent('click', event));
+    if (this.$chart) {
+      this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('click', event));
     }
   }
 
@@ -474,8 +474,8 @@ class EChartsLayer extends obj {
    * @param event
    */
   private mouseDown(event: any) {
-    if (this.$container) {
-      this.$container.dispatchEvent(mockEvent('mousedown', event));
+    if (this.$chart) {
+      this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('mousedown', event));
     }
   }
 
@@ -484,8 +484,28 @@ class EChartsLayer extends obj {
    * @param event
    */
   private mouseUp(event: any) {
-    if (this.$container) {
-      this.$container.dispatchEvent(mockEvent('mouseup', event));
+    if (this.$chart) {
+      this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('mouseup', event));
+    }
+  }
+
+  /**
+   * mousemove 事件需要分两种情况处理:
+   * 1. ol-overlaycontainer-stopevent 有高度, 则 propagation path 是 ol-viewport -> ol-overlaycontainer-stopevent.
+   * 此时 ol-overlaycontainer 无法获得事件, 只能 mock 处理
+   * 2. ol-overlaycontainer-stopevent 没有高度, 则 propagation path 是 ol-viewport -> ol-overlaycontainer. 无需 mock
+   * @param event
+   */
+  private mouseMove(event: any) {
+    if (this.$chart) {
+      let target = event.originalEvent.target;
+      while (target) {
+        if (target.className === 'ol-overlaycontainer-stopevent') {
+          this.$chart.getZr().painter.getViewportRoot().dispatchEvent(mockEvent('mousemove', event));
+          return;
+        }
+        target = target.parentElement;
+      }
     }
   }
 
@@ -563,6 +583,7 @@ class EChartsLayer extends obj {
     if (this._options.polyfillEvents) {
       map.on('pointerdown', this.mouseDown);
       map.on('pointerup', this.mouseUp);
+      map.on('pointermove', this.mouseMove);
       map.on('click', this.onClick);
     }
     this._initEvent = true;
@@ -587,6 +608,7 @@ class EChartsLayer extends obj {
     if (this._options.polyfillEvents) {
       map.un('pointerdown', this.mouseDown);
       map.un('pointerup', this.mouseUp);
+      map.un('pointermove', this.mouseMove);
       map.un('click', this.onClick);
     }
     this._initEvent = false;
