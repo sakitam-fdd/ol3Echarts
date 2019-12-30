@@ -13,3 +13,5 @@ yarn-error.log*
 /packages/ol3-echarts/dist/
 /packages/canvas-render/dist/
 _site/
+cache/
+dll/
