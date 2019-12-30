@@ -97,8 +97,9 @@ function removeNode(node: HTMLElement) {
  */
 function mockEvent(type: string, event: any) {
   const e = new MouseEvent(type, {
-    // set bubbles, so zrender can receive the mock event. ref: https://dom.spec.whatwg.org/#interface-event 
-    // "event.bubbles": Returns true or false depending on how event was initialized. True if event goes through its target’s ancestors in reverse tree order, and false otherwise
+    // set bubbles, so zrender can receive the mock event. ref: https://dom.spec.whatwg.org/#interface-event
+    // "event.bubbles": Returns true or false depending on how event was initialized.
+    // True if event goes through its target’s ancestors in reverse tree order, and false otherwise
     bubbles: true,
     cancelable: true,
     button: event.pointerEvent.button,

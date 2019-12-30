@@ -520,7 +520,8 @@ class EChartsLayer extends obj {
 
   /**
    * mousemove 事件需要分两种情况处理:
-   * 1. ol-overlaycontainer-stopevent 有高度, 则 propagation path 是 ol-viewport -> ol-overlaycontainer-stopevent. 此时 ol-overlaycontainer 无法获得事件, 只能 mock 处理
+   * 1. ol-overlaycontainer-stopevent 有高度, 则 propagation path 是 ol-viewport -> ol-overlaycontainer-stopevent.
+   * 此时 ol-overlaycontainer 无法获得事件, 只能 mock 处理
    * 2. ol-overlaycontainer-stopevent 没有高度, 则 propagation path 是 ol-viewport -> ol-overlaycontainer. 无需 mock
    * @param event
    */
