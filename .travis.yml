@@ -13,6 +13,7 @@ install: yarn
 #      - google-chrome-stable
 addons:
   chrome: stable
+  firefox: latest
 
 before_script:
   - export DISPLAY=:99.0
