@@ -9,6 +9,7 @@
     "clean": "lerna clean",
     "karma.test": "lerna run karma.test",
     "karma.single": "lerna run karma.single",
+    "karma.travis": "lerna run karma.travis",
     "lint": "eslint --fix --ext .js,.jsx packages/ol-echarts/src packages/ol3-echarts/src",
     "bootstrap": "lerna bootstrap",
     "publish-packages": "lerna publish --force-publish",

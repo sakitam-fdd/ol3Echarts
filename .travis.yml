@@ -25,7 +25,7 @@ before_script:
 
 script:
   - yarn run bootstrap
-  - yarn add puppeteer # for travis
+  - yarn add -W -D puppeteer # for travis
   - yarn run build
-  - yarn run karma.single
+  - yarn run karma.travis
   - codecov -t ${CODECOV}
