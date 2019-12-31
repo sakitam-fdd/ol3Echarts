@@ -35,7 +35,8 @@
     "build": "cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js",
     "prepublishOnly": "npm run karma.single",
     "karma.test": "karma start karma.config.js",
-    "karma.single": "karma start karma.config.js --single-run --browsers Chrome"
+    "karma.single": "cross-env karma start karma.config.js --single-run --browsers Chrome",
+    "karma.travis": "cross-env TRAVIS_ENV=true karma start karma.config.js --single-run --browsers ChromeHeadless"
   },
   "peerDependencies": {
     "echarts": ">=4.0.1",

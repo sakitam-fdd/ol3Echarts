@@ -1,6 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 // Karma configuration
 // Generated on Sun Jun 02 2019 15:47:55 GMT+0800 (GMT+08:00)
+if (process.env.TRAVIS_ENV) {
+  process.env.CHROME_BIN = require('puppeteer').executablePath();
+}
 
 module.exports = function (config) {
   config.set({
@@ -42,11 +46,11 @@ module.exports = function (config) {
         // needed for importing es6 modules from npm packages
         transforms: [require('karma-typescript-es6-transform')()],
         resolve: {
-          directories: ["src", "test", "node_modules"]
+          directories: ['src', 'test', 'node_modules'],
         },
         exclude: [
-          'node_modules/@types/**'
-        ]
+          'node_modules/@types/**',
+        ],
       },
       compilerOptions: {
         // karma doesn't like es6 modules, so we compile to commonjs
@@ -103,7 +107,7 @@ module.exports = function (config) {
 
     // start these browsers ChromeHeadless
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['Chrome', 'ChromeHeadless'],
 
     // customLaunchers: {
     //   ChromeDebug: {

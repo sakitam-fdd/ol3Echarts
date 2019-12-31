@@ -1,5 +1,7 @@
 language: node_js
 node_js: node
+  - "10"
+  - "11"
 
 # https://github.com/karma-runner/karma-chrome-launcher/issues/171
 cache:
@@ -15,7 +17,6 @@ install: yarn
 #      - google-chrome-stable
 addons:
   chrome: stable
-  firefox: latest
 
 before_script:
   - export DISPLAY=:99.0
@@ -24,6 +25,7 @@ before_script:
 
 script:
   - yarn run bootstrap
+  - yarn add puppeteer # for travis
   - yarn run build
   - yarn run karma.single
   - codecov -t ${CODECOV}
