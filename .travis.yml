@@ -1,8 +1,10 @@
 language: node_js
 node_js: node
+
+# https://github.com/karma-runner/karma-chrome-launcher/issues/171
 cache:
-  directories:
-    - node_modules
+  npm: false
+  yarn: false
 before_install: npm i -g yarn
 install: yarn
 
