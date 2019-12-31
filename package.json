@@ -12,6 +12,7 @@
     "lint": "eslint --fix --ext .js,.jsx packages/ol-echarts/src packages/ol3-echarts/src",
     "bootstrap": "lerna bootstrap",
     "publish-packages": "lerna publish --force-publish",
+    "publish-packages:ignore": "lerna publish --force-publish --no-push --no-git-tag-version",
     "precommit": "lint-staged",
     "website": "webpack-dev-server --inline --config build/webpack.preview.conf.js",
     "website:dll": "webpack --config build/webpack.dll.conf.js",

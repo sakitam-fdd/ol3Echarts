@@ -7,10 +7,12 @@ before_install: npm i -g yarn
 install: yarn
 
 # https://iamakulov.com/notes/install-google-chrome-on-travis/
+#addons:
+#  apt:
+#    packages:
+#      - google-chrome-stable
 addons:
-  apt:
-    packages:
-      - google-chrome-stable
+  chrome: stable
 
 before_script:
   - export DISPLAY=:99.0
