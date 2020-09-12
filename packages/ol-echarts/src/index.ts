@@ -78,6 +78,8 @@ class EChartsLayer extends obj {
 
   private _initEvent: boolean;
 
+  private prevVisibleState: string | null;
+
   public $chart: Nullable<any>;
 
   public $container: NoDef<HTMLElement>;
@@ -97,6 +99,7 @@ class EChartsLayer extends obj {
      * chart options
      */
     this._chartOptions = chartOptions;
+    this.set('chartOptions', chartOptions); // cache chart Options
 
     /**
      * chart instance
@@ -140,6 +143,8 @@ class EChartsLayer extends obj {
      * coordinateSystemId
      */
     this.coordinateSystemId = '';
+
+    this.prevVisibleState = '';
 
     bindAll([
       'redraw', 'onResize', 'onZoomEnd', 'onCenterChange',
@@ -186,7 +191,7 @@ class EChartsLayer extends obj {
    * get echarts options
    */
   public getChartOptions(): object | undefined | null {
-    return this._chartOptions;
+    return this.get('chartOptions');
   }
 
   /**
@@ -196,6 +201,7 @@ class EChartsLayer extends obj {
    */
   public setChartOptions(options: object = {}) {
     this._chartOptions = options;
+    this.set('chartOptions', options);
     this.clearAndRedraw();
     return this;
   }
@@ -257,11 +263,25 @@ class EChartsLayer extends obj {
     this.setVisible(true);
   }
 
+  private innerShow() {
+    if (this.$container) {
+      this.$container.style.display = this.prevVisibleState;
+      this.prevVisibleState = '';
+    }
+  }
+
   /**
    * hide layer
    */
   public hide() {
     this.setVisible(false);
+  }
+
+  private innerHide() {
+    if (this.$container) {
+      this.prevVisibleState = this.$container.style.display;
+      this.$container.style.display = 'none';
+    }
   }
 
   /**
@@ -321,19 +341,15 @@ class EChartsLayer extends obj {
       if (this.$container) {
         this.$container.style.display = '';
       }
-      const options = this.get('options');
-      if (options) {
-        this.setChartOptions(options);
-        this.unset('options');
-      }
+      this._chartOptions = this.getChartOptions();
+      this.clearAndRedraw();
     } else {
       if (this.$container) {
         this.$container.style.display = 'none';
       }
-      const options = this.getChartOptions();
-      this.set('options', options);
       this.clear();
-      this.setChartOptions({});
+      this._chartOptions = {};
+      this.clearAndRedraw();
     }
   }
 
@@ -400,7 +416,7 @@ class EChartsLayer extends obj {
    * handle zoom end events
    */
   private onZoomEnd() {
-    this._options.hideOnZooming && this.show();
+    this._options.hideOnZooming && this.innerShow();
     const map = this.getMap();
     if (map && map.getView()) {
       this.clearAndRedraw();
@@ -416,7 +432,7 @@ class EChartsLayer extends obj {
    * handle rotate end events
    */
   private onDragRotateEnd() {
-    this._options.hideOnRotating && this.show();
+    this._options.hideOnRotating && this.innerShow();
     const map = this.getMap();
     if (map && map.getView()) {
       this.clearAndRedraw();
@@ -432,7 +448,7 @@ class EChartsLayer extends obj {
    * handle move start events
    */
   private onMoveStart() {
-    this._options.hideOnMoving && this.hide();
+    this._options.hideOnMoving && this.innerHide();
     const map = this.getMap();
     if (map && map.getView()) {
       this.dispatchEvent({
@@ -447,7 +463,7 @@ class EChartsLayer extends obj {
    * handle move end events
    */
   private onMoveEnd() {
-    this._options.hideOnMoving && this.show();
+    this._options.hideOnMoving && this.innerShow();
     const map = this.getMap();
     if (map && map.getView()) {
       this.clearAndRedraw();

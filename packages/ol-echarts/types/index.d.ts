@@ -35,6 +35,7 @@ declare class EChartsLayer extends obj {
     private coordinateSystemId;
     private readonly _options;
     private _initEvent;
+    private prevVisibleState;
     $chart: Nullable<any>;
     $container: NoDef<HTMLElement>;
     _map: any;
@@ -48,7 +49,9 @@ declare class EChartsLayer extends obj {
     clear(): void;
     remove(): void;
     show(): void;
+    private innerShow;
     hide(): void;
+    private innerHide;
     isVisible(): boolean | undefined;
     showLoading(): void;
     hideLoading(): void;

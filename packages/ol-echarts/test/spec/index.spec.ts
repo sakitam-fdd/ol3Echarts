@@ -197,37 +197,6 @@ describe('indexSpec', () => {
       expect(layer.getChartOptions()).toEqual(options);
     });
 
-    it('show hide setVisible isVisible', () => {
-      const layer = new EChartsLayer(options, {
-        stopEvent: false,
-        hideOnMoving: true,
-        hideOnZooming: true,
-        forcedPrecomposeRerender: false,
-      });
-
-      expect(layer).toBeDefined();
-
-      layer.appendTo(map);
-
-      expect(layer.isVisible()).toBe(true);
-
-      layer.setVisible(false);
-
-      expect(layer.isVisible()).toBe(false);
-
-      layer.setVisible(true);
-
-      expect(layer.isVisible()).toBe(true);
-
-      layer.hide();
-
-      expect(layer.isVisible()).toBe(false);
-
-      layer.show();
-
-      expect(layer.isVisible()).toBe(true);
-    });
-
     it('setZIndex getZIndex', () => {
       const layer = new EChartsLayer(options, {
         stopEvent: false,
@@ -463,5 +432,109 @@ describe('indexSpec', () => {
 
       layer.appendTo(map);
     }, 50000);
+  });
+
+  describe('show hide', () => {
+    it('show hide setVisible isVisible', () => {
+      const layer = new EChartsLayer(options, {
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
+      });
+
+      expect(layer).toBeDefined();
+
+      layer.appendTo(map);
+
+      expect(layer.isVisible()).toBe(true);
+
+      layer.setVisible(false);
+
+      expect(layer.isVisible()).toBe(false);
+
+      layer.setVisible(true);
+
+      expect(layer.isVisible()).toBe(true);
+
+      layer.hide();
+
+      expect(layer.isVisible()).toBe(false);
+
+      layer.show();
+
+      expect(layer.isVisible()).toBe(true);
+    });
+
+    it('should hide on Moving and show moveend', (done) => {
+      const layer = new EChartsLayer(options, {
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
+      });
+
+      layer.on('load', () => {
+        const center = map.getView().getCenter();
+        map.getView().animate({
+          center: [center[0] + 0.8, center[1] + 0.4],
+          duration: 1000,
+        });
+
+        expect(layer.isVisible()).toBe(true);
+
+        setTimeout(() => {
+          expect(layer.isVisible()).toBe(false);
+        }, 500)
+
+        setTimeout(() => {
+          expect(layer.isVisible()).toBe(true);
+
+          done();
+        }, 2500);
+      });
+
+      expect(layer).toBeDefined();
+
+      layer.appendTo(map);
+    });
+
+    it('should hide on setVisible(false) when moving', (done) => {
+      const layer = new EChartsLayer(options, {
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
+      });
+
+      layer.on('load', () => {
+        const center = map.getView().getCenter();
+        map.getView().animate({
+          center: [center[0] + 0.8, center[1] + 0.4],
+          duration: 1000,
+        });
+
+        expect(layer.isVisible()).toBe(true);
+
+        layer.setVisible(false);
+
+        expect(layer.isVisible()).toBe(false);
+
+        setTimeout(() => {
+          expect(layer.isVisible()).toBe(false);
+        }, 500);
+
+        setTimeout(() => {
+          expect(layer.isVisible()).toBe(false);
+          layer.setVisible(true);
+          expect(layer.isVisible()).toBe(true);
+          done();
+        }, 2500);
+      });
+
+      expect(layer).toBeDefined();
+
+      layer.appendTo(map);
+    });
   });
 });
