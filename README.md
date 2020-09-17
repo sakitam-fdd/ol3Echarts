@@ -1,4 +1,4 @@
-# Bridger for openlayers and echarts
+# Bridger for openlayers and Apache ECharts (incubating)
 
 [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts)
 [![codecov](https://codecov.io/gh/sakitam-fdd/ol3Echarts/branch/master/graph/badge.svg)](https://codecov.io/gh/sakitam-fdd/ol3Echarts)
