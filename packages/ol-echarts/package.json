@@ -1,6 +1,6 @@
 {
   "name": "ol-echarts",
-  "version": "2.0.5",
+  "version": "2.0.3",
   "description": "a openlayers extension to echarts",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
@@ -57,5 +57,5 @@
     "not ie <= 8"
   ],
   "license": "MIT",
-  "gitHead": "228a727dcc5b9c4b65d3ad3ff0aaf75a2529384b"
+  "gitHead": "e1ba3ff0328b32039ae6c3693e91d6464e6bf23b"
 }
