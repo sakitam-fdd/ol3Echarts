@@ -47,7 +47,7 @@ const arrayAdd = function (array: any[], item: any): any[] {
   let index;
   const length = array.length;
   for (; i < length; i++) {
-    if (array[i].seriesIndex === item.seriesIndex) {
+    if (array[i].index === item.index) {
       index = i;
       break;
     }

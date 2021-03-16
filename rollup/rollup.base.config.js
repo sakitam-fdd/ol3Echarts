@@ -50,7 +50,10 @@ module.exports = {
     }),
     commonjs(),
     buble({
-      objectAssign: true
+      objectAssign: true,
+      transforms: {
+        dangerousForOf: true
+      }
     }),
   ],
   external: [

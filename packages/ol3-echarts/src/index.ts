@@ -245,6 +245,7 @@ class EChartsLayer extends obj {
     if (data) {
       if (save) {
         this._incremental = arrayAdd(this._incremental, {
+          index: this._incremental.length,
           data: data.data,
           seriesIndex: data.seriesIndex,
         });
@@ -261,8 +262,10 @@ class EChartsLayer extends obj {
   /**
    * clear layer
    */
-  public clear() {
-    this._incremental = [];
+  public clear(keep?: boolean) {
+    if (!keep) {
+      this._incremental = [];
+    }
     if (this.$chart) {
       this.$chart.clear();
     }
@@ -376,7 +379,7 @@ class EChartsLayer extends obj {
       if (this.$container) {
         this.$container.style.display = 'none';
       }
-      this.clear();
+      this.clear(true);
       this._chartOptions = {};
       this.clearAndRedraw();
     }

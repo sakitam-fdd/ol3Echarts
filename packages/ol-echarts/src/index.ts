@@ -1,4 +1,4 @@
-import { Map, Object as obj } from 'ol';
+import { Map, Object as obj, VERSION } from 'ol';
 import { ProjectionLike, transform } from 'ol/proj';
 import Event from 'ol/events/Event';
 import { Coordinate } from 'ol/coordinate';
@@ -10,6 +10,7 @@ import {
   uuid, bindAll,
   removeNode,
   mockEvent,
+  semver,
 } from './utils';
 import formatGeoJSON from './utils/formatGeoJSON';
 
@@ -26,7 +27,7 @@ const _options = {
   convertTypes: ['pie', 'line', 'bar'],
   insertFirst: false,
   stopEvent: false,
-  polyfillEvents: true, // fix echarts mouse events
+  polyfillEvents: semver(VERSION, '6.1.1') <= 0, // fix echarts mouse events
 };
 
 type Nullable<T> = T | null;
@@ -216,6 +217,7 @@ class EChartsLayer extends obj {
     if (data) {
       if (save) {
         this._incremental = arrayAdd(this._incremental, {
+          index: this._incremental.length,
           data: data.data,
           seriesIndex: data.seriesIndex,
         });
@@ -232,8 +234,10 @@ class EChartsLayer extends obj {
   /**
    * clear layer
    */
-  public clear() {
-    this._incremental = [];
+  public clear(keep?: boolean) {
+    if (!keep) {
+      this._incremental = [];
+    }
     if (this.$chart) {
       this.$chart.clear();
     }
@@ -347,7 +351,7 @@ class EChartsLayer extends obj {
       if (this.$container) {
         this.$container.style.display = 'none';
       }
-      this.clear();
+      this.clear(true);
       this._chartOptions = {};
       this.clearAndRedraw();
     }
@@ -578,6 +582,7 @@ class EChartsLayer extends obj {
     this.$container.style.left = '0px';
     this.$container.style.right = '0px';
     this.$container.style.bottom = '0px';
+    this.$container.style.pointerEvents = 'auto';
   }
 
   /**

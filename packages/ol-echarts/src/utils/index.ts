@@ -47,7 +47,7 @@ const arrayAdd = function (array: any[], item: any): any[] {
   let index;
   const length = array.length;
   for (; i < length; i++) {
-    if (array[i].seriesIndex === item.seriesIndex) {
+    if (array[i].index === item.index) {
       index = i;
       break;
     }
@@ -120,6 +120,22 @@ function mockEvent(type: string, event: any) {
   e.zrY = event.pointerEvent.offsetY;
   e.event = e;
   return e;
+}
+
+export function semver(a: string, b: string) {
+  const pa = a.split('.');
+  const pb = b.split('.');
+  for (let i = 0; i < 3; i++) {
+    const na = Number(pa[i]);
+    const nb = Number(pb[i]);
+    if (na > nb) return 1;
+    if (nb > na) return -1;
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(na) && isNaN(nb)) return 1;
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(na) && !isNaN(nb)) return -1;
+  }
+  return 0;
 }
 
 export {

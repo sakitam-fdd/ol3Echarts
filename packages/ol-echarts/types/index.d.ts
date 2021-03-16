@@ -46,7 +46,7 @@ declare class EChartsLayer extends obj {
     getChartOptions(): object | undefined | null;
     setChartOptions(options?: object): this;
     appendData(data: any, save?: boolean | undefined | null): this;
-    clear(): void;
+    clear(keep?: boolean): void;
     remove(): void;
     show(): void;
     private innerShow;
