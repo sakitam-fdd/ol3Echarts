@@ -86,33 +86,40 @@ describe('indexSpec', () => {
 
     it('utils.arrayAdd', () => {
       const value1 = EChartsLayer.arrayAdd([{
+        index: 0,
         seriesIndex: 0,
         value: 0,
       }], {
+        index: 1,
         seriesIndex: 1,
         value: 1,
       });
 
       const value2 = EChartsLayer.arrayAdd([{
+        index: 0,
         seriesIndex: 0,
         value: 0,
       }], {
+        index: 0,
         seriesIndex: 0,
         value: 1,
       });
 
       expect(value1).toEqual([
         {
+          index: 0,
           seriesIndex: 0,
           value: 0,
         },
         {
+          index: 1,
           seriesIndex: 1,
           value: 1,
         }
       ]);
       expect(value2).toEqual([
         {
+          index: 0,
           seriesIndex: 0,
           value: 1,
         },
