@@ -6,4 +6,5 @@ declare const uuid: () => string;
 declare function bindAll(fns: string[] | number[], context: any): void;
 declare function removeNode(node: HTMLElement): HTMLElement | null;
 declare function mockEvent(type: string, event: any): any;
+export declare function semver(a: string, b: string): 0 | 1 | -1;
 export { merge, isObject, bind, arrayAdd, uuid, bindAll, removeNode, mockEvent, };
