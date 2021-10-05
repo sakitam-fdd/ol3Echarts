@@ -8325,13 +8325,6 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-lru-cache@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npm.taobao.org/lru-cache/download/lru-cache-6.0.0.tgz?cache=0&sync_timestamp=1594427569171&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flru-cache%2Fdownload%2Flru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
-  integrity sha1-bW/mVw69lqr5D8rR2vo7JWbbOpQ=
-  dependencies:
-    yallist "^4.0.0"
-
 macos-release@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npm.taobao.org/macos-release/download/macos-release-2.2.0.tgz#ab58d55dd4714f0a05ad4b0e90f4370fef5cdea8"
@@ -10600,8 +10593,9 @@ querystring@0.2.0:
   resolved "http://registry.npm.taobao.org/querystring/download/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
 
 querystringify@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.npm.taobao.org/querystringify/download/querystringify-2.1.1.tgz#60e5a5fd64a7f8bfa4d2ab2ed6fdf4c85bad154e"
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.2.0.tgz#3345941b4153cb9d082d8eee4cda2016a9aef7f6"
+  integrity sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==
 
 quick-lru@^1.0.0:
   version "1.1.0"
@@ -11633,13 +11627,6 @@ semver@5.5.0, semver@^5.4.1, semver@^5.5.0:
 semver@^6.0.0:
   version "6.1.0"
   resolved "https://registry.npm.taobao.org/semver/download/semver-6.1.0.tgz#e95dc415d45ecf03f2f9f83b264a6b11f49c0cca"
-
-semver@^7.3.4:
-  version "7.3.4"
-  resolved "https://registry.npm.taobao.org/semver/download/semver-7.3.4.tgz#27aaa7d2e4ca76452f98d3add093a72c943edc97"
-  integrity sha1-J6qn0uTKdkUvmNOt0JOnLJQ+3Jc=
-  dependencies:
-    lru-cache "^6.0.0"
 
 semver@~5.3.0:
   version "5.3.0"
@@ -13206,8 +13193,9 @@ url-loader@^1.1.2:
     schema-utils "^1.0.0"
 
 url-parse@^1.4.3:
-  version "1.4.7"
-  resolved "https://registry.npm.taobao.org/url-parse/download/url-parse-1.4.7.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Furl-parse%2Fdownload%2Furl-parse-1.4.7.tgz#a8a83535e8c00a316e403a5db4ac1b9b853ae278"
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.3.tgz#71c1303d38fb6639ade183c2992c8cc0686df862"
+  integrity sha512-IIORyIQD9rvj0A4CLWsHkBBJuNqWpFQe224b6j9t/ABmquIS0qDU2pY6kl6AuOrL5OkCXHMCFNe1jBcuAggjvQ==
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
@@ -13758,11 +13746,6 @@ yallist@^2.1.2:
 yallist@^3.0.0, yallist@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.2.tgz#8452b4bb7e83c7c188d8041c1a837c773d6d8bb9"
-
-yallist@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npm.taobao.org/yallist/download/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
-  integrity sha1-m7knkNnA7/7GO+c1GeEaNQGaOnI=
 
 yargs-parser@13.0.0:
   version "13.0.0"
