@@ -159,9 +159,10 @@ class EChartsLayer extends obj {
   /**
    * append layer to map
    * @param map
+   * @param forceIgnore
    */
-  public appendTo(map: any) {
-    this.setMap(map);
+  public appendTo(map: any, forceIgnore = false) {
+    this.setMap(map, forceIgnore);
   }
 
   /**
@@ -175,9 +176,10 @@ class EChartsLayer extends obj {
   /**
    * set map
    * @param map
+   * @param forceIgnore 是否忽略instanceof检查
    */
-  public setMap(map: any) {
-    if (map && map instanceof Map) {
+  public setMap(map: any, forceIgnore = false) {
+    if (map && (forceIgnore || map instanceof Map)) {
       this._map = map;
       this._map.once('postrender', () => {
         this.handleMapChanged();

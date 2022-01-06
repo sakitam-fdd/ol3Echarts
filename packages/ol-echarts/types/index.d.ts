@@ -40,9 +40,9 @@ declare class EChartsLayer extends obj {
     $container: NoDef<HTMLElement>;
     _map: any;
     constructor(chartOptions?: NoDef<Nullable<object>>, options?: NoDef<Nullable<OptionsTypes>>, map?: any);
-    appendTo(map: any): void;
+    appendTo(map: any, forceIgnore?: boolean): void;
     getMap(): any;
-    setMap(map: any): void;
+    setMap(map: any, forceIgnore?: boolean): void;
     getChartOptions(): object | undefined | null;
     setChartOptions(options?: object): this;
     appendData(data: any, save?: boolean | undefined | null): this;

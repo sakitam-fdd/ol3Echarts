@@ -21,6 +21,12 @@ echartslayer.appendTo(map);
 Maps.map instanceof ol.Map // true
 ```
 
+从`2.0.5`版本开始不强制判断 map instanceof ol.Map，可以在 `appendTo` 指定第二个参数忽略判断，以兼容可能基于 ol 二次封装的类库
+
+```js
+echartslayer.appendTo(map, true);
+```
+
 #### 注意 3
 
 > 配置
