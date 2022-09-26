@@ -3,7 +3,7 @@ import { Map, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
 import { XYZ } from 'ol/source';
 import EChartsLayer from 'ol-echarts';
-import echarts from 'echarts';
+import * as echarts from 'echarts';
 import { getJSON } from '../helper';
 
 interface PageProps {

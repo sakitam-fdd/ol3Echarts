@@ -1,5 +1,5 @@
 import ol, { GlobalObject } from 'openlayers';
-import echarts from 'echarts';
+import * as echarts from 'echarts';
 
 import {
   isObject, merge,

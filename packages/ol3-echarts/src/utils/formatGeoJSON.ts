@@ -1,9 +1,4 @@
 /**
- * form https://github.com/ecomfe/echarts/blob/master/src/coord/geo/parseGeoJson.js
- */
-import echarts from 'echarts';
-
-/**
  * check is decoded
  * @param json
  * @returns {boolean}
@@ -83,38 +78,33 @@ const decode = (json: any) => {
 export default function (json: any) {
   const geoJson = decode(json);
   // @ts-ignore
-  const _features = echarts.util.map(
-    // @ts-ignore
-    echarts.util.filter(geoJson.features,
-      (featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
-        // Output of mapshaper may have geometry null
-        featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0),
-    (featureObj: { properties: any; geometry: any }) => {
-      const properties = featureObj.properties;
-      const geo = featureObj.geometry;
-      const coordinates = geo.coordinates;
-      const geometries = [];
-      if (geo.type === 'Polygon') {
-        geometries.push(coordinates[0]);
-      }
-      if (geo.type === 'MultiPolygon') {
-        // @ts-ignore
-        echarts.util.each(coordinates, (item: any[]) => {
-          if (item[0]) {
-            geometries.push(item[0]);
-          }
-        });
-      }
-      return {
-        properties,
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: geometries,
-        },
-      };
-    },
-  );
+  const filterData = geoJson.features.filter((featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
+    // Output of mapshaper may have geometry null
+    featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0);
+  const _features = filterData.map((featureObj: { properties: any; geometry: any }) => {
+    const properties = featureObj.properties;
+    const geo = featureObj.geometry;
+    const coordinates = geo.coordinates;
+    const geometries = [];
+    if (geo.type === 'Polygon') {
+      geometries.push(coordinates[0]);
+    }
+    if (geo.type === 'MultiPolygon') {
+      coordinates.forEach((item: any[]) => {
+        if (item[0]) {
+          geometries.push(item[0]);
+        }
+      });
+    }
+    return {
+      properties,
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: geometries,
+      },
+    };
+  });
   return {
     type: 'FeatureCollection',
     crs: {},

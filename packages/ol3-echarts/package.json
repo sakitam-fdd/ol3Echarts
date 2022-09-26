@@ -1,6 +1,6 @@
 {
   "name": "ol3-echarts",
-  "version": "2.0.4",
+  "version": "3.0.0",
   "description": "a openlayers extension to echarts",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
@@ -39,12 +39,12 @@
     "karma.travis": "cross-env TRAVIS_ENV=true karma start karma.config.js --single-run --browsers ChromeHeadless"
   },
   "peerDependencies": {
-    "echarts": ">=4.0.1",
+    "echarts": ">=5.0.0",
     "openlayers": ">=3.0.0"
   },
   "devDependencies": {
     "@types/openlayers": "^4.6.17",
-    "echarts": "^4.0.1",
+    "echarts": "^5.0.0",
     "openlayers": "4.6.5"
   },
   "engines": {
@@ -57,5 +57,5 @@
     "not ie <= 8"
   ],
   "license": "MIT",
-  "gitHead": "e1ba3ff0328b32039ae6c3693e91d6464e6bf23b"
+  "gitHead": "efed39f0ffd9b8db9b0d2ba33c0a9c1827f4768f"
 }

@@ -12,7 +12,7 @@
     "allowJs": true,
     "sourceMap": true,
     "outDir": "dist",
-    "strict": true,
+    "strict": false,
     "moduleResolution": "node",
     "baseUrl": "./",
     "esModuleInterop": true,
@@ -27,6 +27,5 @@
     "node_modules",
     "dist",
     "**/*.d.ts",
-    "node_modules/@types/**"
   ]
 }
