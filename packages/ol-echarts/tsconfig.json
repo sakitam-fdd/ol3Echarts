@@ -28,7 +28,7 @@
     "noImplicitReturns": true,
     "strict": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "es5",
       "es6",

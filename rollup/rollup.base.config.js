@@ -50,6 +50,9 @@ module.exports = {
     }),
     commonjs(),
     buble({
+      target:{
+        chrome: 49, firefox: 45
+      },
       objectAssign: true,
       transforms: {
         dangerousForOf: true
