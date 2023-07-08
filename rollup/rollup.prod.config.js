@@ -1,4 +1,4 @@
-const { uglify }  = require('rollup-plugin-uglify');
+const { terser }  = require('rollup-plugin-terser');
 const { banner, handleMinEsm, pkg, resolve } = require('./utils');
 const baseConfig = require('./rollup.base.config');
 const ol = require('./ol/globals');
@@ -23,6 +23,6 @@ const config = Object.assign(baseConfig, {
   ]
 });
 
-config.plugins.push(uglify());
+config.plugins.push(terser());
 
 module.exports = config;

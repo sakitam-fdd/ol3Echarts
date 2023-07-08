@@ -3,7 +3,6 @@ import { ProjectionLike, transform } from 'ol/proj';
 import Event from 'ol/events/Event';
 import { Coordinate } from 'ol/coordinate';
 import * as echarts from 'echarts';
-import * as matrix from 'zrender/lib/core/matrix';
 import Transformable from 'zrender/lib/core/Transformable';
 import BoundingRect from 'zrender/lib/core/BoundingRect';
 
@@ -782,7 +781,7 @@ class EChartsLayer extends obj {
       protected _rawTransformable = new Transformable();
 
       // @ts-ignore
-      private _rawTransform: matrix.MatrixArray;
+      private _rawTransform: number[];
 
       private _viewRect: BoundingRect = new BoundingRect(0, 0, 0, 0);
 
@@ -951,7 +950,7 @@ class EChartsLayer extends obj {
    * @param event
    */
   public dispatchEvent(event: object | Event | string) {
-    return super.dispatchEvent(event);
+    return super.dispatchEvent(event as Event);
   }
 
   public set(key: string, value: any, optSilent?: boolean) {
@@ -967,11 +966,12 @@ class EChartsLayer extends obj {
   }
 
   // @ts-ignore
-  public on(type: (string | string[]), listener: (p0: any) => void) {
+  public on(type: any, listener: (p0: any) => void) {
     return super.on(type, listener);
   }
 
-  public un(type: (string | string[]), listener: (p0: any) => void) {
+  // @ts-ignore
+  public un(type: any, listener: (p0: any) => void) {
     return super.un(type, listener);
   }
 }

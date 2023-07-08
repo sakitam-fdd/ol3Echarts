@@ -1,6 +1,6 @@
 {
   "name": "ol-echarts",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "a openlayers extension to echarts",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
@@ -12,8 +12,16 @@
   "namespace": "EChartsLayer",
   "types": "types/index.d.ts",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
+  "files": [
+    "dist",
+    "types",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/sakitam-fdd/ol3Echarts.git",
@@ -38,14 +46,36 @@
     "karma.single": "karma start karma.config.js --single-run --browsers Chrome",
     "karma.travis": "cross-env TRAVIS_ENV=true karma start karma.config.js --single-run --browsers ChromeHeadless"
   },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "node": {
+        "import": {
+          "production": "./dist/ol-echarts.esm.js",
+          "development": "./dist/ol-echarts.esm.js",
+          "default": "./dist/ol-echarts.esm.js"
+        },
+        "require": {
+          "production": "./dist/ol-echarts.common.js",
+          "development": "./dist/ol-echarts.common.js",
+          "default": "./dist/ol-echarts.common.js"
+        }
+      },
+      "import": "./dist/ol-echarts.esm.js",
+      "require": "./dist/ol-echarts.common.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "echarts": ">=5.0.0",
-    "ol": ">=5.0.0"
+    "ol": ">=7.0.0"
   },
   "devDependencies": {
-    "@types/ol": "^5.3.6",
     "echarts": "^5.0.0",
-    "ol": "^5.1.3",
+    "ol": "^7.0.0"
+  },
+  "dependencies": {
     "zrender": "^5.3.0"
   },
   "engines": {

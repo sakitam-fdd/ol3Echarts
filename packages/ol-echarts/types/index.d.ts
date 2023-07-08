@@ -83,7 +83,7 @@ declare class EChartsLayer extends obj {
     set(key: string, value: any, optSilent?: boolean): void;
     get(key: string): any;
     unset(key: string, optSilent?: boolean): void;
-    on(type: (string | string[]), listener: (p0: any) => void): import("ol/events").EventsKey | import("ol/events").EventsKey[];
-    un(type: (string | string[]), listener: (p0: any) => void): void;
+    on(type: any, listener: (p0: any) => void): import("ol/events").EventsKey;
+    un(type: any, listener: (p0: any) => void): void;
 }
 export default EChartsLayer;

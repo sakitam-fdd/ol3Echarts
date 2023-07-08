@@ -13,6 +13,11 @@
 | [ol3-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol3-echarts) | [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts) | [![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol3-echarts/badge)](https://www.jsdelivr.com/package/npm/ol3-echarts) | support for openlayers3-4 |
 | [ol-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol-echarts) | [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts) | [![Npm package](https://img.shields.io/npm/v/ol-echarts.svg)](https://www.npmjs.org/package/ol-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol-echarts.svg)](https://npmjs.org/package/ol-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol-echarts/badge)](https://www.jsdelivr.com/package/npm/ol-echarts) | support for openlayers5+ |
 
+### TIP
+
+ol 7.x 以后请使用 ol-echarts v4.x，ol 7.x 之前请使用 ol-echarts v3.x，原因见 [issues/115](https://github.com/sakitam-fdd/ol3Echarts/issues/115#issuecomment-1627004544)
+
+
 ## 下载
 
 ```bash
