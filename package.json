@@ -85,7 +85,7 @@
     "mini-css-extract-plugin": "^0.5.0",
     "optimize-css-assets-webpack-plugin": "^4.0.3",
     "portfinder": "^1.0.20",
-    "postcss": "^6.0.23",
+    "postcss": "^7.0.36",
     "postcss-import": "^11.1.0",
     "postcss-loader": "^2.1.6",
     "postcss-url": "^7.3.2",
