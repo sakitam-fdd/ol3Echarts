@@ -1,4 +1,5 @@
-import { Map, Object as obj, VERSION } from 'ol';
+import { Map, Object as obj } from 'ol';
+import { VERSION } from 'ol/util';
 import { ProjectionLike, transform } from 'ol/proj';
 import Event from 'ol/events/Event';
 import { Coordinate } from 'ol/coordinate';
