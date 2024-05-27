@@ -1,46 +1,29 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "paths": {
-      "*": [
-        "types/*"
-      ],
-      "echarts-gl": ["node_modules/echarts-gl/dist/echarts-gl.min.js"]
-    },
-    "baseUrl": "./",
-    "strictNullChecks": true,
-    "moduleResolution": "node",
-    "jsx": "react",
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": true,
-    "declaration": true,
-    "allowSyntheticDefaultImports": true,
-    "outDir": "lib",
-    "module": "ESNext",
+    "strict": false,
+    "allowJs": true,
     "sourceMap": true,
-    "rootDirs": [
-      "website"
-    ],
-    "removeComments": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
     "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "es2018",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "isolatedModules": true,
+    "removeComments": false,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "esnext",
+    "jsx": "preserve",
+    "types": ["node", "vitest"],
+    "lib": ["esnext", "dom", "webworker"],
+    "useDefineForClassFields": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "website",
-    "packages"
-  ],
-  "exclude": [
-    "node_modules",
-    "packages/**/test"
-  ]
+  "include": ["packages/*/src/**/*.ts", "packages/*/typings.d.ts", "packages/*/__tests__/**/*.ts"],
+  "exclude": ["**/node_modules/**", "**/dist/**", "packages/*/src/**/*.glsl"]
 }

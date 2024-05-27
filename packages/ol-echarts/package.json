@@ -5,10 +5,11 @@
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
   "private": false,
+  "sideEffects": false,
   "main": "dist/ol-echarts.js",
   "module": "dist/ol-echarts.esm.js",
   "unpkg": "dist/ol-echarts.js",
-  "commonjs": "dist/ol-echarts.common.js",
+  "commonjs": "dist/ol-echarts.cjs.js",
   "namespace": "EChartsLayer",
   "types": "types/index.d.ts",
   "publishConfig": {
@@ -27,6 +28,19 @@
     "url": "https://github.com/sakitam-fdd/ol3Echarts.git",
     "directory": "packages/ol-echarts"
   },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "node": {
+        "import": "./dist/ol-echarts.esm.js",
+        "require": "./dist/ol-echarts.cjs.js"
+      },
+      "import": "./dist/ol-echarts.esm.js",
+      "require": "./dist/ol-echarts.cjs.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
   "bugs": {
     "url": "https://github.com/sakitam-fdd/ol3Echarts/issues"
   },
@@ -39,33 +53,16 @@
     "ol"
   ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development modulePath=ol-echarts input=src/index.ts rollup -wm -c ../../rollup/rollup.dev.config.js",
-    "build": "cross-env NODE_ENV=production modulePath=ol-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js",
-    "prepublishOnly": "npm run karma.single",
-    "karma.test": "karma start karma.config.js",
-    "karma.single": "karma start karma.config.js --single-run --browsers Chrome",
-    "karma.travis": "cross-env TRAVIS_ENV=true karma start karma.config.js --single-run --browsers ChromeHeadless"
-  },
-  "exports": {
-    ".": {
-      "types": "./types/index.d.ts",
-      "node": {
-        "import": {
-          "production": "./dist/ol-echarts.esm.js",
-          "development": "./dist/ol-echarts.esm.js",
-          "default": "./dist/ol-echarts.esm.js"
-        },
-        "require": {
-          "production": "./dist/ol-echarts.common.js",
-          "development": "./dist/ol-echarts.common.js",
-          "default": "./dist/ol-echarts.common.js"
-        }
-      },
-      "import": "./dist/ol-echarts.esm.js",
-      "require": "./dist/ol-echarts.common.js"
-    },
-    "./dist/*": "./dist/*",
-    "./package.json": "./package.json"
+    "api": "typedoc",
+    "clean": "rimraf dist",
+    "dev": "cross-env NODE_ENV=development rollup -wm -c rollup.config.ts --configPlugin esbuild",
+    "build": "rollup --c rollup.config.ts --configPlugin esbuild",
+    "build:minify": "cross-env MINIFY=true rollup --c rollup.config.ts --configPlugin esbuild",
+    "lint": "eslint \"src/**/*.{js,jsx,mjs,ts,tsx}\"",
+    "prettier": "prettier --parser=typescript --write **/*.{js,ts,md}",
+    "test": "pnpm run build && pnpm run test-only",
+    "test-only": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
     "echarts": ">=5.0.0",
@@ -78,15 +75,6 @@
   "dependencies": {
     "zrender": "^5.3.0"
   },
-  "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
   "license": "MIT",
   "gitHead": "efed39f0ffd9b8db9b0d2ba33c0a9c1827f4768f"
 }

@@ -1,9 +1,16 @@
-build/*.js
-rollup/*.js
-test/**/*.js
-test/**/*.ts
-dist/
-node_modules/
-packages/**/*.js
-packages/**/*.d.ts
+*.html
 
+node_modules
+
+# build
+coverage
+dist
+
+# other
+.eslintrc.js
+.prettierrc.js
+vitest.config.ts
+
+# lib
+
+playground/lib

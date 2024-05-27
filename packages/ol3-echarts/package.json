@@ -5,19 +5,41 @@
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://sakitam-fdd.github.io/ol3Echarts",
   "private": false,
+  "sideEffects": false,
   "main": "dist/ol3Echarts.js",
   "module": "dist/ol3Echarts.esm.js",
   "unpkg": "dist/ol3Echarts.js",
+  "commonjs": "dist/ol3Echarts.cjs.js",
   "namespace": "ol3Echarts",
-  "commonjs": "dist/ol3Echarts.common.js",
   "types": "types/index.d.ts",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
+  "files": [
+    "dist",
+    "types",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/sakitam-fdd/ol3Echarts.git",
     "directory": "packages/ol3-echarts"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "node": {
+        "import": "./dist/ol3Echarts.esm.js",
+        "require": "./dist/ol3Echarts.cjs.js"
+      },
+      "import": "./dist/ol3Echarts.esm.js",
+      "require": "./dist/ol3Echarts.cjs.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
   },
   "bugs": {
     "url": "https://github.com/sakitam-fdd/ol3Echarts/issues"
@@ -31,12 +53,16 @@
     "ol"
   ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development modulePath=ol3-echarts input=src/index.ts rollup -wm -c ../../rollup/rollup.dev.config.js",
-    "build": "cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -m -c ../../rollup/rollup.dev.config.js && cross-env NODE_ENV=production modulePath=ol3-echarts input=src/index.ts rollup -c ../../rollup/rollup.prod.config.js",
-    "prepublishOnly": "npm run karma.single",
-    "karma.test": "karma start karma.config.js",
-    "karma.single": "cross-env karma start karma.config.js --single-run --browsers Chrome",
-    "karma.travis": "cross-env TRAVIS_ENV=true karma start karma.config.js --single-run --browsers ChromeHeadless"
+    "api": "typedoc",
+    "clean": "rimraf dist",
+    "dev": "cross-env NODE_ENV=development rollup -wm -c rollup.config.ts --configPlugin esbuild",
+    "build": "rollup --c rollup.config.ts --configPlugin esbuild",
+    "build:minify": "cross-env MINIFY=true rollup --c rollup.config.ts --configPlugin esbuild",
+    "lint": "eslint \"src/**/*.{js,jsx,mjs,ts,tsx}\"",
+    "prettier": "prettier --parser=typescript --write **/*.{js,ts,md}",
+    "test": "pnpm run build && pnpm run test-only",
+    "test-only": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
     "echarts": ">=5.0.0",
@@ -47,15 +73,6 @@
     "echarts": "^5.0.0",
     "openlayers": "4.6.5"
   },
-  "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
   "license": "MIT",
   "gitHead": "efed39f0ffd9b8db9b0d2ba33c0a9c1827f4768f"
 }

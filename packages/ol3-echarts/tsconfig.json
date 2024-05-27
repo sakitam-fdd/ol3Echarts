@@ -1,46 +1,16 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "paths": {
-      "*": [
-        "types/*"
-      ],
-      "echarts": ["node_modules/echarts/dist/echarts.min.js"]
-    },
-    "baseUrl": ".",
-    "allowJs": false,
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": true,
-    "declaration": true,
-    "allowSyntheticDefaultImports": true,
     "outDir": "dist",
-    "declarationDir": "types",
-    "module": "ESNext",
-    "sourceMap": true,
-    "rootDirs": [
-      "src"
-    ],
-    "removeComments": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "strict": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "es5",
-    "lib": [
-      "es5",
-      "es6",
-      "dom"
-    ]
+    "rootDir": "src",
+    "module": "esnext",
+    "target": "esnext"
   },
   "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "test"
+    "src/**/*.ts",
+    "src/**/*.json",
+    "package.json",
+    "rollup.config.ts",
+    "typings.d.ts"
   ]
 }

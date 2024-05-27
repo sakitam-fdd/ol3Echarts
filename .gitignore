@@ -1,17 +1,43 @@
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# User-specific stuff:
 .idea/
-node_modules/
-packages/**/node_modules
-coverage/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-/packages/ol-echarts/dist/
-/packages/ol3-echarts/dist/
-/packages/canvas-render/dist/
-_site/
+.vscode/
+
+# dependencies
+node_modules
+
+# vuepress build output
+.vuepress/dist
+/docs/.vitepress/cache/
+
+.cache
 cache/
-dll/
+.turbo/
+
+# log
+*.log
+npm-debug.log*
+yarn-error.log*
+yarn.lock
+package-lock.json
+pnpm-lock
+# production
+dist
+
+# misc
+.DS_Store
+
+# idea
+.idea
+.vscode
+.labe
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+.turbo
+
+# others
+.env
+.env.local
+/docs/api/

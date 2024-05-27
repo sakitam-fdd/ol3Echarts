@@ -1,0 +1,47 @@
+{
+  "name": "ol-echarts-docs",
+  "version": "1.0.0",
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids"
+  },
+  "dependencies": {
+    "@algolia/client-search": "^4.23.3",
+    "@docusaurus/core": "^3.3.2",
+    "@docusaurus/mdx-loader": "^3.3.2",
+    "@docusaurus/preset-classic": "^3.3.2",
+    "@docusaurus/theme-live-codeblock": "^3.3.2",
+    "@docusaurus/theme-search-algolia": "^3.3.2",
+    "@docusaurus/theme-common": "^3.3.2",
+    "@docsearch/react": "^3.6.0",
+    "docusaurus-plugin-module-alias": "^0.0.2",
+    "@mdx-js/react": "^3.0.1",
+    "@sapphire/docusaurus-plugin-npm2yarn2pnpm": "^2.0.2",
+    "clsx": "^2.1.1",
+    "prism-react-renderer": "^2.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "resize-observer-polyfill": "^1.5.1",
+    "leva": "^0.9.35"
+  },
+  "resolutions": {
+    "@docusaurus/theme-common": "3.2.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@tsconfig/docusaurus": "^2.0.3",
+    "@docusaurus/module-type-aliases": "^3.3.2",
+    "docusaurus-plugin-typedoc": "^1.0.1",
+    "@svgr/webpack": "^8.1.0",
+    "file-loader": "^6.2.0",
+    "url-loader": "^4.1.1",
+    "raw-loader": "^4.0.2"
+  }
+}

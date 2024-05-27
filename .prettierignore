@@ -1,3 +1,28 @@
-dist/
-lib/
-assets/
+## OS
+.DS_Store
+.idea
+.npmrc
+.husky
+
+## Ignored
+.dockerignore
+.eslintignore
+.editorconfig
+.gitignore
+.prettierignore
+.eslintcache
+
+## Other
+*.toml
+*.lock
+*.log
+*.md
+*.svg
+*.png
+
+LICENSE
+Dockerfile*
+
+package.json
+package-lock.json
+yarn-error.log

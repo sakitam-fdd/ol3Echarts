@@ -1,0 +1,32 @@
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "build:minify": {
+      "outputs": ["dist/**"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "dev": {
+      "cache": false
+    },
+    "test": {
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "test-only": {
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "coverage": {
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "api": {
+      "cache": false
+    }
+  }
+}
