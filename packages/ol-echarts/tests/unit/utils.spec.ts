@@ -1,4 +1,4 @@
-// @ts-ignore
+import { describe, beforeEach, afterEach, expect, it } from 'vitest';
 import * as echarts from 'echarts';
 import EChartsLayer from '../../src';
 
@@ -2327,7 +2327,7 @@ describe('indexSpec', () => {
           }
         }],
         'UTF8Encoding': true
-      });
+      } as any);
       const data = echarts.getMap('world')['geoJson'];
       const res = EChartsLayer.formatGeoJSON(data);
       expect(res).toBeDefined();

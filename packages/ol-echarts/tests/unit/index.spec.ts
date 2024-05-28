@@ -1,8 +1,7 @@
-// @ts-ignore
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { OSM } from 'ol/source';
 import EChartsLayer from '../../src';
 
@@ -93,15 +92,14 @@ describe('indexSpec', () => {
       layers: [
         new TileLayer({
           preload: 4,
-          source: new OSM()
-        })
+          source: new OSM(),
+        }),
       ],
-      loadTilesWhileAnimating: true,
       view: new View({
         projection: 'EPSG:4326',
         center: [120.74758724751435, 30.760422266949334],
-        zoom: 8
-      })
+        zoom: 8,
+      }),
     });
   });
 
@@ -141,31 +139,14 @@ describe('indexSpec', () => {
       expect(layer.getMap()).toEqual(map);
     });
 
-    // it('throws an error when add map', () => {
-    //   const layer = new EChartsLayer(null, {
-    //     stopEvent: false,
-    //     hideOnMoving: false,
-    //     hideOnZooming: false,
-    //     forcedPrecomposeRerender: false,
-    //   });
-    //
-    //   expect(layer).toBeDefined();
-    //
-    //   expect(() => {
-    //     layer.appendTo(null);
-    //   }).toThrowError();
-    // });
-
     it('throws an error when creating without new operator', () => {
       expect(() => {
-        // @ts-ignore
-        EChartsLayer.appendTo();
+        (EChartsLayer as any).appendTo();
       }).toThrowError();
     });
   });
 
   describe('layer methods', () => {
-
     it('setMap getMap', () => {
       const layer = new EChartsLayer(null, {
         stopEvent: false,
@@ -232,23 +213,23 @@ describe('indexSpec', () => {
       layer.hideLoading();
     });
 
-    it('clear', (done) => {
-      const layer = new EChartsLayer(options, {
-        stopEvent: false,
-        hideOnMoving: true,
-        hideOnZooming: true,
-        forcedPrecomposeRerender: false,
-      });
+    it('clear', () => new Promise((resolve) => {
+        const layer = new EChartsLayer(options, {
+          stopEvent: false,
+          hideOnMoving: true,
+          hideOnZooming: true,
+          forcedPrecomposeRerender: false,
+        });
 
-      expect(layer).toBeDefined();
+        expect(layer).toBeDefined();
 
-      layer.on('load', () => {
-        layer.clear();
-        done();
-      });
+        layer.on('load', () => {
+          layer.clear();
+          resolve(true);
+        });
 
-      layer.appendTo(map);
-    });
+        layer.appendTo(map);
+      }));
 
     it('remove', (done) => {
       const layer = new EChartsLayer(options, {
@@ -301,7 +282,7 @@ describe('indexSpec', () => {
       layer.on('load', () => {
         setTimeout(() => {
           map.setSize([size[0] + 100, size[1] + 100]);
-        })
+        });
       });
 
       layer.appendTo(map);
@@ -324,7 +305,7 @@ describe('indexSpec', () => {
       layer.on('load', () => {
         setTimeout(() => {
           map.getView().setZoom(12);
-        }, 1000)
+        }, 1000);
       });
 
       layer.appendTo(map);
@@ -347,7 +328,7 @@ describe('indexSpec', () => {
       layer.on('load', () => {
         setTimeout(() => {
           map.getView().setRotation((90 / 180) * Math.PI);
-        }, 1000)
+        }, 1000);
       });
 
       layer.appendTo(map);
@@ -362,7 +343,7 @@ describe('indexSpec', () => {
       });
 
       layer.on('load', () => {
-        let center = map.getView().getCenter();
+        const center = map.getView().getCenter();
         map.getView().animate({
           center: [center[0] + 0.8, center[1] + 0.4],
           duration: 1000,
@@ -376,7 +357,7 @@ describe('indexSpec', () => {
           expect(layer.isVisible()).toBe(true);
           layer.remove();
           done();
-        }, 2000)
+        }, 2000);
       });
 
       layer.appendTo(map);
@@ -390,7 +371,7 @@ describe('indexSpec', () => {
         forcedPrecomposeRerender: false,
       });
 
-      let center = map.getView().getCenter();
+      const center = map.getView().getCenter();
 
       layer.on('moveend', (event: any) => {
         expect(event.value).toEqual([center[0] + 0.8, center[1] + 0.4]);
@@ -416,7 +397,7 @@ describe('indexSpec', () => {
         forcedPrecomposeRerender: false,
       });
 
-      let center = map.getView().getCenter();
+      const center = map.getView().getCenter();
 
       layer.on('change:center', (event: any) => {
         expect(event.value).toEqual([center[0] + 0.8, center[1] + 0.4]);
@@ -485,7 +466,7 @@ describe('indexSpec', () => {
 
         setTimeout(() => {
           expect(layer.isVisible()).toBe(false);
-        }, 500)
+        }, 500);
 
         setTimeout(() => {
           expect(layer.isVisible()).toBe(true);

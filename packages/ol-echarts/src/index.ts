@@ -1,28 +1,20 @@
 import { Map, Object as obj } from 'ol';
 import { VERSION } from 'ol/util';
-import { ProjectionLike, transform } from 'ol/proj';
-import Event from 'ol/events/Event';
-import { Coordinate } from 'ol/coordinate';
+import type { ProjectionLike } from 'ol/proj';
+import { transform } from 'ol/proj';
+import type Event from 'ol/events/Event';
+import type { Coordinate } from 'ol/coordinate';
 import * as echarts from 'echarts';
 import Transformable from 'zrender/lib/core/Transformable';
 import BoundingRect from 'zrender/lib/core/BoundingRect';
 
-import {
-  isObject, merge,
-  arrayAdd, bind,
-  uuid, bindAll,
-  removeNode,
-  mockEvent,
-  semver,
-} from './utils';
+import { isObject, merge, arrayAdd, bind, uuid, bindAll, removeNode, mockEvent, semver } from './utils';
 
 import formatGeoJSON from './utils/formatGeoJSON';
 
 import * as charts from './charts/index';
 
 type CoordinateSystemCreator = any;
-
-type charts = any;
 
 const _options = {
   forcedRerender: false, // Force re-rendering
@@ -71,7 +63,7 @@ class EChartsLayer extends obj {
 
   public static isObject = isObject;
 
-  private _chartOptions: NoDef<Nullable<object>>;
+  private _chartOptions: NoDef<Nullable<any>>;
 
   private _isRegistered: boolean;
 
@@ -85,7 +77,7 @@ class EChartsLayer extends obj {
 
   private _initEvent: boolean;
 
-  private prevVisibleState: string | null;
+  private prevVisibleState: string;
 
   public $chart: Nullable<any>;
 
@@ -153,11 +145,22 @@ class EChartsLayer extends obj {
 
     this.prevVisibleState = '';
 
-    bindAll([
-      'redraw', 'onResize', 'onZoomEnd', 'onCenterChange',
-      'onDragRotateEnd', 'onMoveStart', 'onMoveEnd',
-      'mouseDown', 'mouseUp', 'onClick', 'mouseMove',
-    ], this);
+    bindAll(
+      [
+        'redraw',
+        'onResize',
+        'onZoomEnd',
+        'onCenterChange',
+        'onDragRotateEnd',
+        'onMoveStart',
+        'onMoveEnd',
+        'mouseDown',
+        'mouseUp',
+        'onClick',
+        'mouseMove',
+      ],
+      this,
+    );
 
     if (map) this.setMap(map);
   }
@@ -325,7 +328,7 @@ class EChartsLayer extends obj {
    * set zindex
    * @param zIndex
    */
-  public setZIndex(zIndex: string | number | null) {
+  public setZIndex(zIndex: string | number) {
     if (this.$container) {
       if (typeof zIndex === 'number') {
         zIndex = String(zIndex);
@@ -414,7 +417,8 @@ class EChartsLayer extends obj {
       const size: number[] = map.getSize();
       this.updateViewSize(size);
       this.clearAndRedraw();
-      if (event) { // ignore events
+      if (event) {
+        // ignore events
         this.dispatchEvent({
           type: 'change:size',
           source: this,
@@ -676,18 +680,18 @@ class EChartsLayer extends obj {
   private registerMap() {
     if (!this._isRegistered) {
       this.coordinateSystemId = `openlayers_${uuid()}`;
-      // @ts-ignore
+      // @ts-ignore ignore echarts typing
       echarts.registerCoordinateSystem(this.coordinateSystemId, this.getCoordinateSystem(this._options));
       this._isRegistered = true;
     }
 
     if (this._chartOptions) {
-      // @ts-ignore
       const series = this._chartOptions.series;
       if (series && isObject(series)) {
         const convertTypes = this._options.convertTypes;
         if (convertTypes) {
           for (let i = series.length - 1; i >= 0; i--) {
+            // @ts-ignore ignore type error
             if (!(convertTypes.indexOf(series[i].type) > -1)) {
               series[i].coordinateSystem = this.coordinateSystemId;
             }
@@ -703,20 +707,20 @@ class EChartsLayer extends obj {
    * @param options
    * @returns {*}
    */
-  private convertData(options: object) {
-    // @ts-ignore
-    const series = options.series;
+  private convertData(options: any) {
+    const series = options.series as any;
     if (series && series.length > 0) {
       if (!this._coordinateSystem) {
         const Rc = this.getCoordinateSystem(this._options);
-        // @ts-ignore
         this._coordinateSystem = new Rc(this.getMap());
       }
       if (series && isObject(series)) {
         const convertTypes = this._options.convertTypes;
         if (convertTypes) {
           for (let i = series.length - 1; i >= 0; i--) {
-            if (convertTypes.indexOf(series[i].type) > -1) {
+            const { type } = series[i] as any;
+            // @ts-ignore ignore type error
+            if (convertTypes.indexOf(type) > -1) {
               if (series[i] && series[i].hasOwnProperty('coordinates')) {
                 series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
               }
@@ -755,14 +759,10 @@ class EChartsLayer extends obj {
         });
       };
 
-      static getProjectionCode = function (map: any): string {
+      static getProjectionCode = function (m: any): string {
         let code = '';
-        if (map) {
-          code = map.getView()
-            && map
-              .getView()
-              .getProjection()
-              .getCode();
+        if (m) {
+          code = m.getView() && m.getView().getProjection().getCode();
         } else {
           code = 'EPSG:3857';
         }
@@ -787,8 +787,8 @@ class EChartsLayer extends obj {
       // @ts-ignore
       private _viewRect: BoundingRect;
 
-      constructor(map: any) {
-        this.map = map;
+      constructor(m: any) {
+        this.map = m;
         this.dimensions = ['lng', 'lat'];
         this.projCode = RegisterCoordinateSystem.getProjectionCode(this.map);
       }
@@ -800,7 +800,6 @@ class EChartsLayer extends obj {
       getZoom(): number {
         return this.map.getView().getZoom();
       }
-
 
       /**
        * set zoom
@@ -964,20 +963,6 @@ class EChartsLayer extends obj {
 
   public get(key: string) {
     return super.get(key);
-  }
-
-  public unset(key: string, optSilent?: boolean) {
-    return super.unset(key, optSilent);
-  }
-
-  // @ts-ignore
-  public on(type: any, listener: (p0: any) => void) {
-    return super.on(type, listener);
-  }
-
-  // @ts-ignore
-  public un(type: any, listener: (p0: any) => void) {
-    return super.un(type, listener);
   }
 }
 

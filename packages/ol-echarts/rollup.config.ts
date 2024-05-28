@@ -7,7 +7,6 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import esbuild from 'rollup-plugin-esbuild';
 import json from '@rollup/plugin-json';
-import glslify from 'rollup-plugin-glslify';
 import replace from '@rollup/plugin-replace';
 import alias from '@rollup/plugin-alias';
 import terser from '@rollup/plugin-terser';
@@ -23,13 +22,7 @@ const PROD = !DEV;
 
 const r = (p: string) => resolve(ROOT, '..', p);
 
-const umdExternal = [
-  'ol',
-  'ol/util',
-  'ol/layer',
-  'ol/source',
-  'ol/proj',
-];
+const umdExternal = ['ol', 'ol/util', 'ol/layer', 'ol/source', 'ol/proj', 'echarts'];
 
 const external = [...umdExternal, ...Object.keys(pkg.dependencies)];
 
@@ -41,7 +34,6 @@ const plugins = [
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     preventAssignment: true,
   }),
-  glslify(),
   commonjs(),
   nodeResolve({ preferBuiltins: false }),
   esbuild({ target: 'esnext', sourceMap: true }),
@@ -94,6 +86,7 @@ const umdBuild: RollupOptions = {
       : pkg.main,
     globals: {
       ol: 'ol',
+      echarts: 'echarts',
       'ol/util': 'ol.util',
       'ol/layer': 'ol.layer',
       'ol/source': 'ol.source',

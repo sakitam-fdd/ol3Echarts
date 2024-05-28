@@ -3,4 +3,12 @@ module.exports = {
   extends: [
     '@aurorafe/eslint-config-ts',
   ],
+  overrides: [
+    {
+      files: ['**/tests/unit/*.spec.{j,t}s?(x)'],
+      env: {
+        jest: true,
+      },
+    },
+  ]
 };

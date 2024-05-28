@@ -1,13 +1,8 @@
-import ol, { GlobalObject } from 'openlayers';
+import type { GlobalObject } from 'openlayers';
+import ol from 'openlayers';
 import * as echarts from 'echarts';
 
-import {
-  isObject, merge,
-  arrayAdd, bind,
-  uuid, bindAll,
-  removeNode,
-  mockEvent,
-} from './utils';
+import { isObject, merge, arrayAdd, bind, uuid, bindAll, removeNode, mockEvent } from './utils';
 import formatGeoJSON from './utils/formatGeoJSON';
 
 import * as charts from './charts/index';
@@ -17,9 +12,9 @@ const obj = ol.Object;
 const transform = ol.proj.transform;
 
 // polyfill functions: should fix me
-// @ts-ignore
+// @ts-ignore ignore type error
 if (!Map.prototype.getOverlayContainer) {
-  // @ts-ignore
+  // @ts-ignore ignore type error
   Map.prototype.getOverlayContainer = function (className?: string) {
     className = className || 'ol-overlaycontainer';
     const viewport = this.getViewport();
@@ -32,9 +27,9 @@ if (!Map.prototype.getOverlayContainer) {
 }
 
 // polyfill functions: should fix me
-// @ts-ignore
+// @ts-ignore ignore type error
 if (!Map.prototype.getOverlayContainerStopEvent) {
-  // @ts-ignore
+  // @ts-ignore ignore type error
   Map.prototype.getOverlayContainerStopEvent = function (className?: string) {
     className = className || 'ol-overlaycontainer-stopevent';
     const viewport = this.getViewport();
@@ -107,7 +102,7 @@ class EChartsLayer extends obj {
 
   private _initEvent: boolean;
 
-  private prevVisibleState: string | null;
+  private prevVisibleState: string;
 
   public $chart: Nullable<any>;
 
@@ -175,11 +170,22 @@ class EChartsLayer extends obj {
 
     this.prevVisibleState = '';
 
-    bindAll([
-      'redraw', 'onResize', 'onZoomEnd', 'onCenterChange',
-      'onDragRotateEnd', 'onMoveStart', 'onMoveEnd',
-      'mouseDown', 'mouseUp', 'onClick', 'mouseMove',
-    ], this);
+    bindAll(
+      [
+        'redraw',
+        'onResize',
+        'onZoomEnd',
+        'onCenterChange',
+        'onDragRotateEnd',
+        'onMoveStart',
+        'onMoveEnd',
+        'mouseDown',
+        'mouseUp',
+        'onClick',
+        'mouseMove',
+      ],
+      this,
+    );
 
     if (map) this.setMap(map);
   }
@@ -347,7 +353,7 @@ class EChartsLayer extends obj {
    * set zindex
    * @param zIndex
    */
-  public setZIndex(zIndex: string | number | null) {
+  public setZIndex(zIndex: string | number) {
     if (this.$container) {
       if (typeof zIndex === 'number') {
         zIndex = String(zIndex);
@@ -392,7 +398,7 @@ class EChartsLayer extends obj {
    */
   public render() {
     if (!this.$chart && this.$container) {
-      // @ts-ignore
+      // @ts-ignore ignore type error
       this.$chart = echarts.init(this.$container);
       if (this._chartOptions) {
         this.registerMap();
@@ -436,7 +442,8 @@ class EChartsLayer extends obj {
       const size: number[] = map.getSize();
       this.updateViewSize(size);
       this.clearAndRedraw();
-      if (event) { // ignore events
+      if (event) {
+        // ignore events
         this.dispatchEvent({
           type: 'change:size',
           source: this,
@@ -697,18 +704,19 @@ class EChartsLayer extends obj {
   private registerMap() {
     if (!this._isRegistered) {
       this.coordinateSystemId = `openlayers_${uuid()}`;
-      // @ts-ignore
+      // @ts-ignore ignore type error
       echarts.registerCoordinateSystem(this.coordinateSystemId, this.getCoordinateSystem(this._options));
       this._isRegistered = true;
     }
 
     if (this._chartOptions) {
-      // @ts-ignore
+      // @ts-ignore ignore type error
       const series = this._chartOptions.series;
       if (series && isObject(series)) {
         const convertTypes = this._options.convertTypes;
         if (convertTypes) {
           for (let i = series.length - 1; i >= 0; i--) {
+            // @ts-ignore ignore type error
             if (!(convertTypes.indexOf(series[i].type) > -1)) {
               series[i].coordinateSystem = this.coordinateSystemId;
             }
@@ -724,22 +732,23 @@ class EChartsLayer extends obj {
    * @param options
    * @returns {*}
    */
-  private convertData(options: object) {
-    // @ts-ignore
+  private convertData(options: any) {
+    // @ts-ignore ignore type error
     const series = options.series;
     if (series && series.length > 0) {
       if (!this._coordinateSystem) {
         const Rc = this.getCoordinateSystem(this._options);
-        // @ts-ignore
+        // @ts-ignore ignore type error
         this._coordinateSystem = new Rc(this.getMap());
       }
       if (series && isObject(series)) {
         const convertTypes = this._options.convertTypes;
         if (convertTypes) {
           for (let i = series.length - 1; i >= 0; i--) {
+            // @ts-ignore ignore type error
             if (convertTypes.indexOf(series[i].type) > -1) {
               if (series[i] && series[i].hasOwnProperty('coordinates')) {
-                // @ts-ignore
+                // @ts-ignore ignore type error
                 series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
               }
             }
@@ -758,14 +767,10 @@ class EChartsLayer extends obj {
     const map = this.getMap();
     const coordinateSystemId = this.coordinateSystemId;
 
-    const RegisterCoordinateSystem = function (map: any) {
-      // @ts-ignore
-      this.map = map;
-      // @ts-ignore
+    const RegisterCoordinateSystem = function (m: any) {
+      this.map = m;
       this._mapOffset = [0, 0];
-      // @ts-ignore
       this.dimensions = ['lng', 'lat'];
-      // @ts-ignore
       this.projCode = RegisterCoordinateSystem.getProjectionCode(this.map);
     };
 
@@ -807,7 +812,6 @@ class EChartsLayer extends obj {
     RegisterCoordinateSystem.prototype.dataToPoint = function (data: []): number[] {
       let coords: ol.Coordinate;
       if (data && Array.isArray(data) && data.length > 0) {
-        // @ts-ignore
         coords = data.map((item: string | number) => {
           let res = 0;
           if (typeof item === 'string') {
@@ -816,7 +820,7 @@ class EChartsLayer extends obj {
             res = item;
           }
           return res;
-        });
+        }) as any;
 
         const source: ol.ProjectionLike = (options && options.source) || 'EPSG:4326';
         const destination: ol.ProjectionLike = (options && options.destination) || this.projCode;
@@ -844,7 +848,7 @@ class EChartsLayer extends obj {
      */
     RegisterCoordinateSystem.prototype.getViewRect = function () {
       const size = this.map.getSize();
-      // @ts-ignore
+      // @ts-ignore ignore type error
       return new echarts.graphic.BoundingRect(0, 0, size[0], size[1]);
     };
 
@@ -852,7 +856,7 @@ class EChartsLayer extends obj {
      * create matrix
      */
     RegisterCoordinateSystem.prototype.getRoamTransform = function () {
-      // @ts-ignore
+      // @ts-ignore ignore type error
       return echarts.matrix.create();
     };
 
@@ -880,20 +884,16 @@ class EChartsLayer extends obj {
     RegisterCoordinateSystem.create = function (echartsModel: any) {
       echartsModel.eachSeries((seriesModel: any) => {
         if (seriesModel.get('coordinateSystem') === coordinateSystemId) {
-          // @ts-ignore
+          // @ts-ignore ignore type error
           seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);
         }
       });
     };
 
-    RegisterCoordinateSystem.getProjectionCode = function (map: any): string {
-      let code = '';
-      if (map) {
-        code = map.getView()
-          && map
-            .getView()
-            .getProjection()
-            .getCode();
+    RegisterCoordinateSystem.getProjectionCode = function (m: any): string {
+      let code: string;
+      if (m) {
+        code = m.getView() && m.getView().getProjection().getCode();
       } else {
         code = 'EPSG:3857';
       }
@@ -902,19 +902,18 @@ class EChartsLayer extends obj {
 
     RegisterCoordinateSystem.dataToCoordsSize = function (dataSize: number[], dataItem: number[] = [0, 0]) {
       return [0, 1].map((dimIdx: number) => {
-          const val = dataItem[dimIdx];
-          const p1: number[] = [];
-          const p2: number[] = [];
-          const halfSize = dataSize[dimIdx] / 2;
-          p1[dimIdx] = val - halfSize;
-          p2[dimIdx] = val + halfSize;
-          p1[1 - dimIdx] = dataItem[1 - dimIdx];
-          p2[1 - dimIdx] = dataItem[1 - dimIdx];
-          // @ts-ignore
-          const offset: number = this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx];
-          return Math.abs(offset);
-        },
-        this);
+        const val = dataItem[dimIdx];
+        const p1: number[] = [];
+        const p2: number[] = [];
+        const halfSize = dataSize[dimIdx] / 2;
+        p1[dimIdx] = val - halfSize;
+        p2[dimIdx] = val + halfSize;
+        p1[1 - dimIdx] = dataItem[1 - dimIdx];
+        p2[1 - dimIdx] = dataItem[1 - dimIdx];
+        // @ts-ignore ignore type error
+        const offset: number = this.dataToPoint(p1)[dimIdx] - this.dataToPoint(p2)[dimIdx];
+        return Math.abs(offset);
+      }, this);
     };
 
     return RegisterCoordinateSystem;
@@ -924,7 +923,7 @@ class EChartsLayer extends obj {
    * dispatch event
    * @param event
    */
-  public dispatchEvent(event: (GlobalObject| ol.events.Event | string)) {
+  public dispatchEvent(event: GlobalObject | ol.events.Event | string) {
     return super.dispatchEvent(event);
   }
 
@@ -940,11 +939,11 @@ class EChartsLayer extends obj {
     return super.unset(key, optSilent);
   }
 
-  public on(type: (string | string[]), listener: ol.EventsListenerFunctionType, optThis?: GlobalObject) {
+  public on(type: string | string[], listener: ol.EventsListenerFunctionType, optThis?: GlobalObject) {
     return super.on(type, listener, optThis);
   }
 
-  public un(type: (string | string[]), listener: ol.EventsListenerFunctionType, optThis?: GlobalObject) {
+  public un(type: string | string[], listener: ol.EventsListenerFunctionType, optThis?: GlobalObject) {
     return super.un(type, listener, optThis);
   }
 }

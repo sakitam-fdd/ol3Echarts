@@ -24,6 +24,6 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["packages/*/src/**/*.ts", "packages/*/typings.d.ts", "packages/*/__tests__/**/*.ts"],
-  "exclude": ["**/node_modules/**", "**/dist/**", "packages/*/src/**/*.glsl"]
+  "include": ["packages/*/src/**/*.ts", "packages/*/typings.d.ts", "packages/*/tests/**/*.ts"],
+  "exclude": ["**/node_modules/**", "**/dist/**"]
 }

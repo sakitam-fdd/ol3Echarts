@@ -11,14 +11,13 @@
   "unpkg": "dist/ol-echarts.js",
   "commonjs": "dist/ol-echarts.cjs.js",
   "namespace": "EChartsLayer",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "files": [
     "dist",
-    "types",
     "LICENSE",
     "README.md",
     "package.json"
@@ -30,7 +29,7 @@
   },
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
+      "types": "./dist/index.d.ts",
       "node": {
         "import": "./dist/ol-echarts.esm.js",
         "require": "./dist/ol-echarts.cjs.js"

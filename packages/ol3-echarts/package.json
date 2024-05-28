@@ -11,7 +11,7 @@
   "unpkg": "dist/ol3Echarts.js",
   "commonjs": "dist/ol3Echarts.cjs.js",
   "namespace": "ol3Echarts",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -30,7 +30,7 @@
   },
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
+      "types": "./dist/index.d.ts",
       "node": {
         "import": "./dist/ol3Echarts.esm.js",
         "require": "./dist/ol3Echarts.cjs.js"
@@ -71,7 +71,8 @@
   "devDependencies": {
     "@types/openlayers": "^4.6.17",
     "echarts": "^5.0.0",
-    "openlayers": "4.6.5"
+    "openlayers": "4.6.5",
+    "rollup": "^4.14.1"
   },
   "license": "MIT",
   "gitHead": "efed39f0ffd9b8db9b0d2ba33c0a9c1827f4768f"

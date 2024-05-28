@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as echarts from 'echarts';
 echarts.registerMap('world', {
   'type': 'FeatureCollection',
@@ -2184,6 +2183,6 @@ echarts.registerMap('world', {
     }
   }],
   'UTF8Encoding': true
-});
+} as any);
 
 export default echarts;
