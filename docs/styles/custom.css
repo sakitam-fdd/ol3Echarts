@@ -1,0 +1,33 @@
+/* You can override the default Infima variables here. */
+:root {
+    --ifm-color-primary: rgba(32, 160, 255, 1);
+    --ifm-color-primary-dark: rgba(20, 150, 255, 1);
+    --ifm-color-primary-darker: rgba(18, 145, 250, 1);
+    --ifm-color-primary-darkest: rgba(12, 140, 240, 1);
+    --ifm-color-primary-light: rgb(41, 161, 250);
+    --ifm-color-primary-lighter: rgb(49, 155, 241);
+    --ifm-color-primary-lightest: rgb(56, 148, 222);
+    --ifm-code-font-size: 80%;
+}
+
+.docusaurus-highlight-code-line {
+    background-color: rgb(72, 77, 91);
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+}
+
+@import './options.css';
+
+.example-option-container .controller.option select {
+    background-color: var(--ifm-navbar-background-color);
+    color: var(--ifm-font-color-base);
+}
+
+@import './log.css';
+
+.example-log-container .log-item {
+    border-left: 3px solid var(--ifm-color-primary);
+}
+
+@import './editor.css';

@@ -1,8 +1,7 @@
-// @ts-ignore
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
 import { Map, View } from 'ol';
-// @ts-ignore
 import { Tile as TileLayer } from 'ol/layer';
-// @ts-ignore
 import { OSM } from 'ol/source';
 import EChartsLayer from '../../src';
 
@@ -22,7 +21,6 @@ describe('indexSpec', () => {
           source: new OSM()
         })
       ],
-      loadTilesWhileAnimating: true,
       view: new View({
         projection: 'EPSG:4326',
         center: [120.74758724751435, 30.760422266949334],

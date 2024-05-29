@@ -20,6 +20,7 @@
     "@docusaurus/theme-live-codeblock": "^3.3.2",
     "@docusaurus/theme-search-algolia": "^3.3.2",
     "@docusaurus/theme-common": "^3.3.2",
+    "@docusaurus/plugin-ideal-image": "^3.3.2",
     "@docsearch/react": "^3.6.0",
     "docusaurus-plugin-module-alias": "^0.0.2",
     "@mdx-js/react": "^3.0.1",

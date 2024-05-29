@@ -178,7 +178,7 @@ class EChartsLayer extends obj {
    * get ol map
    * @returns {ol.Map}
    */
-  public getMap() {
+  public getMap(): Map {
     return this._map;
   }
 
@@ -400,8 +400,8 @@ class EChartsLayer extends obj {
    * update container size
    * @param size
    */
-  public updateViewSize(size: number[]): void {
-    if (!this.$container) return;
+  public updateViewSize(size?: Array<number>): void {
+    if (!this.$container || !size) return;
     this.$container.style.width = `${size[0]}px`;
     this.$container.style.height = `${size[1]}px`;
     this.$container.setAttribute('width', String(size[0]));
@@ -414,7 +414,7 @@ class EChartsLayer extends obj {
   private onResize(event?: any) {
     const map = this.getMap();
     if (map) {
-      const size: number[] = map.getSize();
+      const size = map.getSize();
       this.updateViewSize(size);
       this.clearAndRedraw();
       if (event) {
@@ -574,9 +574,9 @@ class EChartsLayer extends obj {
     if (map) {
       const container = this._options.stopEvent ? map.getOverlayContainerStopEvent() : map.getOverlayContainer();
       if (this._options.insertFirst) {
-        container.insertBefore(this.$container, container.childNodes[0] || null);
+        container.insertBefore(this.$container!, container.childNodes[0] || null);
       } else {
-        container.appendChild(this.$container);
+        container.appendChild(this.$container!);
       }
 
       this.render();
@@ -639,8 +639,8 @@ class EChartsLayer extends obj {
     map.un('movestart', this.onMoveStart);
     map.un('moveend', this.onMoveEnd);
     if (this._options.polyfillEvents) {
-      map.un('pointerdown', this.mouseDown);
-      map.un('pointerup', this.mouseUp);
+      map.un('pointerdown' as any, this.mouseDown);
+      map.un('pointerup' as any, this.mouseUp);
       map.un('pointermove', this.mouseMove);
       map.un('click', this.onClick);
     }
@@ -963,6 +963,18 @@ class EChartsLayer extends obj {
 
   public get(key: string) {
     return super.get(key);
+  }
+
+  // @ts-ignore ignore
+  public on(type: any, listener: (p0: any) => void) {
+    // @ts-ignore ignore
+    return super.on(type, listener);
+  }
+
+  // @ts-ignore ignore
+  public un(type: any, listener: (p0: any) => void) {
+    // @ts-ignore ignore
+    return super.un(type, listener);
   }
 }
 
