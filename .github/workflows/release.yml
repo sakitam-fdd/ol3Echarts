@@ -1,0 +1,37 @@
+name: Release packages
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'packages/**'
+      - '!packages/**/package.json'
+
+jobs:
+  publish:
+    timeout-minutes: 10
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/setup
+
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@master
+        with:
+          # This expects you to have a script called release which does a build for your packages and calls changeset publish
+          publish: pnpm release
+          commit: 'chore(release): publish'
+          title: Publish next versions
+        env:
+          GITHUB_TOKEN: ${{ secrets.PKG_DEPLOY_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_PKG_PUBLIC_TOKEN }}
