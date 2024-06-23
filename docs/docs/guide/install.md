@@ -1,4 +1,12 @@
-#### npm安装
+---
+id: install
+title: 安装
+sidebar_label: 安装
+slug: /install
+description: 了解如何安装
+---
+
+## npm安装
 
 ```bash
 // old openlayers package

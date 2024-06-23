@@ -49,7 +49,7 @@ export default function Home() {
           <img
             className={clsx(styles.heroBannerLogo, 'margin-vert--md')}
             alt={`${siteConfig.title} logo`}
-            src={useBaseUrl('images/logo.svg')}
+            src={useBaseUrl('images/logo.png')}
           />
           <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>

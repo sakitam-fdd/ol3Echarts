@@ -1,7 +1,8 @@
 const path = require('path');
 
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-const lightCodeTheme = require('prism-react-renderer/themes/github');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
+const { pluginTypedoc } = require('./plugins/plugin-typedoc');
 
 const BASE_URL = '/ol-echarts';
 
@@ -10,10 +11,9 @@ module.exports = {
   tagline: 'a openlayers extension to echarts',
   url: 'https://sakitam-fdd.github.io',
   baseUrl: `${BASE_URL}/`,
-  // baseUrl: '/',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'images/logo.svg',
+  favicon: 'images/logo.png',
   organizationName: 'sakitam-fdd',
   projectName: 'ol-echarts',
   i18n: {
@@ -35,6 +35,21 @@ module.exports = {
           breadcrumbs: true,
           // remarkPlugins: [],
           lastVersion: 'current',
+          // versions: {
+          //   current: {
+          //     label: '4.x',
+          //     // path: 'v4',
+          //     badge: true,
+          //     // className: 'v4',
+          //     banner: 'unreleased',
+          //   },
+          //   '3.x': {
+          //     label: '3.x',
+          //     path: 'v3',
+          //     badge: true,
+          //     banner: 'unmaintained',
+          //   },
+          // },
         },
         blog: {
           // path: "./blog", // 路径
@@ -59,7 +74,7 @@ module.exports = {
           },
         },
         theme: {
-          customCss: require.resolve('./css/custom.css'),
+          customCss: require.resolve('./styles/custom.css'),
         },
         sitemap: {
           changefreq: 'weekly',
@@ -99,29 +114,31 @@ module.exports = {
       hideOnScroll: true, // 自动隐藏顶部导航栏
       logo: {
         alt: 'ol-echarts',
-        src: 'images/logo.svg',
+        src: 'images/logo.png',
       },
       items: [
         {
           to: 'docs',
-          activeBasePath: 'docs',
+          // activeBasePath: 'docs',
+          activeBaseRegex: 'docs(/?)$',
           label: 'Docs',
           position: 'right',
         },
         {
-          to: 'api',
-          activeBasePath: 'api',
-          label: 'API',
+          to: 'playground',
+          activeBasePath: 'playground',
+          label: 'Playground',
           position: 'right',
         },
         {
           href: 'https://github.com/sakitam-fdd/ol-echarts',
-          label: 'GitHub',
           position: 'right',
+          className: 'header-social-link header-github-link',
+          'aria-label': 'GitHub',
         },
         {
           type: 'search',
-          position: 'right',
+          position: 'left',
         },
       ],
     },
@@ -137,7 +154,7 @@ module.exports = {
             },
             {
               label: 'API Reference',
-              to: 'api',
+              to: 'docs/typedoc/ol-echarts/',
             },
             {
               label: 'Playground',
@@ -175,11 +192,19 @@ module.exports = {
       appId: '7HSJME72X5',
       apiKey: '867f56d90de9d14dbb4cd3d0928ff13f',
       indexName: 'ol-echarts',
-      contextualSearch: true,
+      // contextualSearch: true,
+    },
+    announcementBar: {
+      id: 'actions',
+      content: "🚀 ol echarts for openlayers.",
+      backgroundColor: 'var(--ifm-color-primary-dark)',
+      textColor: '#ffffff',
+      isCloseable: true,
     },
   },
   plugins: [
     path.resolve(__dirname, './plugins/plugin-overwrite-webpack.js'),
+    path.resolve(__dirname, './plugins/plugin-tailwindcss.js'),
     // 图片处理插件（响应式、懒加载及低像素占位图）
     [
       '@docusaurus/plugin-ideal-image',
@@ -191,26 +216,12 @@ module.exports = {
         disableInDev: false,
       },
     ],
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        sidebar: { sidebarFile: null },
-      },
-    ],
-    [
-      '@docusaurus/plugin-content-docs',
-      {
-        id: 'api',
-        path: 'api',
-        routeBasePath: 'api',
-        sidebarPath: require.resolve('./sidebars/api.sidebars.js'),
-        editUrl: 'https://github.com/sakitam-fdd/ol3Echarts/edit/master/documents/docs',
-      },
-    ],
+    ...pluginTypedoc(['ol-echarts', 'ol3-echarts']),
   ],
   themes: [
     '@docusaurus/theme-live-codeblock',
     // path.resolve(__dirname, './node_modules/@docusaurus/theme-search-algolia'),
   ],
+  clientModules: [require.resolve('./docusaurus.theme.js')],
   customFields: {},
 };

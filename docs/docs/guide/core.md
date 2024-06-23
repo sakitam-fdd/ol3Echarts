@@ -1,3 +1,10 @@
+---
+id: core
+title: 实现原理
+sidebar_label: 实现原理
+slug: /core
+---
+
 # 集成 ECharts
 
 本章节主要讲解 `ol5` 与 `ECharts` 如何进行集成，将会从以下几个方面进行深入：
@@ -62,7 +69,6 @@ chart.appendTo(map); // 将 ECharts 图层添加到地图上
 ```
 通过以上步骤，我们就简单实现了 `Openlayers 5` 和 `ECharts` 结合展示散点图的示例，[完整代码](https://github.com/sakitam-fdd/ol3Echarts/blob/master/website/pages/scatter.js)。
 
-![ol-echarts-dom](../images/scatter.jpg)
 
 ## 原理剖析
 
@@ -86,7 +92,6 @@ chart.appendTo(map); // 将 ECharts 图层添加到地图上
 1、首先我们需要一个能够实例化 `ECharts` 的容器，这个容器的存放位置也是有一定要求的。我们需要考虑的是首先上面叠加的 Dom 图层不能遮挡下面的图层，另外
 上面 Dom 图层的事件需要穿透到下部，所以我们考虑直接将容器默认创建在 `ol-overlaycontainer` 容器内，主要代码如下：
 
-![ol-echarts-dom](../images/ol-echarts-dom.png)
 
 此外还需要注意，容器创建位置也支持自定义，但是默认都是在上图地图容器内；一般情况下不需要自定义位置，采用默认即可。
 [查看源码](https://github.com/sakitam-fdd/ol3Echarts/blob/master/packages/ol-echarts/src/index.js#L215), 以下为核心代码：
