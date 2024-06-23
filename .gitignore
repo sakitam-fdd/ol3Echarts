@@ -41,3 +41,5 @@ coverage
 .env
 .env.local
 /docs/api/
+/docs/docs/typedoc/
+/docs/.docusaurus/
