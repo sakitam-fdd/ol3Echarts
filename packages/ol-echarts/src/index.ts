@@ -784,7 +784,8 @@ class EChartsLayer extends obj {
       // @ts-ignore
       private _rawTransform: number[];
 
-      private _viewRect: BoundingRect = new BoundingRect(0, 0, 0, 0);
+      // @ts-ignore
+      private _viewRect: BoundingRect;
 
       constructor(map: any) {
         this.map = map;
@@ -869,6 +870,9 @@ class EChartsLayer extends obj {
        * @returns {*}
        */
       getViewRect() {
+        if (!this._viewRect) {
+          this.setViewRect();
+        }
         return this._viewRect;
       }
 
