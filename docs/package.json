@@ -31,7 +31,10 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "resize-observer-polyfill": "^1.5.1",
-    "leva": "^0.9.35"
+    "leva": "^0.9.35",
+    "ol": "^7.5.2",
+    "ol-echarts": "workspace:*",
+    "echarts": "^5.5.1"
   },
   "resolutions": {
     "@docusaurus/theme-common": "3.4.0"

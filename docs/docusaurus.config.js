@@ -153,12 +153,12 @@ module.exports = {
               to: 'docs',
             },
             {
-              label: 'API Reference',
-              to: 'docs/typedoc/ol-echarts/',
+              label: 'Playgrounds',
+              to: 'docs/playgrounds/scatter-charts',
             },
             {
-              label: 'Playground',
-              to: 'docs/playground',
+              label: 'API Reference',
+              to: 'docs/typedoc/ol-echarts/',
             },
           ],
         },

@@ -1,18 +1,11 @@
-import * as React from 'react';
-import { Map, View } from 'ol';
-import { Tile as TileLayer } from 'ol/layer';
-import { XYZ } from 'ol/source';
-import EChartsLayer from 'ol-echarts';
+---
+id: migration
+title: 模拟迁徙
+---
 
-interface PageProps {
-  chart: any[];
-}
+### 一个简单的示例
 
-interface PageState {
-  zoom: number;
-  rotation: number;
-  center: number[];
-}
+```jsx live
 
 function getOption() {
   const geoCoordMap = {
@@ -168,7 +161,7 @@ function getOption() {
     [{ name: '广州' }, { name: '海口', value: 10 }],
   ];
   const planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z';
-  const convertData = (data: any[]) => {
+  const convertData = (data) => {
     const res = [];
     for (let i = 0; i < data.length; i++) {
       const dataItem = data[i];
@@ -185,84 +178,80 @@ function getOption() {
     return res;
   };
   const color = ['#a6c84c', '#ffa022', '#46bee9'];
-  const series: any[] = [];
-  [
-    ['北京', BJData], ['上海', SHData], ['广州', GZData],
-  ].forEach(
-    (item: any[], i) => {
-      series.push(
-        {
-          name: `${item[0]} Top10`,
-          type: 'lines',
-          zlevel: 1,
-          effect: {
+  const series = [];
+  [['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach((item, i) => {
+    series.push(
+      {
+        name: `${item[0]} Top10`,
+        type: 'lines',
+        zlevel: 1,
+        effect: {
+          show: true,
+          period: 6,
+          trailLength: 0.7,
+          color: '#fff',
+          symbolSize: 3,
+        },
+        lineStyle: {
+          normal: {
+            color: color[i],
+            width: 0,
+            curveness: 0.2,
+          },
+        },
+        data: convertData(item[1]),
+      },
+      {
+        name: `${item[0]} Top10`,
+        type: 'lines',
+        zlevel: 2,
+        effect: {
+          show: true,
+          period: 6,
+          trailLength: 0,
+          symbol: planePath,
+          symbolSize: 15,
+        },
+        lineStyle: {
+          normal: {
+            color: color[i],
+            width: 1,
+            opacity: 0.4,
+            curveness: 0.2,
+          },
+        },
+        data: convertData(item[1]),
+      },
+      {
+        name: `${item[0]} Top10`,
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        zlevel: 2,
+        rippleEffect: {
+          brushType: 'stroke',
+        },
+        label: {
+          normal: {
             show: true,
-            period: 6,
-            trailLength: 0.7,
-            color: '#fff',
-            symbolSize: 3,
+            position: 'right',
+            formatter: '{b}',
           },
-          lineStyle: {
-            normal: {
-              color: color[i],
-              width: 0,
-              curveness: 0.2,
-            },
-          },
-          data: convertData(item[1]),
         },
-        {
-          name: `${item[0]} Top10`,
-          type: 'lines',
-          zlevel: 2,
-          effect: {
-            show: true,
-            period: 6,
-            trailLength: 0,
-            symbol: planePath,
-            symbolSize: 15,
-          },
-          lineStyle: {
-            normal: {
-              color: color[i],
-              width: 1,
-              opacity: 0.4,
-              curveness: 0.2,
-            },
-          },
-          data: convertData(item[1]),
+        symbolSize(val) {
+          return val[2] / 8;
         },
-        {
-          name: `${item[0]} Top10`,
-          type: 'effectScatter',
-          coordinateSystem: 'geo',
-          zlevel: 2,
-          rippleEffect: {
-            brushType: 'stroke',
+        itemStyle: {
+          normal: {
+            color: color[i],
           },
-          label: {
-            normal: {
-              show: true,
-              position: 'right',
-              formatter: '{b}',
-            },
-          },
-          symbolSize(val: number[]) {
-            return val[2] / 8;
-          },
-          itemStyle: {
-            normal: {
-              color: color[i],
-            },
-          },
-          data: item[1].map((dataItem: any[]) => ({
-              name: dataItem[1].name,
-              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value]),
-            })),
         },
-       );
-    },
-);
+        data: item[1].map((dataItem) => ({
+            name: dataItem[1].name,
+            value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value]),
+          })),
+      },
+     );
+  });
   return {
     tooltip: {
       trigger: 'item',
@@ -271,55 +260,60 @@ function getOption() {
   };
 }
 
-class Index extends React.Component<PageProps, PageState> {
-  private map: any | null;
+function render(props) {
+  const container = useRef(null);
 
-  private chart: any | null;
+  const data = useBaseUrl('/json/scatter.json');
 
-  private container: React.RefObject<HTMLDivElement>;
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      stopEvent: false,
+      hideOnMoving: false,
+      hideOnZooming: false,
+      forcedPrecomposeRerender: true,
+    });
 
-  constructor(props: PageProps, context: any) {
-    super(props, context);
-    this.state = {
-      zoom: 5,
-      rotation: 0,
-      center: [113.53450137499999, 34.44104525],
-    };
-
-    this.container = React.createRef();
-    this.map = null;
+    chart.appendTo(map);
   }
 
-  componentDidMount() {
-    if (this.container.current) {
-      this.map = new Map({
-        target: this.container.current,
-        view: new View({
-          ...this.state,
-          projection: 'EPSG:4326',
-        }),
-        layers: [
-          new TileLayer({
-            source: new XYZ({
-              url: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnline'
-                + 'StreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
-            }),
+  const init = () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        center: [113.53450137499999, 34.44104525],
+        projection: 'EPSG:4326',
+        zoom: 5, // resolution
+        rotation: 0,
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
           }),
-        ],
-      });
+        }),
+      ],
+    });
 
-      this.chart = new EChartsLayer(getOption(), {
-        hideOnMoving: false,
-        hideOnZooming: false,
-      });
+    initChat(map, getOption());
 
-      this.chart.appendTo(this.map);
+    function resize(target) {}
+
+    return {
+      resize,
     }
   }
 
-  render() {
-    return (<div ref={this.container} className="map-content" />);
-  }
-}
+  useEffect(() => {
+    const { resize } = init();
 
-export default Index;
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

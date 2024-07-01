@@ -14,6 +14,22 @@ module.exports = {
     },
     {
       type: 'category',
+      label: 'Playgrounds',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'index',
+      },
+      items: [
+        'playgrounds/scatter-charts',
+        'playgrounds/migration',
+        'playgrounds/line-bus',
+        'playgrounds/traffic',
+        'playgrounds/track-line',
+      ],
+    },
+    {
+      type: 'category',
       label: 'API Reference',
       collapsed: true,
       items: [

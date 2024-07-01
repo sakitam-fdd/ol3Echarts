@@ -1,0 +1,130 @@
+---
+id: traffic
+title: 嘉兴市公交线路道路拥堵情况
+---
+
+### 一个简单的示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const data = useBaseUrl('/json/traffic.json');
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      stopEvent: false,
+      hideOnMoving: false,
+      hideOnZooming: false,
+      forcedPrecomposeRerender: true,
+    });
+
+    chart.appendTo(map);
+  }
+
+  const init = () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 12,
+        rotation: 0,
+        center: [120.76264061813247, 30.74805248565917],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    function convertData(sourceData) {
+      return [].concat.apply(
+        [],
+        sourceData.map((busLine) => {
+          let prevPoint = null;
+          const points = [];
+          const value = busLine.shift();
+          for (let i = 0; i < busLine.length; i += 2) {
+            let point = [busLine[i], busLine[i + 1]];
+            if (i > 0) {
+              point = [prevPoint[0] + point[0], prevPoint[1] + point[1]];
+            }
+            prevPoint = point;
+            points.push([point[0] / 1e5, point[1] / 1e5]);
+          }
+          return {
+            value,
+            coords: points,
+          };
+        }),
+      );
+    }
+
+    fetch(data).then(res => res.json()).then(res => {
+      const option = {
+        visualMap: {
+          type: 'piecewise',
+          left: 'right',
+          top: 'top',
+          min: 0,
+          max: 15,
+          splitNumber: 5,
+          maxOpen: true,
+          color: ['red', 'yellow', 'green'],
+        },
+        tooltip: {
+          formatter(params) {
+            return `拥堵指数:${params.value}`;
+          },
+          trigger: 'item',
+        },
+        series: [
+          {
+            type: 'lines',
+            polyline: true,
+            lineStyle: {
+              normal: {
+                opacity: 1,
+                width: 4,
+              },
+              emphasis: {
+                width: 6,
+              },
+            },
+            effect: {
+              show: true,
+              symbolSize: 2,
+              color: 'white',
+            },
+            data: convertData(res),
+          },
+        ],
+      };
+
+      initChat(map, option);
+    })
+
+    function resize(target) {}
+
+    return {
+      resize,
+    }
+  }
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

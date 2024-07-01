@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #398ccb;
   --ifm-color-primary-dark: #317eb9;
@@ -34,6 +33,16 @@
   --docsearch-key-shadow: none;
   --docsearch-footer-shadow: none;
   --docsearch-hit-background: #27272a;
+}
+
+.live-wrap {
+  position: relative;
+  width: 100%;
+  height: 350px;
+
+  .map-content {
+    @apply w-full h-full;
+  }
 }
 
 html {
