@@ -29,7 +29,7 @@
       "cache": true
     },
     "test": {
-      "dependsOn": ["^build", "codegen-tests"],
+      "dependsOn": ["^build"],
       "cache": false
     },
     "test-only": {
