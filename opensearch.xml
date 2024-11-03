@@ -4,8 +4,8 @@
   <ShortName>ol-echarts Documentation</ShortName>
   <Description>Search ol-echarts Documentation</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://sakitam-fdd.github.io/ol-echarts/images/logo.png</Image>
-  <Url type="text/html" method="get" template="https://sakitam-fdd.github.io/ol-echarts/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://sakitam-fdd.github.io/ol-echarts/opensearch.xml" />
-  <moz:SearchForm>https://sakitam-fdd.github.io/ol-echarts/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://sakitam-fdd.github.io/ol3Echarts/images/logo.png</Image>
+  <Url type="text/html" method="get" template="https://sakitam-fdd.github.io/ol3Echarts/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://sakitam-fdd.github.io/ol3Echarts/opensearch.xml" />
+  <moz:SearchForm>https://sakitam-fdd.github.io/ol3Echarts/</moz:SearchForm>
 </OpenSearchDescription>
