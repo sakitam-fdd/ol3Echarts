@@ -23,5 +23,5 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/setup
 
-      - run: pnpm turbo lint -- --fix
+      - run: pnpm lint
         if: ${{ failure() || success() }}

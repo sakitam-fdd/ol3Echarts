@@ -24,7 +24,6 @@ jobs:
       - uses: ./.github/setup
 
       - run: pnpm build
-      - run: pnpm run api
       - run: pnpm docs:build
 
       - name: Deploy
