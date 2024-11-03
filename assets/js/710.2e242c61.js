@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkol_echarts_docs=self.webpackChunkol_echarts_docs||[]).push([[710],{6710:(c,s,a)=>{a.r(s),a.d(s,{DocSearchModal:()=>e.a1});var e=a(9528)}}]);
