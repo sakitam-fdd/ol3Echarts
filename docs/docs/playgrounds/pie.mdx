@@ -1,0 +1,138 @@
+---
+id: pie
+title: 饼图
+---
+
+### 示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      hideOnMoving: false,
+      hideOnZooming: true,
+    });
+
+    chart.appendTo(map);
+  }
+
+  const init = async () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 5,
+        rotation: 0,
+        center: [113.53450137499999, 34.44104525],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    const option = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'right',
+        textStyle: {
+          color: '#fff'
+        },
+        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎'],
+      },
+      series: [
+        {
+          name: '访问来源',
+          type: 'pie',
+          radius: '30',
+          coordinates: [110.53450137499999, 33.44104525],
+          data: [
+            { value: 335, name: '直接访问' },
+            { value: 310, name: '邮件营销' },
+            { value: 234, name: '联盟广告' },
+            { value: 135, name: '视频广告' },
+            { value: 1548, name: '搜索引擎' },
+          ],
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(255, 255, 255, 0.5)',
+            },
+          },
+        },
+        {
+          name: '访问来源',
+          type: 'pie',
+          radius: '30',
+          coordinates: [113.53450137499999, 34.44104525],
+          data: [
+            { value: 335, name: '直接访问' },
+            { value: 310, name: '邮件营销' },
+            { value: 234, name: '联盟广告' },
+            { value: 135, name: '视频广告' },
+            { value: 1548, name: '搜索引擎' },
+          ],
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
+          },
+        },
+        {
+          name: '访问来源',
+          type: 'pie',
+          radius: '30',
+          coordinates: [110.53450137499999, 38.44104525],
+          data: [
+            { value: 335, name: '直接访问' },
+            { value: 310, name: '邮件营销' },
+            { value: 234, name: '联盟广告' },
+            { value: 135, name: '视频广告' },
+            { value: 1548, name: '搜索引擎' },
+          ],
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
+          },
+        },
+      ],
+    };
+
+    initChat(map, option);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    }
+  }
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

@@ -1,0 +1,79 @@
+---
+id: echarts-geojson
+title: 解析 echarts中的 geojson
+---
+
+有些同学想用echart中的map类型来渲染一些矢量数据，这个目前是无法直接进行实现的，我们key变通的通过
+解析对应的区域数据直接使用ol的矢量图层来进行渲染，以下是一个示例
+
+### 示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const dataUrl = useBaseUrl('/json/world.json');
+
+  const init = async () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 2,
+        rotation: 0,
+        center: [113.53450137499999, 34.44104525],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    const data = await fetch(dataUrl).then(res => res.json());
+
+    const styleFunction = function (feature) {
+      const num = feature.getProperties()['childNum'];
+      return new Style({
+        stroke: new Stroke({
+          color: '#162436',
+          width: 1
+        }),
+        fill: new Fill({
+          color: num > 3 ? '#ff4500' : (num > 2 ? '#c1e682' : '#8cd0ef')
+        })
+      })
+    };
+    const vectorSource = new VectorSource({
+      features: (new GeoJSON()).readFeatures(EChartsLayer.formatGeoJSON(data))
+    });
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: styleFunction
+    });
+
+    map.addLayer(vectorLayer);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    }
+  }
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

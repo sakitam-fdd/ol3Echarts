@@ -14,7 +14,8 @@ const checkDecoded = (json: any) => !json.UTF8Encoding;
  */
 const decodePolygon = (
   coordinate: { length: number; charCodeAt: { (arg0: number): number; (arg0: number): number } },
-  encodeOffsets: any[], encodeScale: number,
+  encodeOffsets: any[],
+  encodeScale: number,
 ) => {
   const result = [];
   let [prevX, prevY] = [encodeOffsets[0], encodeOffsets[1]];
@@ -78,14 +79,16 @@ const decode = (json: any) => {
 export default function (json: any) {
   const geoJson = decode(json);
   // @ts-ignore
-  const filterData = geoJson.features.filter((featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
-    // Output of mapshaper may have geometry null
-    featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0);
+  const filterData = geoJson.features.filter(
+    (featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
+      // Output of mapshaper may have geometry null
+      featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0,
+  );
   const _features = filterData.map((featureObj: { properties: any; geometry: any }) => {
     const properties = featureObj.properties;
     const geo = featureObj.geometry;
     const coordinates = geo.coordinates;
-    const geometries = [];
+    const geometries: number[][] = [];
     if (geo.type === 'Polygon') {
       geometries.push(coordinates[0]);
     }

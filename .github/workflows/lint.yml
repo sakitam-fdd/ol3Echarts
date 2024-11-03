@@ -8,9 +8,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+#env:
+#  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+#  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 jobs:
   autofix:
@@ -25,8 +25,3 @@ jobs:
 
       - run: pnpm turbo lint -- --fix
         if: ${{ failure() || success() }}
-      - run: pnpm manypkg fix
-        if: ${{ failure() || success() }}
-      - run: pnpm format-fix
-        if: ${{ failure() || success() }}
-

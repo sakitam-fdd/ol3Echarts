@@ -174,6 +174,7 @@ class EChartsLayer extends obj {
       [
         'redraw',
         'onResize',
+        'onZoomStart',
         'onZoomEnd',
         'onCenterChange',
         'onDragRotateEnd',
@@ -453,20 +454,38 @@ class EChartsLayer extends obj {
     }
   }
 
+  private onZoomStart() {
+    this._options.hideOnZooming && this.innerHide();
+    const map = this.getMap();
+
+    if (!map || !map.getView()) {
+      return;
+    }
+
+    this.dispatchEvent({
+      type: 'zoomstart',
+      source: this,
+      value: map.getView().getZoom(),
+    });
+  }
+
   /**
    * handle zoom end events
    */
   private onZoomEnd() {
     this._options.hideOnZooming && this.innerShow();
     const map = this.getMap();
-    if (map && map.getView()) {
-      this.clearAndRedraw();
-      this.dispatchEvent({
-        type: 'zoomend',
-        source: this,
-        value: map.getView().getZoom(),
-      });
+
+    if (!map || !map.getView()) {
+      return;
     }
+
+    this.clearAndRedraw();
+    this.dispatchEvent({
+      type: 'zoomend',
+      source: this,
+      value: map.getView().getZoom(),
+    });
   }
 
   /**
@@ -488,32 +507,54 @@ class EChartsLayer extends obj {
   /**
    * handle move start events
    */
-  private onMoveStart() {
-    this._options.hideOnMoving && this.innerHide();
+  private onMoveStart(e) {
     const map = this.getMap();
-    if (map && map.getView()) {
-      this.dispatchEvent({
-        type: 'movestart',
-        source: this,
-        value: map.getView().getCenter(),
-      });
+
+    if (!map || !map.getView()) {
+      return;
     }
+
+    const previousZoom = e.frameState.viewState.zoom;
+    const currentZoom = map.getView().getZoom();
+    if (previousZoom !== currentZoom) {
+      this.onZoomStart();
+    } else {
+      this.onZoomEnd();
+    }
+
+    this._options.hideOnMoving && this.innerHide();
+
+    this.dispatchEvent({
+      type: 'movestart',
+      source: this,
+      value: map.getView().getCenter(),
+    });
   }
 
   /**
    * handle move end events
    */
-  private onMoveEnd() {
+  private onMoveEnd(e) {
     this._options.hideOnMoving && this.innerShow();
     const map = this.getMap();
-    if (map && map.getView()) {
-      this.clearAndRedraw();
-      this.dispatchEvent({
-        type: 'moveend',
-        source: this,
-        value: map.getView().getCenter(),
-      });
+
+    if (!map || !map.getView()) {
+      return;
     }
+
+    const previousZoom = e.frameState.viewState.zoom;
+    const currentZoom = map.getView().getZoom();
+
+    if (previousZoom === currentZoom) {
+      this.onZoomEnd();
+    }
+
+    this.clearAndRedraw();
+    this.dispatchEvent({
+      type: 'moveend',
+      source: this,
+      value: map.getView().getCenter(),
+    });
   }
 
   /**

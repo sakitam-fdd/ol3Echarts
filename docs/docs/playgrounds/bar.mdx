@@ -1,0 +1,193 @@
+---
+id: bar
+title: 柱状图
+---
+
+### 示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      hideOnMoving: false,
+      hideOnZooming: true,
+    });
+
+    chart.appendTo(map);
+  }
+
+  const init = async () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 3,
+        rotation: 0,
+        center: [113.53450137499999, 34.44104525],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    const option = {
+      color: ['#3398DB'],
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+          type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
+        },
+      },
+      legend: {
+        x: 'right',
+        show: true,
+        data: ['包租费', '物业费', '水电', '网络', '燃气'],
+        selectedMode: 'multiple',
+        textStyle: {
+          color: '#fff'
+        }
+      },
+      grid: [],
+      xAxis: [],
+      yAxis: [],
+      series: [],
+    };
+
+    const series = [
+      {
+        name: '包租费',
+        type: 'bar',
+        barWidth: '15',
+        coordinates: [87.1435546875, 43.79150390625],
+        data: [20, 12, 31, 34, 31],
+        xAxisIndex: 0,
+        yAxisIndex: 0,
+      },
+      {
+        name: '物业费',
+        type: 'bar',
+        barWidth: '15',
+        coordinates: [86.5283203125, 32.40966796875],
+        data: [1, 1, 2, 3, 1],
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+      },
+      {
+        name: '水电',
+        type: 'bar',
+        barWidth: '15',
+        coordinates: [98.876953125, 35.74951171875],
+        data: [1, 1, 2, 3, 1],
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+      },
+      {
+        name: '网络',
+        type: 'bar',
+        barWidth: '15',
+        coordinates: [108.80859375, 23.44482421875],
+        data: [1, 1, 2, 3, 1],
+        xAxisIndex: 3,
+        yAxisIndex: 3,
+      },
+      {
+        name: '燃气',
+        type: 'bar',
+        barWidth: '15',
+        coordinates: [110.53450137499999, 38.44104525],
+        data: [1, 1, 2, 3, 1],
+        xAxisIndex: 4,
+        yAxisIndex: 4,
+      },
+    ];
+
+    series.forEach((item, index) => {
+      const grid = {
+        show: true,
+        containLabel: false,
+        borderWidth: 0,
+        borderColor: '#fff',
+        width: 150,
+        height: 80,
+      };
+      option.grid.push(grid);
+      option.xAxis.push({
+        type: 'category',
+        show: true,
+        gridIndex: index,
+        nameTextStyle: {
+          color: '#3c3c3c',
+        },
+        axisLine: {
+          show: false,
+          onZero: false,
+        },
+        axisLabel: {
+          show: false,
+          interval: 0,
+          rotate: -45,
+          textStyle: {
+            color: '#3c3c3c',
+            fontSize: 10,
+          },
+        },
+        axisTick: {
+          show: false,
+        },
+        data: ['新虹桥', '中山公园', '虹桥', '镇宁路', '天山古北'],
+      });
+
+      option.yAxis.push({
+        type: 'value',
+        show: true,
+        min: 0.001,
+        splitLine: { show: false },
+        axisLabel: {
+          show: false,
+        },
+        axisLine: {
+          show: false,
+          onZero: false,
+        },
+        nameGap: '1',
+        axisTick: {
+          show: false,
+        },
+        nameTextStyle: {
+          color: '#3c3c3c',
+          fontSize: 14,
+        },
+        gridIndex: index,
+      });
+      option.series.push(item);
+    });
+
+    initChat(map, option);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    }
+  }
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

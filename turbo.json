@@ -1,38 +1,25 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "globalDependencies": [
-    ".eslintrc.js",
-    "tsconfig.json",
-    "scripts/entrypoints.ts",
-    "scripts/getRollupConfig.ts"
+    ".eslintrc.cjs",
+    "tsconfig.json"
   ],
   "globalEnv": [
     "CI",
     "NODE_ENV"
   ],
   "tasks": {
-    "codegen-entrypoints": {},
-    "codegen-tests": {
-      "outputs": ["server/__generated__/bigBoi/**"]
-    },
-    "prebuild": {
-      "cache": false
-    },
-    "ts-watch": {},
     "build": {
-      "dependsOn": ["^build", "codegen-entrypoints", "prebuild"],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "dist/**",
-        "build/**",
-        "docs/typedoc/**"
-      ]
+      "dependsOn": ["^build"]
     },
-    "examples-minimal-react#build": {
-      "outputs": ["client/dist/**", "server/dist/**"]
+    "build:minify": {
+      "dependsOn": ["^build:minify"]
     },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "clear": {
       "cache": false,
       "persistent": true
     },
@@ -41,34 +28,17 @@
       "outputs": [],
       "cache": true
     },
-    "lint-fix": {
-      "cache": false
-    },
     "test": {
       "dependsOn": ["^build", "codegen-tests"],
       "cache": false
     },
-    "test-ci": {
-      "dependsOn": ["^build", "codegen-tests"],
-      "cache": false
-    },
-    "test-dev": {
+    "test-only": {
       "dependsOn": ["^build"],
       "cache": false
     },
-    "test-start": {
-      "dependsOn": ["^build", "build"],
-      "cache": false
-    },
-    "test-watch": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["^build", "codegen-tests"]
-    },
-    "type-check": {
+    "coverage": {
       "dependsOn": ["^build"],
-      "outputs": [],
-      "cache": true
+      "cache": false
     }
   }
 }

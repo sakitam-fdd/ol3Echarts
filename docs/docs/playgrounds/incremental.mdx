@@ -1,0 +1,115 @@
+---
+id: incremental
+title: 增量渲染
+---
+
+### 示例
+
+```jsx live
+function render(props) {
+  const CHUNK_COUNT = 10;
+
+  const container = useRef(null);
+
+  const dataUrl = useBaseUrl('/examples/incremental/data/links_ny_{idx}.bin');
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      hideOnMoving: true,
+      hideOnZooming: true,
+    });
+
+    const fetchData = async (idx) => {
+      if (idx >= CHUNK_COUNT) {
+        return;
+      }
+      const url = dataUrl.replace('{idx}', idx);
+      const d = await fetch(url).then((res) => res.arrayBuffer());
+
+      const rawData = new Float32Array(d);
+      const data = new Float64Array(rawData.length - 2);
+      const offsetX = rawData[0];
+      const offsetY = rawData[1];
+      let off = 0;
+      for (let i = 2; i < rawData.length;) {
+        const count = rawData[i++];
+        data[off++] = count;
+        for (let k = 0; k < count; k++) {
+          const x = rawData[i++] + offsetX;
+          const y = rawData[i++] + offsetY;
+          data[off++] = x;
+          data[off++] = y;
+        }
+      }
+      chart.appendData({
+        seriesIndex: 0,
+        data,
+      }, true);
+      fetchData(idx + 1);
+    }
+
+    fetchData(0);
+
+    chart.appendTo(map);
+  };
+
+  const init = async () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 10,
+        rotation: 0,
+        center: [-74.04327099998152, 40.86737600240287],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    const option = {
+      progressive: 20000,
+      backgroundColor: 'transparent',
+      series: [
+        {
+          type: 'lines',
+          blendMode: 'lighter',
+          dimensions: ['value'],
+          data: new Float64Array(),
+          polyline: true,
+          large: true,
+          lineStyle: {
+            color: 'orange',
+            width: 0.5,
+            opacity: 0.3,
+          },
+        },
+      ],
+    };
+
+    initChat(map, option);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    };
+  };
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {};
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

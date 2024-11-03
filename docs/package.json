@@ -34,10 +34,9 @@
     "leva": "^0.9.35",
     "ol": "^7.5.2",
     "ol-echarts": "workspace:*",
-    "echarts": "^5.5.1"
-  },
-  "resolutions": {
-    "@docusaurus/theme-common": "3.4.0"
+    "echarts": "^5.5.1",
+    "echarts-gl": "^2.0.9",
+    "proj4": "^2.14.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

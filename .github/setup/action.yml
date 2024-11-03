@@ -22,3 +22,6 @@ runs:
           ${{ runner.os }}-pnpm-store-
     - run: pnpm install
       shell: bash
+    - name: Install playwright browsers
+      run: npx playwright install --with-deps
+      shell: bash

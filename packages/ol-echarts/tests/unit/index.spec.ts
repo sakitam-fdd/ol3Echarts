@@ -1,4 +1,4 @@
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
 
 import { Map, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
@@ -308,14 +308,14 @@ describe('indexSpec', () => {
 
         return new Promise((resolve) => {
           layer.on('zoomend', (event: any) => {
-            expect(event.value).toBe(12);
+            expect(event.value).toBe(8);
             layer.remove();
             resolve(true);
           });
 
           layer.on('load', () => {
             setTimeout(() => {
-              map.getView().setZoom(12);
+              map.getView().setZoom(8);
             }, 1000);
           });
 
@@ -356,7 +356,7 @@ describe('indexSpec', () => {
 
     it(
       'onMoveStart',
-      (done) => {
+      () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
           hideOnMoving: true,
@@ -485,7 +485,7 @@ describe('indexSpec', () => {
       expect(layer.isVisible()).toBe(true);
     });
 
-    it('should hide on Moving and show moveend', (done) => {
+    it('should hide on Moving and show moveend', () => {
       const layer = new EChartsLayer(options, {
         stopEvent: false,
         hideOnMoving: true,
@@ -519,7 +519,7 @@ describe('indexSpec', () => {
       });
     });
 
-    it('should hide on setVisible(false) when moving', (done) => {
+    it('should hide on setVisible(false) when moving', async () => {
       const layer = new EChartsLayer(options, {
         stopEvent: false,
         hideOnMoving: true,
@@ -527,8 +527,9 @@ describe('indexSpec', () => {
         forcedPrecomposeRerender: false,
       });
 
-      return new Promise((resolve) => {
+      await new Promise((resolve) => {
         layer.on('load', () => {
+          vi.useFakeTimers();
           const center = map.getView().getCenter();
           map.getView().animate({
             center: [center[0] + 0.8, center[1] + 0.4],
@@ -551,6 +552,8 @@ describe('indexSpec', () => {
             expect(layer.isVisible()).toBe(true);
             resolve(true);
           }, 2500);
+
+          vi.runAllTimers();
         });
 
         expect(layer).toBeDefined();

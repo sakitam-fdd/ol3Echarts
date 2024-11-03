@@ -9,15 +9,15 @@ description: 了解如何安装
 ## npm安装
 
 ```bash
-// old openlayers package
+# old openlayers package
 npm install ol3-echarts --save
 import ol3Echarts from 'ol3-echarts'
 
-// ol package
+# ol package
 npm install ol-echarts --save
 import EChartsLayer from 'ol-echarts'
 
-// 指定版本安装
+# 指定版本安装
 npm install ol3-echarts@2.0.0 --save
 import ol3Echarts from 'ol3-echarts'
 
@@ -25,6 +25,7 @@ npm install ol-echarts@2.0.0 --save
 import EChartsLayer from 'ol-echarts'
 
 ```
+
 #### cdn
 
 > cdn 引用方式只支持 旧版 `openlayers` 和新版 `ol` 的cdn引用方式，统一使用 `ol3-echarts` 支持。

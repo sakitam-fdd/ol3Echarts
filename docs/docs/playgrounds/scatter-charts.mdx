@@ -3,7 +3,7 @@ id: scatter-charts
 title: 全国主要城市空气质量
 ---
 
-### 一个简单的示例
+### 示例
 
 ```jsx live
 function render(props) {
@@ -14,9 +14,8 @@ function render(props) {
   const initChat = (map, option) => {
     const chart = new EChartsLayer(option, {
       stopEvent: false,
-      hideOnMoving: false,
-      hideOnZooming: false,
-      forcedPrecomposeRerender: true,
+      hideOnMoving: true,
+      hideOnZooming: true,
     });
 
     chart.on('load', (data) => {

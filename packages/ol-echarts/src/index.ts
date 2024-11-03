@@ -149,6 +149,7 @@ class EChartsLayer extends obj {
       [
         'redraw',
         'onResize',
+        'onZoomStart',
         'onZoomEnd',
         'onCenterChange',
         'onDragRotateEnd',
@@ -428,6 +429,18 @@ class EChartsLayer extends obj {
     }
   }
 
+  private onZoomStart() {
+    this._options.hideOnZooming && this.innerHide();
+    const map = this.getMap();
+    if (map && map.getView()) {
+      this.dispatchEvent({
+        type: 'zoomstart',
+        source: this,
+        value: map.getView().getZoom(),
+      });
+    }
+  }
+
   /**
    * handle zoom end events
    */
@@ -463,32 +476,53 @@ class EChartsLayer extends obj {
   /**
    * handle move start events
    */
-  private onMoveStart() {
-    this._options.hideOnMoving && this.innerHide();
+  private onMoveStart(e) {
     const map = this.getMap();
-    if (map && map.getView()) {
-      this.dispatchEvent({
-        type: 'movestart',
-        source: this,
-        value: map.getView().getCenter(),
-      });
+
+    if (!map || !map.getView()) {
+      return;
     }
+
+    const previousZoom = e.frameState.viewState.zoom;
+    const currentZoom = map.getView().getZoom();
+    if (previousZoom !== currentZoom) {
+      this.onZoomStart();
+    } else {
+      this.onZoomEnd();
+    }
+    this._options.hideOnMoving && this.innerHide();
+
+    this.dispatchEvent({
+      type: 'movestart',
+      source: this,
+      value: map.getView().getCenter(),
+    });
   }
 
   /**
    * handle move end events
    */
-  private onMoveEnd() {
+  private onMoveEnd(e) {
     this._options.hideOnMoving && this.innerShow();
     const map = this.getMap();
-    if (map && map.getView()) {
-      this.clearAndRedraw();
-      this.dispatchEvent({
-        type: 'moveend',
-        source: this,
-        value: map.getView().getCenter(),
-      });
+
+    if (!map || !map.getView()) {
+      return;
     }
+
+    const previousZoom = e.frameState.viewState.zoom;
+    const currentZoom = map.getView().getZoom();
+
+    if (previousZoom === currentZoom) {
+      this.onZoomEnd();
+    }
+
+    this.clearAndRedraw();
+    this.dispatchEvent({
+      type: 'moveend',
+      source: this,
+      value: map.getView().getCenter(),
+    });
   }
 
   /**
@@ -608,7 +642,6 @@ class EChartsLayer extends obj {
       map.on('precompose', this.redraw);
     }
     map.on('change:size', this.onResize);
-    view.on('change:resolution', this.onZoomEnd);
     view.on('change:center', this.onCenterChange);
     view.on('change:rotation', this.onDragRotateEnd);
     map.on('movestart', this.onMoveStart);
@@ -633,7 +666,6 @@ class EChartsLayer extends obj {
     if (!view) return;
     map.un('precompose', this.redraw);
     map.un('change:size', this.onResize);
-    view.un('change:resolution', this.onZoomEnd);
     view.un('change:center', this.onCenterChange);
     view.un('change:rotation', this.onDragRotateEnd);
     map.un('movestart', this.onMoveStart);

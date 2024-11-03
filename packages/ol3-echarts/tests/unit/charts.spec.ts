@@ -1,4 +1,4 @@
-// @ts-ignore
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 import ol from 'openlayers';
 import EChartsLayer from '../../src';
 

@@ -24,7 +24,7 @@ const r = (p: string) => resolve(ROOT, '..', p);
 
 const umdExternal = ['openlayers'];
 
-const external = [...umdExternal, ...Object.keys(pkg.dependencies)];
+const external = [...umdExternal, ...Object.keys(pkg.dependencies || {})];
 
 const plugins = [
   alias({

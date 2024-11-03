@@ -37,6 +37,7 @@ describe('indexSpec', () => {
 
   describe('charts types', () => {
     it('create pie', () => {
+
       const layer = new EChartsLayer({
         tooltip: {
           trigger: 'item',

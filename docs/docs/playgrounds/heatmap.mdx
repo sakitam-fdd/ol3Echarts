@@ -1,0 +1,104 @@
+---
+id: heatmap
+title: 热力图
+---
+
+### 示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const dataUrl = useBaseUrl('/json/heatmap.json');
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      hideOnMoving: true,
+      hideOnZooming: true,
+    });
+
+    chart.appendTo(map);
+  }
+
+  const init = async () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 5,
+        rotation: 0,
+        center: [113.53450137499999, 34.44104525],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    const response = await fetch(dataUrl).then(res => res.json());
+
+    const convertData = (data) => {
+      const res = [];
+      for (let i = 0; i < data.length; i++) {
+        const geoCoord = response.coordinates[data[i].name];
+        if (geoCoord) {
+          res.push(geoCoord.concat(data[i].value));
+        }
+      }
+      return res;
+    };
+    const option = {
+      title: {
+        text: '全国主要城市空气质量',
+        subtext: 'data from PM25.in',
+        sublink: 'http://www.pm25.in',
+        left: 'center',
+        textStyle: {
+          color: '#fff',
+        },
+      },
+      backgroundColor: 'transparent',
+      visualMap: {
+        min: 0,
+        max: 500,
+        splitNumber: 5,
+        inRange: {
+          color: ['#d94e5d', '#eac736', '#50a3ba'].reverse(),
+        },
+        textStyle: {
+          color: '#fff',
+        },
+      },
+      series: [{
+        name: 'AQI',
+        type: 'heatmap',
+        data: convertData(response.attr),
+      }],
+    };
+
+    initChat(map, option);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    }
+  }
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

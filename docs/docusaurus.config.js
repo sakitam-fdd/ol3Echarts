@@ -125,9 +125,9 @@ module.exports = {
           position: 'right',
         },
         {
-          to: 'playground',
-          activeBasePath: 'playground',
-          label: 'Playground',
+          to: 'docs/playgrounds/scatter-charts',
+          activeBasePath: 'docs(/?)$',
+          label: 'Playgrounds',
           position: 'right',
         },
         {

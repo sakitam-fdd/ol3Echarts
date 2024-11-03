@@ -1,0 +1,188 @@
+---
+id: china-migration
+title: 春节人口迁徙
+---
+
+### 一个简单的示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const dataUrl = useBaseUrl('/json/china-migration.json');
+  const airlineUrl = useBaseUrl('/json/china-airline.json');
+
+  // 经纬度获取
+  function getGeoCoord(geoCoord, name) {
+    const city = name.split('_').pop();
+    if (city) {
+      const coord = geoCoord[city];
+      return coord;
+    }
+
+    return null;
+  }
+
+  // 线路获取
+  function getLineCoord(geoCoord, fromname, toname) {
+    if (fromname && toname) {
+      const _start = fromname.split('_').pop();
+      const _end = toname.split('_').pop();
+      if (_start && _end) {
+        const fromCoord = geoCoord[_start];
+        const toCoord = geoCoord[_end];
+        return {
+          fromName: _start,
+          toName: _end,
+          coords: [fromCoord, toCoord],
+        };
+      }
+      return null;
+    }
+    return null;
+  }
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      stopEvent: false,
+      hideOnMoving: false,
+      hideOnZooming: false,
+      forcedPrecomposeRerender: true,
+    });
+
+    chart.appendTo(map);
+  }
+
+  const init = async () => {
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        zoom: 5,
+        rotation: 0,
+        center: [113.53450137499999, 34.44104525],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    function convertData(sourceData) {
+      return [].concat.apply(
+        [],
+        sourceData.map((busLine) => {
+          let prevPoint = null;
+          const points = [];
+          const value = busLine.shift();
+          for (let i = 0; i < busLine.length; i += 2) {
+            let point = [busLine[i], busLine[i + 1]];
+            if (i > 0) {
+              point = [prevPoint[0] + point[0], prevPoint[1] + point[1]];
+            }
+            prevPoint = point;
+            points.push([point[0] / 1e5, point[1] / 1e5]);
+          }
+          return {
+            value,
+            coords: points,
+          };
+        }),
+      );
+    }
+
+    const geoCoord = await fetch(dataUrl).then(res => res.json());
+    const data = await fetch(airlineUrl).then(res => res.json());
+
+    const option = {
+      backgroundColor: 'transparent',
+      title: {
+        text: '春节人口迁徙',
+        x: 'center',
+        y: 'top',
+        textStyle: {
+          color: 'white',
+        },
+      },
+      legend: {
+        show: true,
+        selected: {},
+        x: 'left',
+        orient: 'vertical',
+        textStyle: {
+          color: 'white',
+        },
+        data: [],
+      },
+      series: [
+        {
+          name: 'Migration',
+          type: 'lines',
+          effect: {
+            constantSpeed: 30,
+            show: true,
+            trailLength: 1,
+            symbolSize: 1.5,
+            color: 'rgba(204, 246, 255, 1)',
+          },
+
+          itemStyle: {
+            lineStyle: {
+              color: 'rgba(2, 166, 253, 1)',
+              type: 'solid',
+              width: 0.5,
+              opacity: 0.4,
+            },
+          },
+          data: [],
+        },
+        {
+          symbol: 'circle',
+          type: 'effectScatter',
+          symbolSize: 1.5,
+          itemStyle: {
+            color: 'rgba(255, 0, 0, 1)',
+          },
+          data: [],
+        },
+      ],
+    };
+    data.allLine
+      .sort((a, b) => b.num - a.num)
+      .slice(0, 3000)
+      .forEach((line) => {
+        const callData = getLineCoord(geoCoord, line.start, line.end);
+        if (callData) {
+          option.series[0].data.push();
+        }
+      });
+    option.series[1].data = data.topCityOut.map((point) => ({
+      value: getGeoCoord(geoCoord, point.name),
+    }));
+
+    initChat(map, option);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    }
+  }
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {
+    };
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

@@ -115,7 +115,7 @@ function mockEvent(type: string, event: any) {
     screenX: event.pointerEvent.screenX,
     screenY: event.pointerEvent.screenY,
     view: window,
-  });
+  }) as any;
   e.zrX = event.pointerEvent.offsetX;
   e.zrY = event.pointerEvent.offsetY;
   e.event = e;

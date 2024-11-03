@@ -1,0 +1,172 @@
+---
+id: line-with-4490
+title: 4490坐标系显示折线图
+---
+
+### 示例
+
+```jsx live
+function render(props) {
+  const container = useRef(null);
+
+  const dataUrl = useBaseUrl('/json/line.json');
+
+  const initChat = (map, option) => {
+    const chart = new EChartsLayer(option, {
+      hideOnMoving: true,
+      hideOnZooming: true,
+    });
+
+    chart.appendTo(map);
+  };
+
+  const init = async () => {
+    proj4.defs('EPSG:4490', '+proj=longlat +ellps=GRS80 +no_defs');
+    register(proj4);
+
+    const projection = new Projection({
+      code: 'EPSG:4490',
+      units: 'degrees',
+      axisOrientation: 'neu',
+    });
+    projection.setExtent([-180, -90, 180, 90]);
+
+    const map = new ol.Map({
+      target: container.current,
+      view: new ol.View({
+        projection: projection,
+        // projection: 'EPSG:3857',
+        zoom: 4,
+        rotation: 0,
+        center: [113.53450137499999, 34.44104525],
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          }),
+        }),
+      ],
+    });
+
+    const data = await fetch(dataUrl).then((res) => res.json());
+
+    const option = {
+      xAxis: [],
+      yAxis: [],
+      grid: [],
+      series: [],
+      animation: false,
+      // backgroundColor: ,
+      title: {
+        text: 'Inflation from 2006 to 2011',
+        subtext: 'data from macrofocus',
+        sublink: 'https://www.macrofocus.com/public/products/infoscope/datasets/pricesandearnings/',
+        left: 'center',
+        top: 5,
+        itemGap: 0,
+        textStyle: {
+          color: '#eee',
+        },
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+    };
+    const inflationStartIdx = 14;
+    const inflationYearCount = 6;
+    const inflationYearStart = '2006';
+    const xAxisCategory = [];
+    for (let i = 0; i < inflationYearCount; i++) {
+      xAxisCategory.push(`${+inflationYearStart + i}`);
+    }
+
+    if (data.data) {
+      data.data.forEach((dataItem, idx) => {
+        const coordinates = data.geoCoordinates[dataItem[0]];
+        idx += '';
+
+        const inflationData = [];
+        for (let k = 0; k < inflationYearCount; k++) {
+          inflationData.push(dataItem[inflationStartIdx + k]);
+        }
+
+        option.xAxis.push({
+          id: idx,
+          gridId: idx,
+          type: 'category',
+          name: dataItem[0],
+          nameStyle: {
+            color: '#ddd',
+            fontSize: 12,
+          },
+          nameLocation: 'middle',
+          nameGap: 3,
+          splitLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { show: false },
+          axisLine: {
+            onZero: false,
+            lineStyle: {
+              color: '#bbb',
+            },
+          },
+          data: xAxisCategory,
+          z: 100,
+        });
+
+        option.yAxis.push({
+          id: idx,
+          gridId: idx,
+          splitLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { show: false },
+          axisLine: {
+            lineStyle: {
+              color: '#bbb',
+            },
+          },
+          z: 100,
+        });
+
+        option.grid.push({
+          id: idx,
+          width: 30,
+          height: 30,
+          z: 100,
+        });
+
+        option.series.push({
+          id: idx,
+          type: 'line',
+          xAxisId: idx,
+          yAxisId: idx,
+          data: inflationData,
+          coordinates,
+          z: 100,
+        });
+      });
+    }
+
+    initChat(map, option);
+
+    function resize(target) {}
+
+    return {
+      resize,
+    };
+  };
+
+  useEffect(() => {
+    const { resize } = init();
+
+    return () => {};
+  }, []);
+
+  return (
+    <div className="live-wrap">
+      <div ref={container} className="map-content" />
+    </div>
+  );
+}
+```

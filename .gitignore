@@ -43,3 +43,4 @@ coverage
 /docs/api/
 /docs/docs/typedoc/
 /docs/.docusaurus/
+/docs/build/

@@ -1,0 +1,35 @@
+name: Publish Docs
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'packages/**'
+      - 'docs/**'
+
+jobs:
+  docs:
+    timeout-minutes: 10
+#    env:
+#      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+#      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/setup
+
+      - run: pnpm build
+      - run: pnpm run api
+      - run: pnpm docs:build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.PKG_DEPLOY_TOKEN }}
+          publish_dir: docs/build
+          cname: blog.sakitam.com
