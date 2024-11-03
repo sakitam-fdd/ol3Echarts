@@ -1,6 +1,6 @@
 # Bridger for openlayers and echarts
 
-[![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts)
+[![CI](https://github.com/sakitam-fdd/ol3Echarts/actions/workflows/main.yml/badge.svg)](https://github.com/sakitam-fdd/ol3Echarts/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/sakitam-fdd/ol3Echarts/branch/master/graph/badge.svg)](https://codecov.io/gh/sakitam-fdd/ol3Echarts)
 ![JS gzip size](http://img.badgesize.io/https://unpkg.com/ol3-echarts/dist/ol3Echarts.js?compression=gzip&label=gzip%20size:%20JS)
 [![GitHub stars](https://img.shields.io/github/stars/sakitam-fdd/ol3Echarts.svg)](https://github.com/sakitam-fdd/ol3Echarts/stargazers)
@@ -10,8 +10,8 @@
 
 | Project | Status | Version | Npm | CDN | Description |
 |---------|--------|---------|-----|------|-------------|
-| [ol3-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol3-echarts) | [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts) | [![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol3-echarts/badge)](https://www.jsdelivr.com/package/npm/ol3-echarts) | support for openlayers3-4 |
-| [ol-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol-echarts) | [![Build Status](https://travis-ci.org/sakitam-fdd/ol3Echarts.svg?branch=master)](https://www.travis-ci.org/sakitam-fdd/ol3Echarts) | [![Npm package](https://img.shields.io/npm/v/ol-echarts.svg)](https://www.npmjs.org/package/ol-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol-echarts.svg)](https://npmjs.org/package/ol-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol-echarts/badge)](https://www.jsdelivr.com/package/npm/ol-echarts) | support for openlayers5+ |
+| [ol3-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol3-echarts) | [![CI](https://github.com/sakitam-fdd/ol3Echarts/actions/workflows/main.yml/badge.svg)](https://github.com/sakitam-fdd/ol3Echarts/actions/workflows/main.yml) | [![Npm package](https://img.shields.io/npm/v/ol3-echarts.svg)](https://www.npmjs.org/package/ol3-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol3-echarts.svg)](https://npmjs.org/package/ol3-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol3-echarts/badge)](https://www.jsdelivr.com/package/npm/ol3-echarts) | support for openlayers3-4 |
+| [ol-echarts](https://github.com/sakitam-fdd/ol3Echarts/packages/ol-echarts) | [![CI](https://github.com/sakitam-fdd/ol3Echarts/actions/workflows/main.yml/badge.svg)](https://github.com/sakitam-fdd/ol3Echarts/actions/workflows/main.yml) | [![Npm package](https://img.shields.io/npm/v/ol-echarts.svg)](https://www.npmjs.org/package/ol-echarts) | [![NPM downloads](https://img.shields.io/npm/dm/ol-echarts.svg)](https://npmjs.org/package/ol-echarts) | [![](https://data.jsdelivr.com/v1/package/npm/ol-echarts/badge)](https://www.jsdelivr.com/package/npm/ol-echarts) | support for openlayers5+ |
 
 ## 下载
 

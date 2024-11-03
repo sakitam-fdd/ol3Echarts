@@ -39,7 +39,7 @@ jobs:
       - uses: ./.github/setup
 
       - run: pnpm build
-      - run: pnpm test
+      - run: pnpm coverage
 
       - uses: codecov/codecov-action@v4
         with:
