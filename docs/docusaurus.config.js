@@ -4,7 +4,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
 const { pluginTypedoc } = require('./plugins/plugin-typedoc');
 
-const BASE_URL = '/ol-echarts';
+const BASE_URL = '/ol3Echarts';
 
 module.exports = {
   title: 'ol-echarts Documentation',
