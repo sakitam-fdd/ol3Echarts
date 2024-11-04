@@ -39,10 +39,10 @@
   position: relative;
   width: 100%;
   height: 350px;
+}
 
-  .map-content {
-    @apply w-full h-full;
-  }
+.live-wrap .map-content {
+  @apply w-full h-full;
 }
 
 html {

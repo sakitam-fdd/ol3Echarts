@@ -331,11 +331,11 @@ class Index extends React.Component {
 
 ## 截图示例
 
-![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/scatter.jpg)
+![散点图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/static/images/scatter.jpg)
 
-![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/mock-migration.jpg)
+![迁徙图](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/static/images/mock-migration.jpg)
 
-![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/website/static/images/wchart-gl.jpg)
+![微博签到数据点亮中国](https://raw.githubusercontent.com/sakitam-fdd/ol3Echarts/master/docs/static/images/wchart-gl.jpg)
 
 其他示例请自己挖掘
 

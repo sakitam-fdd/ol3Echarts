@@ -64,10 +64,10 @@ importers:
         version: 2.1.4(@types/node@18.19.64)(playwright@1.48.2)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.64)(terser@5.36.0))(vitest@2.1.4)
       '@vitest/coverage-istanbul':
         specifier: ^2.1.4
-        version: 2.1.4(vitest@2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0))
+        version: 2.1.4(vitest@2.1.4)
       '@vitest/coverage-v8':
         specifier: ^2.1.4
-        version: 2.1.4(@vitest/browser@2.1.4(@types/node@18.19.64)(playwright@1.48.2)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.64)(terser@5.36.0))(vitest@2.1.4))(vitest@2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0))
+        version: 2.1.4(@vitest/browser@2.1.4)(vitest@2.1.4)
       '@vitest/ui':
         specifier: ^2.1.4
         version: 2.1.4(vitest@2.1.4)
@@ -142,7 +142,7 @@ importers:
         version: 2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0)
       vitest-environment-miniflare:
         specifier: ^2.14.4
-        version: 2.14.4(vitest@2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0))
+        version: 2.14.4(vitest@2.1.4)
       wait-for-expect:
         specifier: 3.0.2
         version: 3.0.2
@@ -171,7 +171,7 @@ importers:
         specifier: ^3.4.0
         version: 3.5.2(@algolia/client-search@4.24.0)(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))(@swc/core@1.7.42)(@types/react@18.3.12)(acorn@6.4.2)(esbuild@0.20.2)(eslint@8.57.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.14.0)(typescript@5.6.3)
       '@docusaurus/theme-common':
-        specifier: ^3.4.0
+        specifier: 3.4.0
         version: 3.4.0(@docusaurus/types@3.5.2(@swc/core@1.7.42)(acorn@6.4.2)(esbuild@0.20.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@swc/core@1.7.42)(acorn@6.4.2)(esbuild@0.20.2)(eslint@8.57.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)
       '@docusaurus/theme-live-codeblock':
         specifier: ^3.4.0
@@ -2324,55 +2324,46 @@ packages:
     resolution: {integrity: sha512-KRSFHyE/RdxQ1CSeOIBVIAxStFC/hnBgVcaiCkQaVC+EYDtTe4X7z5tBkFyRoBgUGtB6Xg6t9t2kulnX6wJc6A==}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.24.3':
     resolution: {integrity: sha512-h6Q8MT+e05zP5BxEKz0vi0DhthLdrNEnspdLzkoFqGwnmOzakEHSlXfVyA4HJ322QtFy7biUAVFPvIDEDQa6rw==}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.24.3':
     resolution: {integrity: sha512-fKElSyXhXIJ9pqiYRqisfirIo2Z5pTTve5K438URf08fsypXrEkVmShkSfM8GJ1aUyvjakT+fn2W7Czlpd/0FQ==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.24.3':
     resolution: {integrity: sha512-YlddZSUk8G0px9/+V9PVilVDC6ydMz7WquxozToozSnfFK6wa6ne1ATUjUvjin09jp34p84milxlY5ikueoenw==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.24.3':
     resolution: {integrity: sha512-yNaWw+GAO8JjVx3s3cMeG5Esz1cKVzz8PkTJSfYzE5u7A+NvGmbVFEHP+BikTIyYWuz0+DX9kaA3pH9Sqxp69g==}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.24.3':
     resolution: {integrity: sha512-lWKNQfsbpv14ZCtM/HkjCTm4oWTKTfxPmr7iPfp3AHSqyoTz5AgLemYkWLwOBWc+XxBbrU9SCokZP0WlBZM9lA==}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-s390x-gnu@4.24.3':
     resolution: {integrity: sha512-HoojGXTC2CgCcq0Woc/dn12wQUlkNyfH0I1ABK4Ni9YXyFQa86Fkt2Q0nqgLfbhkyfQ6003i3qQk9pLh/SpAYw==}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.24.3':
     resolution: {integrity: sha512-mnEOh4iE4USSccBOtcrjF5nj+5/zm6NcNhbSEfR3Ot0pxBwvEn5QVUXcuOwwPkapDtGZ6pT02xLoPaNv06w7KQ==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.24.3':
     resolution: {integrity: sha512-rMTzawBPimBQkG9NKpNHvquIUTQPzrnPxPbCY1Xt+mFkW7pshvyIS5kYgcf74goxXOQk0CP3EoOC1zcEezKXhw==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.24.3':
     resolution: {integrity: sha512-2lg1CE305xNvnH3SyiKwPVsTVLCg4TmNCF1z7PSHX2uZY2VbUpdkgAllVoISD7JO7zu+YynpWNSKAtOrX3AiuA==}
@@ -2548,28 +2539,24 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-arm64-musl@1.7.42':
     resolution: {integrity: sha512-qtW3JNO7i1yHEko59xxz+jY38+tYmB96JGzj6XzygMbYJYZDYbrOpXQvKbMGNG3YeTDan7Fp2jD0dlKf7NgDPA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@swc/core-linux-x64-gnu@1.7.42':
     resolution: {integrity: sha512-F9WY1TN+hhhtiEzZjRQziNLt36M5YprMeOBHjsLVNqwgflzleSI7ulgnlQECS8c8zESaXj3ksGduAoJYtPC1cA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-x64-musl@1.7.42':
     resolution: {integrity: sha512-7YMdOaYKLMQ8JGfnmRDwidpLFs/6ka+80zekeM0iCVO48yLrJR36G0QGXzMjKsXI0BPhq+mboZRRENK4JfQnEA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@swc/core-win32-arm64-msvc@1.7.42':
     resolution: {integrity: sha512-C5CYWaIZEyqPl5W/EwcJ/mLBJFHVoUEa/IwWi0b4q2fCXcSCktQGwKXOQ+d67GneiZoiq0HasgcdMmMpGS9YRQ==}
@@ -13270,7 +13257,7 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/coverage-istanbul@2.1.4(vitest@2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0))':
+  '@vitest/coverage-istanbul@2.1.4(vitest@2.1.4)':
     dependencies:
       '@istanbuljs/schema': 0.1.3
       debug: 4.3.7
@@ -13286,7 +13273,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@2.1.4(@vitest/browser@2.1.4(@types/node@18.19.64)(playwright@1.48.2)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.64)(terser@5.36.0))(vitest@2.1.4))(vitest@2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0))':
+  '@vitest/coverage-v8@2.1.4(@vitest/browser@2.1.4)(vitest@2.1.4)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -20459,7 +20446,7 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.36.0
 
-  vitest-environment-miniflare@2.14.4(vitest@2.1.4(@types/node@18.19.64)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@22.1.0(canvas@2.11.2))(msw@2.6.0(@types/node@18.19.64)(typescript@5.6.3))(terser@5.36.0)):
+  vitest-environment-miniflare@2.14.4(vitest@2.1.4):
     dependencies:
       '@miniflare/queues': 2.14.4
       '@miniflare/runner-vm': 2.14.4
