@@ -61,7 +61,7 @@
     "typedoc": "^0.26.1",
     "typedoc-plugin-markdown": "^4.1.0",
     "typedoc-plugin-not-exported": "^0.1.6",
-    "vitest": "^2.1.4",
+    "vitest": "^2.1.9",
     "vitest-environment-miniflare": "^2.14.4",
     "wait-for-expect": "3.0.2",
     "lint-staged": "^13.0.3",
