@@ -65,7 +65,7 @@
     "vitest-environment-miniflare": "^2.14.4",
     "wait-for-expect": "3.0.2",
     "lint-staged": "^13.0.3",
-    "playwright": "^1.48.1",
+    "playwright": "^1.55.1",
     "rimraf": "^3.0.2",
     "rollup": "^4.24.3",
     "rollup-plugin-dts": "^6.1.1",
