@@ -67,7 +67,7 @@
     "lint-staged": "^13.0.3",
     "playwright": "^1.55.1",
     "rimraf": "^3.0.2",
-    "rollup": "^4.24.3",
+    "rollup": "^4.59.0",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-swc3": "^0.12.1",
