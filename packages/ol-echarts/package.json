@@ -67,7 +67,7 @@
     "ol": "^7.0.0 || ^8.0.0 || ^9.0.0"
   },
   "devDependencies": {
-    "echarts": "^5.5.1",
+    "echarts": "^6.1.0",
     "ol": "^7.5.2"
   },
   "dependencies": {
