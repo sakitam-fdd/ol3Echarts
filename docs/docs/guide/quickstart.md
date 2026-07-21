@@ -3,306 +3,210 @@ id: quickstart
 title: 快速开始
 sidebar_label: 快速开始
 slug: /quickstart
-description: 了解如何快速使用此类库
+description: 使用 OpenLayers 与 ECharts 快速接入 ol-echarts
 ---
 
-## 快速开始
+## 前置条件
 
-这里假设你已了解openlayers和echarts的使用方法
+你需要熟悉：
 
-## 说明
+- [OpenLayers Map / View](https://openlayers.org/en/latest/apidoc/)
+- [Apache ECharts option](https://echarts.apache.org/handbook/zh/get-started/)
 
-> 因为ol3Echarts是基于openlayers和Echarts开发而来，所以必须引入ol和echarts类库。
-  同时需要拿到 `ol.Map` 的地图对象实例，因为HMap是基于openlayers的二次开发，所以
-  可以看做是ol的增强，并未改变其内置对象，以下地图实例全部基于HMap。
+## 模块化示例（推荐）
 
-## 第一个示例
+```ts
+import 'ol/ol.css';
+import { Map, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import { fromLonLat } from 'ol/proj';
+import EChartsLayer from 'ol-echarts';
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>ol3-Echarts</title>
-  <link rel="stylesheet" href="https://unpkg.com/hmap-js/dist/hmap.css">
-  <style>
-    html, body, #map {
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
-    .hmap-control-zoom {
-      right: 30px;
-    }
-  </style>
-</head>
-<body>
-<div id="map"></div>
-<script src="https://unpkg.com/hmap-js/dist/hmap.js"></script>
-<script src="https://unpkg.com/jquery/dist/jquery.js"></script>
-<script src="https://unpkg.com/echarts/dist/echarts.js"></script>
-<script src="https://unpkg.com/ol3-echarts/dist/ol3Echarts.js"></script>
-<script>
-  document.onreadystatechange = function () {
-    if (document.readyState === 'complete') {
-      var Maps = new HMap('map', {
-        controls: {
-          loading: true,
-          zoomSlider: true,
-          fullScreen: false
-        },
-        view: {
-          center: [11464017.313439976, 3934744.6720247352],
-          extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
-          projection: 'EPSG:102100',
-          tileSize: 256,
-          zoom: 5, // resolution
-        },
-        baseLayers: [
-          {
-            layerName: 'vector',
-            isDefault: true,
-            layerType: 'TileXYZ',
-            tileGrid: {
-              tileSize: 256,
-              extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
-              origin: [-2.0037508342787E7, 2.0037508342787E7],
-              resolutions: [
-                156543.03392800014,
-                78271.51696399994,
-                39135.75848200009,
-                19567.87924099992,
-                9783.93962049996,
-                4891.96981024998,
-                2445.98490512499,
-                1222.992452562495,
-                611.4962262813797,
-                305.74811314055756,
-                152.87405657041106,
-                76.43702828507324,
-                38.21851414253662,
-                19.10925707126831,
-                9.554628535634155,
-                4.77731426794937,
-                2.388657133974685
-              ]
-            },
-            layerUrl: 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
-          }
-        ]
-      });
-      var data = [{
-        name: '菏泽',
-        value: 194
-      }];
-      var geoCoordMap = {
-        '菏泽': [115.480656, 35.23375]
-      };
-      var convertData = function (data) {
-        var res = [];
-        for (var i = 0; i < data.length; i++) {
-          var geoCoord = geoCoordMap[data[i].name];
-          if (geoCoord) {
-            res.push({
-              name: data[i].name,
-              value: geoCoord.concat(data[i].value)
-            });
-          }
-        }
-        return res;
-      };
-      var option = {
-        title: {
-          text: '全国主要城市空气质量',
-          subtext: 'data from PM25.in',
-          sublink: 'http://www.pm25.in',
-          left: 'center',
-          textStyle: {
-            color: '#fff'
-          }
-        },
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          orient: 'vertical',
-          y: 'top',
-          x: 'right',
-          data: ['pm2.5'],
-          textStyle: {
-            color: '#fff'
-          }
-        },
-        series: [
-          {
-            name: 'pm2.5',
-            type: 'scatter',
-            data: convertData(data),
-            symbolSize: function (val) {
-              return val[2] / 10;
-            },
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: '#ddb926'
-              }
-            }
-          },
-          {
-            name: 'Top 5',
-            type: 'effectScatter',
-            data: convertData(data.sort(function (a, b) {
-              return b.value - a.value;
-            }).slice(0, 6)),
-            symbolSize: function (val) {
-              return val[2] / 10;
-            },
-            showEffectOn: 'render',
-            rippleEffect: {
-              brushType: 'stroke'
-            },
-            hoverAnimation: true,
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: true
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: '#f4e925',
-                shadowBlur: 10,
-                shadowColor: '#333'
-              }
-            },
-            zlevel: 1
-          }]
-      };
-      var echartslayer = new ol3Echarts(option);
-      echartslayer.appendTo(Maps.getMap());
-    }
-  }
-</script>
-</body>
-</html>
-```
+const map = new Map({
+  target: 'map',
+  layers: [
+    new TileLayer({
+      source: new OSM(),
+    }),
+  ],
+  view: new View({
+    center: fromLonLat([108.18, 34.34]),
+    zoom: 5,
+  }),
+});
 
-### 尝试编辑它
-
-<iframe width="100%" height="430" src="//jsfiddle.net/sakitamfdd/pjz8cuxw/embedded/result,html,js/?bodyColor=fff" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-## 从1.2.0升级到1.3.0
-
-> 因为在重构时项目架构全部推翻重来，所以大部分使用方式做了一些调整
-
-* 图层初始化：可以在任意时间初始化echarts图层，不需要再手动监听地图是否渲染后在初始化，适应更多场景。
-* 添加到地图：不需要再初始化时传入地图对象，可以在地图初始化后再 ``appendTo`` 到地图, 并且
-  渲染是在添加到地图后且存在echarts图层配置才会渲染，减少内存开销。
-* 优化了echarts配置，不需要再强制传入 coordinateSystem 字段。
-* 新增了四个参数，详见 ``api``, 可增强用户体验，减少卡顿。
-* 修复了 ``echarts-gl`` 兼容问题，相关示例正在添加。
-
-## 新增 ``ol`` package 的兼容类库。
-
-## 升级到2.0+
-
-好吧，2.0版本又修改了一些参数，主要是新增一些配置项，移除了自定义容器`target`的配置, 默认只允许添加到`ol-overlaycontainer`和`ol-overlaycontainer-stopevent`容器，
-这样能保证了事件的正确捕获。同样针对 `openlayers5+`出现的事件捕获异常添加了一个polyfill, 可以通过配置项`polyfillEvents` 进行开启，如果没有碰到此问题可以忽略此参数。
-并且修复了多地图容器时自定义坐标系不起作用的问题，另外较大的改变是支持了`typescript`。其他相关配置项的改变详见 `API` 文档。
-
-
-### 如何使用
-
-> 注意：现有echarts扩展是独立于openlayers图层的
-
-#### 初始化echarts图层并添加到地图
-
-```javascript
-var option = {} // echarts标准配置
-var echartslayer = new ol3Echarts(null, {
+const chart = new EChartsLayer(
+  {
+    tooltip: { trigger: 'item', confine: true },
+    series: [
+      {
+        name: '访问来源',
+        type: 'pie',
+        radius: 30,
+        coordinates: [110.53, 33.44],
+        data: [
+          { value: 335, name: '直接访问' },
+          { value: 310, name: '邮件营销' },
+          { value: 1548, name: '搜索引擎' },
+        ],
+      },
+    ],
+  },
+  {
     hideOnMoving: true,
-    hideOnZooming: true
-  });
-echartslayer.appendTo(map);
-```
+    hideOnZooming: true,
+    hideOffscreenLabels: true,
+    // OL 7+ 一般不需要开启
+    polyfillEvents: false,
+  },
+);
 
-#### 注意 1
+chart.appendTo(map);
 
-> 创建 ``echartslayer`` 对象必须要在地图初始化完成开始渲染后，即存在 `ol.Map` 实例
-
-```bash
-Maps.map instanceof ol.Map // true
-```
-
-从`2.0.5`版本开始不强制判断 map instanceof ol.Map，可以在 `appendTo` 指定第二个参数忽略判断，以兼容可能基于 ol 二次封装的类库
-
-```js
-echartslayer.appendTo(map, true);
-```
-
-#### 注意 3
-
-> 配置
-
-```javascript
-params = {
-  source: '',
-  destination: '',
-  forcedRerender: false,
-  forcedPrecomposeRerender: true,
-  hideOnZooming: false, // when zooming hide chart
-  hideOnMoving: false, // when moving hide chart
-  hideOnRotating: false, // // when Rotating hide chart
-  convertTypes: [], // 支持非地理空间坐标的图表类型，不需要配置
-  insertFirst: true, // https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html
-  stopEvent: false, // https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html
-  polyfillEvents: false, // 代理echrats图层的 mousedown mouseup click 事件
-}
-```
-
-配置项说明
-
-| 配置项 | 简介 | 类型 | 备注 |
-| --- | --- | --- | --- |
-| source | 数据源投影 | `String` | 投影系 `code` 常用 EPSG:4326, EPSG:3857 |
-| destination | 数据目标投影 | `String` | 渲染数据的目标投影，不传时从地图视图获取 |
-| forcedRerender | 是否开启强制重新渲染 | `boolean` | 默认 `false`, 注意开启后可能会造成性能损失，建议不开启。 |
-| forcedPrecomposeRerender | 是否在地图渲染之前刷新echarts图层 | `boolean` | 默认 `false`, 注意开启后可以保证图层无滞后，但是会造成大量重绘，不建议开启。 |
-| hideOnZooming | 缩放时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
-| hideOnMoving | 拖动时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
-| hideOnRotating | 旋转时是否隐藏 | `boolean` | 默认 `false`, 注意开启后会提升性能和用户体验 |
-| insertFirst | 是否插入到前方 | `boolean` | 默认 `false`, 详细内容请查看`https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html` |
-| stopEvent | 是否阻止事件传递到地图上 | `boolean` | 默认 `false`, 详细内容请查看 `https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html` |
-| polyfillEvents | 代理echrats图层的 mousedown mouseup click 事件 | `boolean` | 默认 `false`, 仅作为在事件捕获异常时配置开启 |
-
-### 事件
-
-``` js
-echartslayer.on('redraw', function (event) {
-  console.log(this, event)
+chart.on('load', ({ value: echartsInstance }) => {
+  // 可在此处绑定 echarts 事件
+  console.log(echartsInstance);
 });
 ```
 
-支持的事件系统如下：
+## CDN 示例
 
-| 事件名 | 简介 | 类型 | 备注 |
-| --- | --- | --- | --- |
-| load | echarts图层创建完成后厨房 | `String` | 此时`echarts`实例也已创建完毕，可以在此事件回调内添加`echarts`的事件监听 |
-| redraw | 图层重新渲染事件 | `String` | 注意：因为耦合原因, 每次重绘事件可能不只触发一次 |
-| change:size | 地图大小变化事件 | `String` | -- |
-| zoomend | 地图缩放结束事件 | `String` | -- |
-| change:rotation | 地图旋转角度变化事件 | `String` | -- |
-| movestart | 地图拖拽开始事件 | `String` | -- |
-| moveend | 地图拖拽结束事件 | `String` | -- |
-| change:center | 地图中心点变化事件 | `String` | -- |
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ol-echarts quickstart</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@10.9.0/ol.css" />
+    <style>
+      html, body, #map { margin: 0; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://cdn.jsdelivr.net/npm/ol@10.9.0/dist/ol.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol-echarts@4.0.1/dist/ol-echarts.js"></script>
+    <script>
+      const map = new ol.Map({
+        target: 'map',
+        layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([108.18, 34.34]),
+          zoom: 5,
+        }),
+      });
+
+      const layer = new EChartsLayer({
+        series: [
+          {
+            type: 'effectScatter',
+            coordinateSystem: 'geo', // 可省略，库会自动注入 openlayers 坐标系
+            data: [[116.4, 39.9, 100], [121.47, 31.23, 80]],
+            symbolSize: (val) => val[2] / 10,
+          },
+        ],
+      }, {
+        hideOnMoving: true,
+      });
+
+      layer.appendTo(map);
+    </script>
+  </body>
+</html>
+```
+
+:::note
+对 `scatter` / `effectScatter` / `lines` 等地理系列，无需手动写 `coordinateSystem`；库会在内部注册并注入 OpenLayers 坐标系。
+对 `pie` / `bar` / `line`，请使用扩展字段 `coordinates: [lng, lat]` 指定地图锚点。
+:::
+
+## 配置项
+
+```ts
+type EChartsLayerOptions = {
+  source?: string;                 // 数据源投影，默认 EPSG:4326
+  destination?: string;            // 目标投影，默认取地图视图投影
+  forcedRerender?: boolean;        // 重绘前 clear，默认 false
+  forcedPrecomposeRerender?: boolean; // precompose 时重绘，默认 false
+  hideOnZooming?: boolean;
+  hideOnMoving?: boolean;
+  hideOnRotating?: boolean;
+  hideOffscreenLabels?: boolean;  // 默认 true，抑制视口外 pie 引导线
+  convertTypes?: string[];         // 默认 ['pie', 'line', 'bar']
+  insertFirst?: boolean;
+  stopEvent?: boolean;
+  polyfillEvents?: boolean;        // OL <= 6.1.1 默认 true，OL 7+ 默认 false
+};
+```
+
+| 配置项 | 说明 |
+| --- | --- |
+| `source` | 数据源投影 code |
+| `destination` | 渲染目标投影；不传时取地图视图投影 |
+| `forcedRerender` | 是否在重绘前调用 `clear()`，有性能代价 |
+| `forcedPrecomposeRerender` | 是否在 `precompose` 时同步重绘 |
+| `hideOnZooming` / `hideOnMoving` / `hideOnRotating` | 交互时隐藏图层以提升体验 |
+| `hideOffscreenLabels` | 地图锚点移出视口时隐藏 pie 标签和引导线，默认 `true` |
+| `insertFirst` | 是否插入到 overlay 容器最前 |
+| `stopEvent` | 是否使用 `ol-overlaycontainer-stopevent` |
+| `polyfillEvents` | 将地图指针事件代理到 zrender（旧版 OL 鼠标问题） |
+
+:::tip 越界渲染
+Tooltip 请优先配置 `tooltip.confine: true`。饼图引导线、Tooltip 与通用 graphic 裁剪属于不同问题，完整说明见[常见问题与排查](./troubleshooting.md)。
+:::
+
+## 常用 API
+
+```ts
+layer.appendTo(map);
+layer.setChartOptions(option);
+layer.getChartOptions();
+layer.getECharts();
+layer.getOptions();
+layer.appendData({ seriesIndex: 0, data: [...] });
+layer.show();
+layer.hide();
+layer.setVisible(false);
+layer.setZIndex(10);
+layer.remove();
+```
+
+## 事件
+
+| 事件 | 说明 |
+| --- | --- |
+| `load` | 图层与 ECharts 实例创建完成，`event.value` 为 echarts 实例 |
+| `redraw` | 图层重绘 |
+| `change:size` | 地图尺寸变化 |
+| `zoomstart` / `zoomend` | 缩放开始 / 结束 |
+| `movestart` / `moveend` | 平移开始 / 结束 |
+| `change:center` | 中心点变化 |
+| `change:rotation` | 旋转角度变化 |
+
+```ts
+layer.on('load', (event) => {
+  const chart = event.value;
+  chart.on('click', (params) => console.log(params));
+});
+```
+
+## 从旧版本升级
+
+### 1.x → 2.x
+
+- 可在任意时机初始化图层，再 `appendTo`
+- 不再强制手动写 `coordinateSystem`
+- 新增 `hideOn*` / `polyfillEvents` 等配置
+
+### 2.x → 3.x / 4.x
+
+- 适配 OpenLayers 模块化 API（`ol` 包）
+- **v4.x** 面向 OpenLayers **7+**（含 8 / 9 / 10）
+- TypeScript 类型更完整，可直接导入 `EChartsLayerOptions` / `ChartOptions`
+
+```ts
+import EChartsLayer, { type EChartsLayerOptions, type ChartOptions } from 'ol-echarts';
+```

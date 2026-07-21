@@ -1,21 +1,16 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   clearScreen: true,
   test: {
-    // environment: 'jsdom',
+    environment: 'jsdom',
+    setupFiles: [fileURLToPath(new URL('./vitest/setupTests.ts', import.meta.url))],
     testTimeout: 15_000,
-    browser: {
-      name: 'chromium',
-      provider: 'playwright',
-      enabled: true,
-      headless: true,
-      fileParallelism: false,
-      screenshotFailures: false,
-    },
     restoreMocks: true,
     unstubGlobals: true,
     globals: true,
+    fileParallelism: false,
     snapshotFormat: {
       printBasicPrototype: true,
     },
@@ -23,17 +18,9 @@ export default defineConfig({
     coverage: {
       provider: 'istanbul',
       include: ['**/src/**'],
-      exclude: [
-        '**/docs/**',
-      ],
-      // reporter: ['lcov', 'html'],
+      exclude: ['**/docs/**'],
     },
-    poolOptions: {
-      threads: {
-        minThreads: 0,
-        maxThreads: 1,
-        useAtomics: !!process.env['CI'],
-      },
-    },
+    maxWorkers: 1,
+    minWorkers: 1,
   },
 });

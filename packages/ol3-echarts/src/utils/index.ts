@@ -15,7 +15,7 @@ const isObject = (value: any): boolean => {
  * @returns {*}
  */
 const merge = (a: any, b: any): any => {
-  Object.keys(b).forEach(key => {
+  Object.keys(b).forEach((key) => {
     if (isObject(b[key]) && isObject(a[key])) {
       merge(a[key], b[key]);
     } else {
@@ -63,9 +63,10 @@ const arrayAdd = function (array: any[], item: any): any[] {
 const uuid = function (): string {
   function rd(a?: number | undefined) {
     // eslint-disable-next-line no-mixed-operators,no-bitwise
-    return a ? (a ^ Math.random() * 16 >> a / 4).toString(16)
-      // @ts-ignore
-      : ([1e7] + -[1e3] + -4e3 + -8e3 + -1e11).replace(/[018]/g, rd);
+    return a
+      ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+      : // @ts-ignore -- compact UUID template intentionally relies on numeric array coercion
+        ([1e7] + -[1e3] + -4e3 + -8e3 + -1e11).replace(/[018]/g, rd);
   }
   return rd();
 };
@@ -77,7 +78,9 @@ const uuid = function (): string {
  */
 function bindAll(fns: string[] | number[], context: any) {
   fns.forEach((fn: string | number) => {
-    if (!context[fn]) { return; }
+    if (!context[fn]) {
+      return;
+    }
     context[fn] = context[fn].bind(context);
   });
 }
@@ -106,7 +109,7 @@ function mockEvent(type: string, event: any) {
     buttons: event.pointerEvent.buttons,
     clientX: event.pointerEvent.clientX,
     clientY: event.pointerEvent.clientY,
-    // @ts-ignore
+    // @ts-ignore -- zrender reads these non-standard MouseEvent coordinates
     zrX: event.pointerEvent.offsetX,
     zrY: event.pointerEvent.offsetY,
     movementX: event.pointerEvent.movementX,
@@ -122,13 +125,4 @@ function mockEvent(type: string, event: any) {
   return e;
 }
 
-export {
-  merge,
-  isObject,
-  bind,
-  arrayAdd,
-  uuid,
-  bindAll,
-  removeNode,
-  mockEvent,
-};
+export { merge, isObject, bind, arrayAdd, uuid, bindAll, removeNode, mockEvent };

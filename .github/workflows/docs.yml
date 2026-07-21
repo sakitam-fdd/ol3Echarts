@@ -1,34 +1,46 @@
-name: Publish Docs
+name: Publish docs
 
 on:
   push:
-    branches:
-      - 'master'
+    branches: [master]
     paths:
       - 'packages/**'
       - 'docs/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/setup/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  docs:
-    timeout-minutes: 10
-#    env:
-#      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-#      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
+  deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: ./.github/setup
 
-      - run: pnpm build
-      - run: pnpm docs:build
+      - name: Setup workspace
+        uses: ./.github/setup
 
-      - name: Deploy
+      - name: Build packages
+        run: pnpm build
+
+      - name: Build documentation
+        run: pnpm docs:build
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.PKG_DEPLOY_TOKEN }}
+          github_token: ${{ secrets.PKG_DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
           publish_dir: docs/build
           cname: blog.sakitam.com

@@ -1,61 +1,44 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+/**
+ * Configure docusaurus-plugin-typedoc for each package.
+ * Requires typedoc@0.28 + typedoc-plugin-markdown@4.12 (peer of docusaurus-plugin-typedoc).
+ */
 function pluginTypedoc(directories) {
-  const withEntryPoints = directories.map((directory) => {
-    // const pkgJson = JSON.parse(fs.readFileSync(path.join(__dirname, `../packages/${directory}/package.json`), 'utf-8'));
-
-    const entrypoints = ['./index.ts'];
-    return {
-      directory,
-      entrypoints,
-    };
-  });
-
-  return withEntryPoints.map((opts, idx) => {
-    const { directory, entrypoints } = opts;
+  return directories.map((directory) => {
     return [
       'docusaurus-plugin-typedoc',
       {
-        // TypeDoc options
-        // https://typedoc.org/guides/options/
-        skipErrorChecking: true,
+        // TypeDoc options — https://typedoc.org/documents/Options.html
         id: directory,
-        gitRevision: 'master',
-        sourceLinkTemplate: 'https://github.com/sakitam-fdd/ol3Echarts/blob/{gitRevision}/{path}#L{line}',
-        entryPoints: entrypoints.map((it) => `../packages/${directory}/src/${it}`),
+        entryPoints: [`../packages/${directory}/src/index.ts`],
         tsconfig: `../packages/${directory}/tsconfig.json`,
         out: `./docs/typedoc/${directory}`,
         readme: 'none',
+        gitRevision: 'master',
+        sourceLinkTemplate: 'https://github.com/sakitam-fdd/ol3Echarts/blob/{gitRevision}/{path}#L{line}',
+        skipErrorChecking: true,
         excludeExternals: true,
         excludePrivate: true,
         excludeInternal: true,
         excludeProtected: true,
         hideGenerator: true,
         includeVersion: true,
-        hideBreadcrumbs: true,
         sort: ['source-order'],
 
-        plugin: ['typedoc-plugin-markdown', 'typedoc-plugin-not-exported'],
-
-        // docusaurus-plugin-typedoc options
-        // https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/docusaurus-plugin-typedoc#plugin-options
-        sidebar: {
-          categoryLabel: `${directory}`,
-          position: idx,
-          pretty: true,
-        },
-
+        // Markdown theme options — https://typedoc-plugin-markdown.org
+        // Do NOT add typedoc-plugin-markdown here again; docusaurus-plugin-typedoc loads it.
+        hideBreadcrumbs: true,
         parametersFormat: 'table',
         enumMembersFormat: 'table',
         useCodeBlocks: true,
 
-        // Markdown options
-        // https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-content-docs#markdown-front-matter
-        // frontmatterGlobals: {
-        //   pagination_prev: null,
-        //   pagination_next: null,
-        //   custom_edit_url: null,
-        // },
+        // Docusaurus plugin options
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true,
+        },
+        watch: false,
       },
     ];
   });

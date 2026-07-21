@@ -5,6 +5,7 @@
 
 # dependencies
 node_modules
+.pnpm-store/
 
 # vuepress build output
 .vuepress/dist

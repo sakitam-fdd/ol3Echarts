@@ -1,115 +1,126 @@
-/**
- * check is decoded
- * @param json
- * @returns {boolean}
- */
-const checkDecoded = (json: any) => !json.UTF8Encoding;
+type Position = number[];
+type PolygonCoordinates = Position[][];
+type MultiPolygonCoordinates = PolygonCoordinates[];
 
-/**
- * decode polygon
- * @param coordinate
- * @param encodeOffsets
- * @param encodeScale
- * @returns {null}
- */
-const decodePolygon = (
-  coordinate: { length: number; charCodeAt: { (arg0: number): number; (arg0: number): number } },
-  encodeOffsets: any[],
-  encodeScale: number,
-) => {
-  const result = [];
-  let [prevX, prevY] = [encodeOffsets[0], encodeOffsets[1]];
+export interface EncodedGeometry {
+  type?: string;
+  coordinates?: unknown;
+  encodeOffsets?: unknown;
+}
+
+export interface EncodedGeoJSON {
+  type?: string;
+  UTF8Encoding?: boolean;
+  UTF8Scale?: number;
+  crs?: Record<string, unknown>;
+  features: Array<{
+    type?: string;
+    geometry?: EncodedGeometry | null;
+    properties?: Record<string, unknown> | null;
+    [key: string]: unknown;
+  }>;
+  [key: string]: unknown;
+}
+
+export interface DecodedFeatureCollection {
+  type: 'FeatureCollection';
+  crs: Record<string, unknown>;
+  features: Array<{
+    type: 'Feature';
+    properties: Record<string, unknown>;
+    geometry: {
+      type: 'Polygon' | 'MultiPolygon';
+      coordinates: PolygonCoordinates | MultiPolygonCoordinates;
+    };
+  }>;
+}
+
+/** Decode one ECharts UTF8-encoded linear ring. */
+const decodePolygon = (coordinate: string, encodeOffsets: number[], encodeScale: number): Position[] => {
+  const result: Position[] = [];
+  let [prevX, prevY] = encodeOffsets;
   for (let i = 0; i < coordinate.length; i += 2) {
     let x = coordinate.charCodeAt(i) - 64;
     let y = coordinate.charCodeAt(i + 1) - 64;
-    // ZigZag decoding
+    // ZigZag and delta decoding are defined by the legacy ECharts map format.
     // eslint-disable-next-line no-bitwise
     x = (x >> 1) ^ -(x & 1);
     // eslint-disable-next-line no-bitwise
     y = (y >> 1) ^ -(y & 1);
-    // Delta deocding
     x += prevX;
     y += prevY;
     prevX = x;
     prevY = y;
-    // @ts-ignore
     result.push([x / encodeScale, y / encodeScale]);
   }
   return result;
 };
 
-/**
- * decode json
- * @param json
- * @returns {*}
- */
-const decode = (json: any) => {
-  if (checkDecoded(json)) {
-    return json;
+function copyCoordinates(value: unknown): unknown {
+  return Array.isArray(value) ? value.map(copyCoordinates) : value;
+}
+
+function decodeGeometry(
+  geometry: EncodedGeometry,
+  encoded: boolean,
+  scale: number,
+): DecodedFeatureCollection['features'][number]['geometry'] | null {
+  const { type, coordinates, encodeOffsets } = geometry;
+  if (type !== 'Polygon' && type !== 'MultiPolygon') return null;
+
+  if (!encoded) {
+    return {
+      type,
+      coordinates: copyCoordinates(coordinates) as PolygonCoordinates | MultiPolygonCoordinates,
+    };
   }
-  let encodeScale = json.UTF8Scale;
-  if (encodeScale == null) {
-    encodeScale = 1024;
+
+  if (type === 'Polygon' && Array.isArray(coordinates) && Array.isArray(encodeOffsets)) {
+    return {
+      type,
+      coordinates: coordinates.map((ring, index) =>
+        decodePolygon(String(ring), encodeOffsets[index] as number[], scale),
+      ),
+    };
   }
-  const features = json.features;
-  for (let f = 0; f < features.length; f++) {
-    const feature = features[f];
-    const geometry = feature.geometry;
-    const [coordinates, encodeOffsets] = [geometry.coordinates, geometry.encodeOffsets];
-    for (let c = 0; c < coordinates.length; c++) {
-      const coordinate = coordinates[c];
-      if (geometry.type === 'Polygon') {
-        coordinates[c] = decodePolygon(coordinate, encodeOffsets[c], encodeScale);
-      } else if (geometry.type === 'MultiPolygon') {
-        for (let c2 = 0; c2 < coordinate.length; c2++) {
-          const polygon = coordinate[c2];
-          coordinate[c2] = decodePolygon(polygon, encodeOffsets[c][c2], encodeScale);
-        }
-      }
-    }
+
+  if (type === 'MultiPolygon' && Array.isArray(coordinates) && Array.isArray(encodeOffsets)) {
+    return {
+      type,
+      coordinates: coordinates.map((polygon, polygonIndex) =>
+        (polygon as unknown[]).map((ring, ringIndex) =>
+          decodePolygon(String(ring), (encodeOffsets[polygonIndex] as number[][])[ringIndex], scale),
+        ),
+      ),
+    };
   }
-  json.UTF8Encoding = false;
-  return json;
-};
+
+  return null;
+}
 
 /**
- * decode geoJson
- * @param json
+ * Decode ECharts-encoded GeoJSON without mutating the caller's data.
+ * Polygon holes and MultiPolygon boundaries are preserved.
  */
-export default function (json: any) {
-  const geoJson = decode(json);
-  const filterData = geoJson.features.filter(
-    (featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
-      // Output of mapshaper may have geometry null
-      featureObj.geometry && featureObj.properties && featureObj.geometry.coordinates.length > 0,
-  );
-  const _features = filterData.map((featureObj: { properties: any; geometry: any }) => {
-    const properties = featureObj.properties;
-    const geo = featureObj.geometry;
-    const coordinates = geo.coordinates;
-    const geometries: number[][] = [];
-    if (geo.type === 'Polygon') {
-      geometries.push(coordinates[0]);
-    }
-    if (geo.type === 'MultiPolygon') {
-      coordinates.forEach((item: any[]) => {
-        if (item[0]) {
-          geometries.push(item[0]);
-        }
-      });
-    }
-    return {
-      properties,
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: geometries,
+export default function formatGeoJSON(json: EncodedGeoJSON): DecodedFeatureCollection {
+  const encoded = Boolean(json.UTF8Encoding);
+  const scale = json.UTF8Scale ?? 1024;
+  const features = json.features.flatMap((feature) => {
+    if (!feature.geometry) return [];
+    const geometry = decodeGeometry(feature.geometry, encoded, scale);
+    if (!geometry || !Array.isArray(geometry.coordinates) || geometry.coordinates.length === 0) return [];
+    return [
+      {
+        type: 'Feature' as const,
+        properties: { ...(feature.properties || {}) },
+        geometry,
       },
-    };
+    ];
   });
+
   return {
     type: 'FeatureCollection',
-    crs: {},
-    features: _features,
+    crs: { ...(json.crs || {}) },
+    features,
   };
 }

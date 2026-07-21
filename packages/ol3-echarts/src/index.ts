@@ -41,12 +41,13 @@ if (!Map.prototype.getOverlayContainerStopEvent) {
   };
 }
 
-const _options = {
+const DEFAULT_OPTIONS = {
   forcedRerender: false, // Force re-rendering
   forcedPrecomposeRerender: false, // force pre re-render
   hideOnZooming: false, // when zooming hide chart
   hideOnMoving: false, // when moving hide chart
   hideOnRotating: false, // // when Rotating hide chart
+  hideOffscreenLabels: true,
   convertTypes: ['pie', 'line', 'bar'],
   insertFirst: false,
   stopEvent: false,
@@ -64,6 +65,7 @@ interface OptionsTypes {
   hideOnZooming?: boolean;
   hideOnMoving?: boolean;
   hideOnRotating?: boolean;
+  hideOffscreenLabels?: boolean;
   convertTypes?: string[] | number[];
   insertFirst?: boolean;
   stopEvent?: boolean;
@@ -104,6 +106,8 @@ class EChartsLayer extends obj {
 
   private prevVisibleState: string;
 
+  private _userVisible: boolean;
+
   public $chart: Nullable<any>;
 
   public $container: NoDef<HTMLElement>;
@@ -111,7 +115,13 @@ class EChartsLayer extends obj {
   public _map: any;
 
   constructor(chartOptions?: NoDef<Nullable<object>>, options?: NoDef<Nullable<OptionsTypes>>, map?: any) {
-    const opts = Object.assign(_options, options);
+    const opts: OptionsTypes = {
+      ...DEFAULT_OPTIONS,
+      ...(options || {}),
+      convertTypes: (options?.convertTypes
+        ? [...(options.convertTypes as Array<string | number>)]
+        : [...DEFAULT_OPTIONS.convertTypes]) as string[] | number[],
+    };
     super(opts);
 
     /**
@@ -169,6 +179,7 @@ class EChartsLayer extends obj {
     this.coordinateSystemId = '';
 
     this.prevVisibleState = '';
+    this._userVisible = true;
 
     bindAll(
       [
@@ -251,17 +262,21 @@ class EChartsLayer extends obj {
    * @returns {EChartsLayer}
    */
   public appendData(data: any, save: boolean | undefined | null = true) {
-    if (data) {
+    if (data && this.$chart) {
+      const payload = ArrayBuffer.isView(data.data)
+        ? (data.data as any).slice()
+        : Array.isArray(data.data)
+          ? data.data.slice()
+          : data.data;
       if (save) {
         this._incremental = arrayAdd(this._incremental, {
           index: this._incremental.length,
-          data: data.data,
+          data: Array.isArray(payload) ? payload.slice() : payload,
           seriesIndex: data.seriesIndex,
         });
       }
-      // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin
       this.$chart.appendData({
-        data: data.data.copyWithin(),
+        data: payload,
         seriesIndex: data.seriesIndex,
       });
     }
@@ -305,10 +320,9 @@ class EChartsLayer extends obj {
   }
 
   private innerShow() {
-    if (this.$container) {
-      this.$container.style.display = this.prevVisibleState;
-      this.prevVisibleState = '';
-    }
+    if (!this._userVisible || !this.$container) return;
+    this.$container.style.display = this.prevVisibleState || '';
+    this.prevVisibleState = '';
   }
 
   /**
@@ -319,7 +333,7 @@ class EChartsLayer extends obj {
   }
 
   private innerHide() {
-    if (this.$container) {
+    if (this.$container && this.$container.style.display !== 'none') {
       this.prevVisibleState = this.$container.style.display;
       this.$container.style.display = 'none';
     }
@@ -329,7 +343,7 @@ class EChartsLayer extends obj {
    * check layer is visible
    */
   public isVisible() {
-    return this.$container && this.$container.style.display !== 'none';
+    return Boolean(this.$container && this.$container.style.display !== 'none');
   }
 
   /**
@@ -378,6 +392,7 @@ class EChartsLayer extends obj {
    * @param visible
    */
   public setVisible(visible: boolean) {
+    this._userVisible = visible;
     if (visible) {
       if (this.$container) {
         this.$container.style.display = '';
@@ -426,8 +441,8 @@ class EChartsLayer extends obj {
    * update container size
    * @param size
    */
-  public updateViewSize(size: number[]): void {
-    if (!this.$container) return;
+  public updateViewSize(size?: number[]): void {
+    if (!this.$container || !size) return;
     this.$container.style.width = `${size[0]}px`;
     this.$container.style.height = `${size[1]}px`;
     this.$container.setAttribute('width', String(size[0]));
@@ -440,7 +455,8 @@ class EChartsLayer extends obj {
   private onResize(event?: any) {
     const map = this.getMap();
     if (map) {
-      const size: number[] = map.getSize();
+      const size: number[] | undefined = map.getSize();
+      if (!size) return;
       this.updateViewSize(size);
       this.clearAndRedraw();
       if (event) {
@@ -645,8 +661,9 @@ class EChartsLayer extends obj {
         container.appendChild(this.$container);
       }
 
-      this.render();
+      // Bind before render so `load` handlers can interact with map events immediately
       this.bindEvent(map);
+      this.render();
     }
   }
 
@@ -790,7 +807,9 @@ class EChartsLayer extends obj {
             if (convertTypes.indexOf(series[i].type) > -1) {
               if (series[i] && series[i].hasOwnProperty('coordinates')) {
                 // @ts-ignore ignore type error
-                series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
+                series[i] = charts[series[i].type](options, series[i], this._coordinateSystem, {
+                  hideOffscreenLabels: this._options.hideOffscreenLabels,
+                });
               }
             }
           }
@@ -866,6 +885,7 @@ class EChartsLayer extends obj {
         const source: ol.ProjectionLike = (options && options.source) || 'EPSG:4326';
         const destination: ol.ProjectionLike = (options && options.destination) || this.projCode;
         const pixel = this.map.getPixelFromCoordinate(transform(coords, source, destination));
+        if (!pixel) return [0, 0];
         const mapOffset = this._mapOffset;
         return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
       }
@@ -880,7 +900,16 @@ class EChartsLayer extends obj {
      */
     RegisterCoordinateSystem.prototype.pointToData = function (pixel: number[]): number[] {
       const mapOffset: number[] = this._mapOffset;
-      return this.map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
+      const projected = this.map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
+      if (!projected) return [0, 0];
+      const source: ol.ProjectionLike = (options && options.source) || 'EPSG:4326';
+      const destination: ol.ProjectionLike = (options && options.destination) || this.projCode;
+      return transform(projected, destination, source);
+    };
+
+    RegisterCoordinateSystem.prototype.containPoint = function (point: number[]): boolean {
+      const size = this.map.getSize() || [0, 0];
+      return point[0] >= 0 && point[0] <= size[0] && point[1] >= 0 && point[1] <= size[1];
     };
 
     /**

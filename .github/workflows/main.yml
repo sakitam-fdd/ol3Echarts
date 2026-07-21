@@ -1,48 +1,59 @@
-name: main
+name: CI
+
 on:
   push:
     branches: [master, dev]
+  pull_request:
+    branches: [master, dev]
+
+permissions:
+  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    if: github.event_name == 'pull_request'
-    timeout-minutes: 10
-#    env:
-#      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-#      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
+  validate:
+    name: Node ${{ matrix.node }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.x', '24.x']
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup workspace
+        uses: ./.github/setup
         with:
-          fetch-depth: 0
-      - uses: ./.github/setup
+          node-version: ${{ matrix.node }}
 
-      - run: pnpm turbo --filter build
-  test:
-    timeout-minutes: 10
-#    env:
-#      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-#      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      - name: Lint
+        if: matrix.node == '24.x'
+        run: pnpm lint
 
-    runs-on: ubuntu-latest
+      - name: Test
+        if: matrix.node == '22.x'
+        run: pnpm test-only
 
-    steps:
-      - uses: actions/checkout@v4
+      - name: Test with coverage
+        if: matrix.node == '24.x'
+        run: pnpm coverage
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Build documentation
+        if: matrix.node == '24.x'
+        run: pnpm docs:build
+
+      - name: Upload coverage
+        if: matrix.node == '24.x'
+        uses: codecov/codecov-action@v6
         with:
-          fetch-depth: 0
-      - uses: ./.github/setup
-
-      - run: pnpm build
-      - run: pnpm coverage
-
-      - uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          # only use token if not a fork PR
-          token: ${{ github.event.pull_request.head.repo.fork == false && secrets.CODECOV_TOKEN || '' }}
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -27,6 +27,7 @@ describe('indexSpec', () => {
         zoom: 8
       })
     });
+    map.setSize([800, 600]);
   });
 
   afterEach(() => {
@@ -61,8 +62,8 @@ describe('indexSpec', () => {
               { value: 135, name: '视频广告' },
               { value: 1548, name: '搜索引擎' },
             ],
-            itemStyle: {
-              emphasis: {
+            emphasis: {
+              itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
                 shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -81,8 +82,8 @@ describe('indexSpec', () => {
               { value: 135, name: '视频广告' },
               { value: 1548, name: '搜索引擎' },
             ],
-            itemStyle: {
-              emphasis: {
+            emphasis: {
+              itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
                 shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -101,8 +102,8 @@ describe('indexSpec', () => {
               { value: 135, name: '视频广告' },
               { value: 1548, name: '搜索引擎' },
             ],
-            itemStyle: {
-              emphasis: {
+            emphasis: {
+              itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
                 shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -226,10 +227,8 @@ describe('indexSpec', () => {
             show: false,
             interval: 0,
             rotate: -45,
-            textStyle: {
-              color: '#3c3c3c',
-              fontSize: 10,
-            },
+            color: '#3c3c3c',
+            fontSize: 10,
           },
           axisTick: {
             show: false,

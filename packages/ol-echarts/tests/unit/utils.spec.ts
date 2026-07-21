@@ -83,6 +83,31 @@ describe('indexSpec', () => {
       expect(id).toBeDefined();
     });
 
+    it('utils.clone', () => {
+      const formatter = () => 'kept';
+      const source = {
+        a: 1,
+        b: { c: 2 },
+        d: [3, { e: 4 }],
+        formatter,
+      };
+      const cloned = EChartsLayer.clone(source);
+      expect(cloned).toEqual(source);
+      expect(cloned).not.toBe(source);
+      expect(cloned.b).not.toBe(source.b);
+      cloned.b.c = 9;
+      expect(source.b.c).toBe(2);
+      expect(cloned.formatter).toBe(formatter);
+    });
+
+    it('utils.clone supports circular plain objects', () => {
+      const source: { value: number; self?: unknown } = { value: 1 };
+      source.self = source;
+      const cloned = EChartsLayer.clone(source);
+      expect(cloned).not.toBe(source);
+      expect(cloned.self).toBe(cloned);
+    });
+
     it('utils.arrayAdd', () => {
       const value1 = EChartsLayer.arrayAdd(
         [
@@ -155,6 +180,56 @@ describe('indexSpec', () => {
       const data = echarts.getMap('world')['geoJson'];
       const res = EChartsLayer.formatGeoJSON(data);
       expect(res).toBeDefined();
+    });
+
+    it('preserves polygon holes and multipolygon geometry without mutation', () => {
+      const data = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: { name: 'polygon' },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [0, 0],
+                  [2, 0],
+                  [0, 0],
+                ],
+                [
+                  [0.5, 0.5],
+                  [1, 0.5],
+                  [0.5, 0.5],
+                ],
+              ],
+            },
+          },
+          {
+            type: 'Feature',
+            properties: { name: 'multi' },
+            geometry: {
+              type: 'MultiPolygon',
+              coordinates: [
+                [
+                  [
+                    [0, 0],
+                    [1, 0],
+                    [0, 0],
+                  ],
+                ],
+              ],
+            },
+          },
+        ],
+      };
+      const snapshot = JSON.stringify(data);
+      const result = EChartsLayer.formatGeoJSON(data);
+      expect(result.features[0].geometry.type).toBe('Polygon');
+      expect(result.features[0].geometry.coordinates).toHaveLength(2);
+      expect(result.features[1].geometry.type).toBe('MultiPolygon');
+      expect(JSON.stringify(data)).toBe(snapshot);
+      expect(result.features[0].geometry.coordinates).not.toBe(data.features[0].geometry.coordinates);
     });
   });
 });

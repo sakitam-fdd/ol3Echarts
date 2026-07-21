@@ -28,8 +28,8 @@ const options = {
         { value: 135, name: '视频广告' },
         { value: 1548, name: '搜索引擎' },
       ],
-      itemStyle: {
-        emphasis: {
+      emphasis: {
+        itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -48,8 +48,8 @@ const options = {
         { value: 135, name: '视频广告' },
         { value: 1548, name: '搜索引擎' },
       ],
-      itemStyle: {
-        emphasis: {
+      emphasis: {
+        itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -68,8 +68,8 @@ const options = {
         { value: 135, name: '视频广告' },
         { value: 1548, name: '搜索引擎' },
       ],
-      itemStyle: {
-        emphasis: {
+      emphasis: {
+        itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -101,6 +101,8 @@ describe('indexSpec', () => {
         zoom: 8,
       }),
     });
+    // jsdom does not layout the target; seed an explicit size for OL 10
+    map.setSize([800, 600]);
   });
 
   afterEach(() => {
@@ -267,6 +269,7 @@ describe('indexSpec', () => {
 
     it(
       'resize',
+      { timeout: 50000 },
       () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
@@ -293,40 +296,39 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
-    it(
-      'zoomEnd',
-      () => {
-        const layer = new EChartsLayer(options, {
-          stopEvent: false,
-          hideOnMoving: true,
-          hideOnZooming: true,
-          forcedPrecomposeRerender: false,
+    it('zoomEnd', () => {
+      const layer = new EChartsLayer(options, {
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
+      });
+
+      return new Promise((resolve) => {
+        layer.on('zoomend', (event: any) => {
+          expect(event.value).toBe(9);
+          layer.remove();
+          resolve(true);
         });
 
-        return new Promise((resolve) => {
-          layer.on('zoomend', (event: any) => {
-            expect(event.value).toBe(8);
-            layer.remove();
-            resolve(true);
-          });
-
-          layer.on('load', () => {
-            setTimeout(() => {
-              map.getView().setZoom(8);
-            }, 1000);
-          });
-
-          layer.appendTo(map);
+        layer.on('load', () => {
+          map.getView().setZoom(9);
+          // zoomend is emitted via the move interaction path
+          map.dispatchEvent({
+            type: 'moveend',
+            frameState: { viewState: { zoom: 8 } },
+          } as any);
         });
-      },
-      { timeout: 50000 },
-    );
+
+        layer.appendTo(map);
+      });
+    });
 
     it(
       'onDragRotateEnd',
+      { timeout: 50000 },
       () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
@@ -351,78 +353,71 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
-    it(
-      'onMoveStart',
-      () => {
-        const layer = new EChartsLayer(options, {
-          stopEvent: false,
-          hideOnMoving: true,
-          hideOnZooming: true,
-          forcedPrecomposeRerender: false,
+    it('onMoveStart', () => {
+      const layer = new EChartsLayer(options, {
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
+      });
+
+      return new Promise((resolve) => {
+        layer.on('load', () => {
+          const zoom = map.getView().getZoom();
+          map.dispatchEvent({
+            type: 'movestart',
+            frameState: { viewState: { zoom } },
+          } as any);
+          expect(layer.isVisible()).toBe(false);
+
+          map.dispatchEvent({
+            type: 'moveend',
+            frameState: { viewState: { zoom } },
+          } as any);
+          expect(layer.isVisible()).toBe(true);
+          layer.remove();
+          resolve(true);
         });
 
-        return new Promise((resolve) => {
-          layer.on('load', () => {
-            const center = map.getView().getCenter();
-            map.getView().animate({
-              center: [center[0] + 0.8, center[1] + 0.4],
-              duration: 1000,
-            });
+        layer.appendTo(map);
+      });
+    });
 
-            setTimeout(() => {
-              expect(layer.isVisible()).toBe(false);
-            });
+    it('onMoveEnd', () => {
+      const layer = new EChartsLayer(options, {
+        stopEvent: false,
+        hideOnMoving: true,
+        hideOnZooming: true,
+        forcedPrecomposeRerender: false,
+      });
 
-            setTimeout(() => {
-              expect(layer.isVisible()).toBe(true);
-              layer.remove();
-              resolve(true);
-            }, 2000);
-          });
+      return new Promise((resolve) => {
+        const center = map.getView().getCenter();
+        const nextCenter = [center[0] + 0.8, center[1] + 0.4];
 
-          layer.appendTo(map);
-        });
-      },
-      { timeout: 50000 },
-    );
-
-    it(
-      'onMoveEnd',
-      () => {
-        const layer = new EChartsLayer(options, {
-          stopEvent: false,
-          hideOnMoving: true,
-          hideOnZooming: true,
-          forcedPrecomposeRerender: false,
+        layer.on('moveend', (event: any) => {
+          expect(event.value).toEqual(nextCenter);
+          layer.remove();
+          resolve(true);
         });
 
-        return new Promise((resolve) => {
-          const center = map.getView().getCenter();
-
-          layer.on('moveend', (event: any) => {
-            expect(event.value).toEqual([center[0] + 0.8, center[1] + 0.4]);
-            layer.remove();
-            resolve(true);
-          });
-
-          layer.on('load', () => {
-            map.getView().animate({
-              center: [center[0] + 0.8, center[1] + 0.4],
-              duration: 0, // 取消动画，保证视图实时同步
-            });
-          });
-
-          layer.appendTo(map);
+        layer.on('load', () => {
+          map.getView().setCenter(nextCenter);
+          map.dispatchEvent({
+            type: 'moveend',
+            frameState: { viewState: { zoom: map.getView().getZoom() } },
+          } as any);
         });
-      },
-      { timeout: 50000 },
-    );
+
+        layer.appendTo(map);
+      });
+    });
 
     it(
       'onCenterChange',
+      { timeout: 50000 },
       () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
@@ -449,7 +444,6 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
   });
 
@@ -495,26 +489,24 @@ describe('indexSpec', () => {
 
       return new Promise((resolve) => {
         layer.on('load', () => {
-          const center = map.getView().getCenter();
-          map.getView().animate({
-            center: [center[0] + 0.8, center[1] + 0.4],
-            duration: 1000,
-          });
-
+          const zoom = map.getView().getZoom();
           expect(layer.isVisible()).toBe(true);
 
-          setTimeout(() => {
-            expect(layer.isVisible()).toBe(false);
-          }, 500);
+          map.dispatchEvent({
+            type: 'movestart',
+            frameState: { viewState: { zoom } },
+          } as any);
+          expect(layer.isVisible()).toBe(false);
 
-          setTimeout(() => {
-            expect(layer.isVisible()).toBe(true);
-            resolve(true);
-          }, 2500);
+          map.dispatchEvent({
+            type: 'moveend',
+            frameState: { viewState: { zoom } },
+          } as any);
+          expect(layer.isVisible()).toBe(true);
+          resolve(true);
         });
 
         expect(layer).toBeDefined();
-
         layer.appendTo(map);
       });
     });
@@ -529,35 +521,28 @@ describe('indexSpec', () => {
 
       await new Promise((resolve) => {
         layer.on('load', () => {
-          vi.useFakeTimers();
-          const center = map.getView().getCenter();
-          map.getView().animate({
-            center: [center[0] + 0.8, center[1] + 0.4],
-            duration: 1000,
-          });
-
+          const zoom = map.getView().getZoom();
           expect(layer.isVisible()).toBe(true);
 
+          map.dispatchEvent({
+            type: 'movestart',
+            frameState: { viewState: { zoom } },
+          } as any);
           layer.setVisible(false);
-
           expect(layer.isVisible()).toBe(false);
 
-          setTimeout(() => {
-            expect(layer.isVisible()).toBe(false);
-          }, 500);
+          map.dispatchEvent({
+            type: 'moveend',
+            frameState: { viewState: { zoom } },
+          } as any);
+          expect(layer.isVisible()).toBe(false);
 
-          setTimeout(() => {
-            expect(layer.isVisible()).toBe(false);
-            layer.setVisible(true);
-            expect(layer.isVisible()).toBe(true);
-            resolve(true);
-          }, 2500);
-
-          vi.runAllTimers();
+          layer.setVisible(true);
+          expect(layer.isVisible()).toBe(true);
+          resolve(true);
         });
 
         expect(layer).toBeDefined();
-
         layer.appendTo(map);
       });
     });

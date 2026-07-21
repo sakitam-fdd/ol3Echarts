@@ -98,25 +98,27 @@ function removeNode(node: HTMLElement) {
  * @param event
  */
 function mockEvent(type: string, event: any) {
+  const pointerEvent = event.pointerEvent || event.originalEvent || event;
+  const pixel = event.pixel || [pointerEvent.offsetX, pointerEvent.offsetY];
   const e = new MouseEvent(type, {
     // set bubbles, so zrender can receive the mock event. ref: https://dom.spec.whatwg.org/#interface-event
     // "event.bubbles": Returns true or false depending on how event was initialized.
     // True if event goes through its target’s ancestors in reverse tree order, and false otherwise
     bubbles: true,
     cancelable: true,
-    button: event.pointerEvent.button,
-    buttons: event.pointerEvent.buttons,
-    clientX: event.pointerEvent.clientX,
-    clientY: event.pointerEvent.clientY,
-    movementX: event.pointerEvent.movementX,
-    movementY: event.pointerEvent.movementY,
-    relatedTarget: event.pointerEvent.relatedTarget,
-    screenX: event.pointerEvent.screenX,
-    screenY: event.pointerEvent.screenY,
+    button: pointerEvent.button,
+    buttons: pointerEvent.buttons,
+    clientX: pointerEvent.clientX,
+    clientY: pointerEvent.clientY,
+    movementX: pointerEvent.movementX,
+    movementY: pointerEvent.movementY,
+    relatedTarget: pointerEvent.relatedTarget,
+    screenX: pointerEvent.screenX,
+    screenY: pointerEvent.screenY,
     view: window,
   }) as MouseEvent & { zrX: number; zrY: number; event: MouseEvent };
-  e.zrX = event.pointerEvent.offsetX;
-  e.zrY = event.pointerEvent.offsetY;
+  e.zrX = Number(pixel[0]) || 0;
+  e.zrY = Number(pixel[1]) || 0;
   e.event = e;
   return e;
 }
@@ -135,4 +137,67 @@ export function semver(a: string, b: string) {
   return 0;
 }
 
-export { merge, isObject, bind, arrayAdd, uuid, bindAll, removeNode, mockEvent };
+/**
+ * Clone option data without dropping callback functions.
+ *
+ * ECharts options commonly contain formatter/renderItem callbacks, so JSON and
+ * structuredClone are not suitable. Plain objects, arrays, Map/Set and binary
+ * data are copied; other class instances are intentionally kept by reference.
+ */
+function clone<T>(value: T, seen: WeakMap<object, unknown> = new WeakMap()): T {
+  if ((typeof value !== 'object' && typeof value !== 'function') || value === null) {
+    return value;
+  }
+  if (typeof value === 'function') {
+    return value;
+  }
+
+  const source = value as object;
+  const cached = seen.get(source);
+  if (cached) return cached as T;
+
+  if (value instanceof Date) return new Date(value.getTime()) as T;
+  if (value instanceof RegExp) return new RegExp(value.source, value.flags) as T;
+  if (value instanceof ArrayBuffer) return value.slice(0) as T;
+  if (ArrayBuffer.isView(value)) {
+    if (value instanceof DataView) {
+      return new DataView(value.buffer.slice(0), value.byteOffset, value.byteLength) as T;
+    }
+    return (value as unknown as { slice: () => T }).slice();
+  }
+  if (value instanceof Map) {
+    const result = new Map();
+    seen.set(source, result);
+    value.forEach((item, key) => result.set(clone(key, seen), clone(item, seen)));
+    return result as T;
+  }
+  if (value instanceof Set) {
+    const result = new Set();
+    seen.set(source, result);
+    value.forEach((item) => result.add(clone(item, seen)));
+    return result as T;
+  }
+  if (Array.isArray(value)) {
+    const result: unknown[] = [];
+    seen.set(source, result);
+    value.forEach((item) => result.push(clone(item, seen)));
+    return result as T;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) {
+    return value;
+  }
+
+  const result = Object.create(prototype) as Record<PropertyKey, unknown>;
+  seen.set(source, result);
+  Reflect.ownKeys(value as object).forEach((key) => {
+    const descriptor = Object.getOwnPropertyDescriptor(value as object, key);
+    if (!descriptor) return;
+    if ('value' in descriptor) descriptor.value = clone(descriptor.value, seen);
+    Object.defineProperty(result, key, descriptor);
+  });
+  return result as T;
+}
+
+export { merge, isObject, bind, arrayAdd, uuid, bindAll, removeNode, mockEvent, clone };

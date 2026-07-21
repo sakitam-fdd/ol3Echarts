@@ -5,9 +5,8 @@
   "workspaces": [
     "packages/*"
   ],
-  "packageManager": "pnpm@8.15.8",
+  "packageManager": "pnpm@10.34.0",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "dev": "turbo run dev --filter='./packages/*'",
     "build": "turbo run build --filter='./packages/*'",
     "build:minify": "turbo run build:minify --filter='./packages/*'",
@@ -22,77 +21,66 @@
     "prettier": "prettier --parser=typescript --write **/*.{js,ts,md}",
     "test": "turbo run test --filter='./packages/*'",
     "test-only": "turbo run test-only --filter='./packages/*'",
-    "coverage": "turbo run coverage --filter='./packages/*'"
+    "coverage": "turbo run coverage --filter='./packages/*'",
+    "check": "pnpm lint && pnpm test-only && pnpm build && pnpm docs:build"
   },
   "resolutions": {
-    "@docusaurus/theme-common": "3.4.0"
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.12.0",
+    "webpackbar": "^7.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "overrides": {
+      "typedoc": "^0.28.0",
+      "typedoc-plugin-markdown": "^4.12.0",
+      "webpackbar": "^7.0.0",
+      "@docusaurus/core": "3.10.1",
+      "@docusaurus/types": "3.10.1",
+      "@docusaurus/theme-common": "3.10.1",
+      "@docusaurus/plugin-content-docs": "3.10.1",
+      "@docusaurus/mdx-loader": "3.10.1",
+      "@docusaurus/utils": "3.10.1",
+      "@docusaurus/utils-common": "3.10.1"
+    }
   },
   "devDependencies": {
-    "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.0",
     "@aurorafe/eslint-config-base": "^1.1.0",
     "@aurorafe/eslint-config-ts": "^1.1.0",
-    "@aurorafe/eslint-config-vue": "^1.1.0",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.9",
-    "@types/node": "^18.6.1",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
-    "@rollup/plugin-eslint": "^9.0.5",
-    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
-    "@vitest/coverage-v8": "^2.1.4",
-    "@vitest/ui": "^2.1.4",
-    "@vitest/browser": "^2.1.9",
-    "@vitest/coverage-istanbul": "^2.1.4",
-    "@swc/core": "^1.6.5",
-    "canvas": "^2.10.2",
-    "jsdom": "^22.1.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-istanbul": "^4.1.4",
     "cross-env": "^7.0.3",
     "esbuild": "^0.28.1",
     "eslint": "^8.57.0",
+    "jsdom": "^22.1.0",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.5",
-    "turbo": "^2.9.14",
-    "terser": "^5.36.0",
-    "typescript": "^5.4.4",
-    "typedoc": "^0.26.1",
-    "typedoc-plugin-markdown": "^4.1.0",
-    "typedoc-plugin-not-exported": "^0.1.6",
-    "vitest": "^4.1.0",
-    "vitest-environment-miniflare": "^2.14.4",
-    "wait-for-expect": "3.0.2",
-    "lint-staged": "^13.0.3",
-    "playwright": "^1.55.1",
     "rimraf": "^3.0.2",
     "rollup": "^4.59.0",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
-    "rollup-plugin-swc3": "^0.12.1",
+    "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-visualizer": "^5.12.0",
-    "rollup-plugin-sourcemaps": "^0.6.3"
+    "turbo": "^2.9.14",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.12.0",
+    "typedoc-plugin-not-exported": "^0.1.6",
+    "typescript": "^5.4.4",
+    "vitest": "^4.1.4"
   },
   "engines": {
-    "node": ">= 20.15.0",
-    "pnpm": ">= 8.15.8"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pnpm run lint",
-      "pre-push": "pnpm run test"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.ts?(x)": [
-      "prettier --parser=typescript --write",
-      "git add"
-    ]
+    "node": ">=22.0.0",
+    "pnpm": ">=10.34.0"
   },
   "browserslist": {
     "production": [

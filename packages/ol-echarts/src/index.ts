@@ -1,52 +1,67 @@
-import { Map, Object as obj } from 'ol';
+import { Map, Object as OlObject } from 'ol';
 import { VERSION } from 'ol/util';
 import type { ProjectionLike } from 'ol/proj';
 import { transform } from 'ol/proj';
 import type Event from 'ol/events/Event';
 import type { Coordinate } from 'ol/coordinate';
 import * as echarts from 'echarts';
+import type { ECharts } from 'echarts';
 import Transformable from 'zrender/lib/core/Transformable';
 import BoundingRect from 'zrender/lib/core/BoundingRect';
 
-import { isObject, merge, arrayAdd, bind, uuid, bindAll, removeNode, mockEvent, semver } from './utils';
+import { isObject, merge, arrayAdd, bind, uuid, bindAll, removeNode, mockEvent, semver, clone } from './utils';
 
 import formatGeoJSON from './utils/formatGeoJSON';
 
 import * as charts from './charts/index';
 
-type CoordinateSystemCreator = any;
+import type {
+  ChartOptions,
+  ChartSeriesOption,
+  CoordinateSystemInstance,
+  EChartsLayerOptions,
+  IncrementalCacheItem,
+  IncrementalDataItem,
+  Nullable,
+  NoDef,
+} from './types';
 
-const _options = {
-  forcedRerender: false, // Force re-rendering
-  forcedPrecomposeRerender: false, // force pre re-render
-  hideOnZooming: false, // when zooming hide chart
-  hideOnMoving: false, // when moving hide chart
-  hideOnRotating: false, // // when Rotating hide chart
+export type {
+  ChartOptions,
+  ChartSeriesOption,
+  ConvertChartType,
+  CoordinateSystemInstance,
+  EChartsLayerEvent,
+  EChartsLayerEventType,
+  EChartsLayerOptions,
+  IncrementalCacheItem,
+  IncrementalDataItem,
+  Nullable,
+  NoDef,
+} from './types';
+
+interface CoordinateSystemCreator {
+  new (map: Map): CoordinateSystemInstance;
+  dimensions: string[];
+  create: (echartsModel: unknown) => void;
+  getProjectionCode: (map: Map) => string;
+}
+
+const DEFAULT_OPTIONS: EChartsLayerOptions = {
+  forcedRerender: false,
+  forcedPrecomposeRerender: false,
+  hideOnZooming: false,
+  hideOnMoving: false,
+  hideOnRotating: false,
+  hideOffscreenLabels: true,
   convertTypes: ['pie', 'line', 'bar'],
   insertFirst: false,
   stopEvent: false,
-  polyfillEvents: semver(VERSION, '6.1.1') <= 0, // fix echarts mouse events
+  // OL <= 6.1.1 needs pointer event polyfill for zrender hit testing
+  polyfillEvents: semver(VERSION, '6.1.1') <= 0,
 };
 
-type Nullable<T> = T | null;
-type NoDef<T> = T | undefined;
-
-interface OptionsTypes {
-  source?: ProjectionLike;
-  destination?: ProjectionLike;
-  forcedRerender?: boolean;
-  forcedPrecomposeRerender?: boolean;
-  hideOnZooming?: boolean;
-  hideOnMoving?: boolean;
-  hideOnRotating?: boolean;
-  convertTypes?: string[] | number[];
-  insertFirst?: boolean;
-  stopEvent?: boolean;
-  polyfillEvents?: boolean;
-  [key: string]: any;
-}
-
-class EChartsLayer extends obj {
+class EChartsLayer extends OlObject {
   public static formatGeoJSON = formatGeoJSON;
 
   public static bind = bind;
@@ -63,87 +78,78 @@ class EChartsLayer extends obj {
 
   public static isObject = isObject;
 
-  private _chartOptions: NoDef<Nullable<any>>;
+  public static clone = clone;
+
+  /** Default layer options (immutable snapshot) */
+  public static defaultOptions: Readonly<EChartsLayerOptions> = Object.freeze({ ...DEFAULT_OPTIONS });
+
+  private _chartOptions: NoDef<Nullable<ChartOptions>>;
 
   private _isRegistered: boolean;
 
-  private _incremental: any[];
+  private _incremental: IncrementalCacheItem[];
 
-  private _coordinateSystem: Nullable<any>;
+  private _coordinateSystem: Nullable<CoordinateSystemInstance>;
 
   private coordinateSystemId: string;
 
-  private readonly _options: OptionsTypes;
+  private readonly _options: EChartsLayerOptions;
 
   private _initEvent: boolean;
 
   private prevVisibleState: string;
 
-  public $chart: Nullable<any>;
+  /** User-facing visibility; temporary hideOn* must not override this */
+  private _userVisible: boolean;
+
+  /** True between map movestart and moveend */
+  private _isInteracting: boolean;
+
+  private _interactionZoom: number | undefined;
+
+  private _interactionRotation: number | undefined;
+
+  private _isZooming: boolean;
+
+  private _isRotating: boolean;
+
+  public $chart: Nullable<ECharts>;
 
   public $container: NoDef<HTMLElement>;
 
-  public _map: any;
+  public _map: NoDef<Map>;
 
-  constructor(chartOptions?: NoDef<Nullable<object>>, options?: NoDef<Nullable<OptionsTypes>>, map?: any) {
-    const opts = Object.assign(_options, options);
+  constructor(
+    chartOptions?: NoDef<Nullable<ChartOptions>>,
+    options?: NoDef<Nullable<EChartsLayerOptions>>,
+    map?: NoDef<Map>,
+  ) {
+    const opts: EChartsLayerOptions = {
+      ...DEFAULT_OPTIONS,
+      ...(options || {}),
+      // keep convertTypes as a fresh array so callers cannot mutate defaults
+      convertTypes: options?.convertTypes ? [...options.convertTypes] : [...(DEFAULT_OPTIONS.convertTypes as string[])],
+    };
     super(opts);
 
-    /**
-     * layer options
-     */
     this._options = opts;
+    this._chartOptions = chartOptions ? clone(chartOptions) : chartOptions;
+    this.set('chartOptions', this._chartOptions);
 
-    /**
-     * chart options
-     */
-    this._chartOptions = chartOptions;
-    this.set('chartOptions', chartOptions); // cache chart Options
-
-    /**
-     * chart instance
-     * @type {null}
-     */
     this.$chart = null;
-
-    /**
-     * chart element
-     * @type {undefined}
-     */
     this.$container = undefined;
-
-    /**
-     * Whether the relevant configuration has been registered
-     * @type {boolean}
-     * @private
-     */
     this._isRegistered = false;
-
-    /**
-     * check if init
-     */
     this._initEvent = false;
-
-    /**
-     * 增量数据存放
-     * @type {Array}
-     * @private
-     */
     this._incremental = [];
-
-    /**
-     * coordinate system
-     * @type {null}
-     * @private
-     */
     this._coordinateSystem = null;
-
-    /**
-     * coordinateSystemId
-     */
     this.coordinateSystemId = '';
-
     this.prevVisibleState = '';
+    this._userVisible = true;
+    this._isInteracting = false;
+    this._interactionZoom = undefined;
+    this._interactionRotation = undefined;
+    this._isZooming = false;
+    this._isRotating = false;
 
     bindAll(
       [
@@ -151,7 +157,9 @@ class EChartsLayer extends obj {
         'onResize',
         'onZoomStart',
         'onZoomEnd',
+        'onResolutionChange',
         'onCenterChange',
+        'onDragRotateStart',
         'onDragRotateEnd',
         'onMoveStart',
         'onMoveEnd',
@@ -169,74 +177,96 @@ class EChartsLayer extends obj {
   /**
    * append layer to map
    * @param map
-   * @param forceIgnore
+   * @param forceIgnore skip `instanceof Map` check (for wrapped map objects)
    */
-  public appendTo(map: any, forceIgnore = false) {
+  public appendTo(map: Map, forceIgnore = false) {
     this.setMap(map, forceIgnore);
   }
 
   /**
    * get ol map
-   * @returns {ol.Map}
    */
-  public getMap(): Map {
+  public getMap(): NoDef<Map> {
     return this._map;
+  }
+
+  /**
+   * get echarts instance
+   */
+  public getECharts(): Nullable<ECharts> {
+    return this.$chart;
+  }
+
+  /**
+   * get layer options
+   */
+  public getOptions(): EChartsLayerOptions {
+    return clone(this._options);
   }
 
   /**
    * set map
    * @param map
-   * @param forceIgnore 是否忽略instanceof检查
+   * @param forceIgnore skip `instanceof Map` check
    */
-  public setMap(map: any, forceIgnore = false) {
-    if (map && (forceIgnore || map instanceof Map)) {
-      this._map = map;
-      this._map.once('postrender', () => {
-        this.handleMapChanged();
-      });
-      this._map.renderSync();
-    } else {
+  public setMap(map: Map, forceIgnore = false) {
+    if (!map || (!forceIgnore && !(map instanceof Map))) {
       throw new Error('not ol map object');
     }
+
+    if (this._map === map && this.$container) return;
+
+    const previousMap = this._map;
+    if (previousMap && this._initEvent) this.unBindEvent(previousMap);
+    if (this.$container) removeNode(this.$container);
+
+    this._map = map;
+    this._coordinateSystem = null;
+    this._isRegistered = false;
+    this.coordinateSystemId = '';
+
+    map.once('postrender', () => {
+      if (this._map === map) this.handleMapChanged();
+    });
+    map.renderSync();
   }
 
   /**
    * get echarts options
    */
-  public getChartOptions(): object | undefined | null {
+  public getChartOptions(): NoDef<Nullable<ChartOptions>> {
     return this.get('chartOptions');
   }
 
   /**
    * set echarts options and redraw
    * @param options
-   * @returns {EChartsLayer}
    */
-  public setChartOptions(options: object = {}) {
-    this._chartOptions = options;
-    this.set('chartOptions', options);
+  public setChartOptions(options: ChartOptions = {}) {
+    this._chartOptions = clone(options);
+    this._incremental = [];
+    this.set('chartOptions', this._chartOptions);
     this.clearAndRedraw();
     return this;
   }
 
   /**
-   * append data
+   * append incremental series data
    * @param data
-   * @param save
-   * @returns {EChartsLayer}
+   * @param save keep in internal cache for redraw
    */
-  public appendData(data: any, save: boolean | undefined | null = true) {
-    if (data) {
+  public appendData(data: IncrementalDataItem, save: boolean | undefined | null = true) {
+    if (data && this.$chart) {
+      const payload = clone(data.data);
       if (save) {
         this._incremental = arrayAdd(this._incremental, {
           index: this._incremental.length,
-          data: data.data,
+          data: clone(payload),
           seriesIndex: data.seriesIndex,
         });
       }
-      // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin
       this.$chart.appendData({
-        data: data.data.copyWithin(),
+        data: payload as number[],
         seriesIndex: data.seriesIndex,
       });
     }
@@ -256,7 +286,7 @@ class EChartsLayer extends obj {
   }
 
   /**
-   * remove layer
+   * remove layer and release chart / DOM / listeners
    */
   public remove() {
     this.clear();
@@ -264,12 +294,25 @@ class EChartsLayer extends obj {
       this.$chart.dispose();
     }
 
-    if (this._initEvent && this.$container) {
-      this.$container && removeNode(this.$container);
+    if (this._initEvent) {
       this.unBindEvent();
     }
-    delete this.$chart;
-    delete this._map;
+    if (this.$container) {
+      removeNode(this.$container);
+      this.$container = undefined;
+    }
+
+    this.$chart = null;
+    this._map = undefined;
+    this._isRegistered = false;
+    this.coordinateSystemId = '';
+    this._coordinateSystem = null;
+    this._incremental = [];
+    this._isInteracting = false;
+    this._interactionZoom = undefined;
+    this._interactionRotation = undefined;
+    this._isZooming = false;
+    this._isRotating = false;
   }
 
   /**
@@ -280,10 +323,9 @@ class EChartsLayer extends obj {
   }
 
   private innerShow() {
-    if (this.$container) {
-      this.$container.style.display = this.prevVisibleState;
-      this.prevVisibleState = '';
-    }
+    if (!this._userVisible || !this.$container) return;
+    this.$container.style.display = this.prevVisibleState || '';
+    this.prevVisibleState = '';
   }
 
   /**
@@ -294,7 +336,7 @@ class EChartsLayer extends obj {
   }
 
   private innerHide() {
-    if (this.$container) {
+    if (this.$container && this.$container.style.display !== 'none') {
       this.prevVisibleState = this.$container.style.display;
       this.$container.style.display = 'none';
     }
@@ -304,7 +346,7 @@ class EChartsLayer extends obj {
    * check layer is visible
    */
   public isVisible() {
-    return this.$container && this.$container.style.display !== 'none';
+    return Boolean(this.$container && this.$container.style.display !== 'none');
   }
 
   /**
@@ -353,6 +395,7 @@ class EChartsLayer extends obj {
    * @param visible
    */
   public setVisible(visible: boolean) {
+    this._userVisible = visible;
     if (visible) {
       if (this.$container) {
         this.$container.style.display = '';
@@ -364,7 +407,7 @@ class EChartsLayer extends obj {
         this.$container.style.display = 'none';
       }
       this.clear(true);
-      this._chartOptions = {};
+      this._chartOptions = {} as ChartOptions;
       this.clearAndRedraw();
     }
   }
@@ -374,11 +417,11 @@ class EChartsLayer extends obj {
    */
   public render() {
     if (!this.$chart && this.$container) {
-      // @ts-ignore
       this.$chart = echarts.init(this.$container);
       if (this._chartOptions) {
-        this.registerMap();
-        this.$chart.setOption(this.convertData(this._chartOptions), false);
+        const option = clone(this._chartOptions);
+        this.registerMap(option);
+        this.$chart.setOption(this.convertData(option), false);
       }
       this.dispatchEvent({
         type: 'load',
@@ -430,6 +473,8 @@ class EChartsLayer extends obj {
   }
 
   private onZoomStart() {
+    if (this._isZooming) return;
+    this._isZooming = true;
     this._options.hideOnZooming && this.innerHide();
     const map = this.getMap();
     if (map && map.getView()) {
@@ -445,10 +490,11 @@ class EChartsLayer extends obj {
    * handle zoom end events
    */
   private onZoomEnd() {
+    if (!this._isZooming) return;
+    this._isZooming = false;
     this._options.hideOnZooming && this.innerShow();
     const map = this.getMap();
     if (map && map.getView()) {
-      this.clearAndRedraw();
       this.dispatchEvent({
         type: 'zoomend',
         source: this,
@@ -457,14 +503,38 @@ class EChartsLayer extends obj {
     }
   }
 
+  /** Track resolution changes independently from MapBrowserEvent frame state. */
+  private onResolutionChange() {
+    if (this._isInteracting) {
+      this.onZoomStart();
+      return;
+    }
+    this.clearAndRedraw();
+  }
+
   /**
-   * handle rotate end events
+   * handle rotate start (from movestart when rotation is changing)
+   */
+  private onDragRotateStart() {
+    if (this._isRotating) return;
+    this._isRotating = true;
+    this._options.hideOnRotating && this.innerHide();
+  }
+
+  /**
+   * handle rotate / rotation property changes
    */
   private onDragRotateEnd() {
+    // change:rotation fires throughout an interaction; finish only at moveend.
+    if (this._isInteracting) {
+      this.onDragRotateStart();
+      return;
+    }
+    this._isRotating = false;
     this._options.hideOnRotating && this.innerShow();
     const map = this.getMap();
     if (map && map.getView()) {
-      this.clearAndRedraw();
+      if (!this._isInteracting) this.clearAndRedraw();
       this.dispatchEvent({
         type: 'change:rotation',
         source: this,
@@ -476,20 +546,31 @@ class EChartsLayer extends obj {
   /**
    * handle move start events
    */
-  private onMoveStart(e) {
+  private onMoveStart(e: { frameState?: { viewState?: { zoom?: number; rotation?: number } } }) {
     const map = this.getMap();
 
     if (!map || !map.getView()) {
       return;
     }
 
-    const previousZoom = e.frameState.viewState.zoom;
+    this._isInteracting = true;
+
+    const previousZoom = e?.frameState?.viewState?.zoom;
+    const previousRotation = e?.frameState?.viewState?.rotation;
     const currentZoom = map.getView().getZoom();
-    if (previousZoom !== currentZoom) {
+    const currentRotation = map.getView().getRotation();
+
+    this._interactionZoom = previousZoom ?? currentZoom;
+    this._interactionRotation = previousRotation ?? currentRotation;
+
+    if (previousZoom !== undefined && previousZoom !== currentZoom) {
       this.onZoomStart();
-    } else {
-      this.onZoomEnd();
     }
+
+    if (previousRotation !== undefined && previousRotation !== currentRotation) {
+      this.onDragRotateStart();
+    }
+
     this._options.hideOnMoving && this.innerHide();
 
     this.dispatchEvent({
@@ -502,20 +583,26 @@ class EChartsLayer extends obj {
   /**
    * handle move end events
    */
-  private onMoveEnd(e) {
-    this._options.hideOnMoving && this.innerShow();
+  private onMoveEnd(e: { frameState?: { viewState?: { zoom?: number; rotation?: number } } }) {
     const map = this.getMap();
 
     if (!map || !map.getView()) {
+      this._isInteracting = false;
       return;
     }
 
-    const previousZoom = e.frameState.viewState.zoom;
+    const previousZoom = this._interactionZoom ?? e?.frameState?.viewState?.zoom;
+    const previousRotation = this._interactionRotation ?? e?.frameState?.viewState?.rotation;
     const currentZoom = map.getView().getZoom();
+    const currentRotation = map.getView().getRotation();
+    const zoomChanged = this._isZooming || (previousZoom !== undefined && previousZoom !== currentZoom);
+    const rotationChanged =
+      this._isRotating || (previousRotation !== undefined && previousRotation !== currentRotation);
 
-    if (previousZoom === currentZoom) {
-      this.onZoomEnd();
-    }
+    this._isInteracting = false;
+    this._options.hideOnMoving && this.innerShow();
+    if (zoomChanged) this.onZoomEnd();
+    if (rotationChanged) this.onDragRotateEnd();
 
     this.clearAndRedraw();
     this.dispatchEvent({
@@ -523,6 +610,8 @@ class EChartsLayer extends obj {
       source: this,
       value: map.getView().getCenter(),
     });
+    this._interactionZoom = undefined;
+    this._interactionRotation = undefined;
   }
 
   /**
@@ -613,8 +702,10 @@ class EChartsLayer extends obj {
         container.appendChild(this.$container!);
       }
 
-      this.render();
+      this.updateViewSize(map.getSize());
+      // Bind before render so `load` handlers can interact with map events immediately
       this.bindEvent(map);
+      this.render();
     }
   }
 
@@ -635,22 +726,33 @@ class EChartsLayer extends obj {
    * register events
    * @private
    */
-  private bindEvent(map: any) {
+  private bindEvent(map: Map) {
+    if (this._initEvent) return;
     // https://github.com/openlayers/openlayers/issues/7284
-    const view = map.getView();
+    // OL event typings are strict across major versions; cast keeps runtime behavior stable.
+    const m = map as Map & {
+      on: (type: string, listener: (...args: any[]) => void) => void;
+      un: (type: string, listener: (...args: any[]) => void) => void;
+    };
+    const view = map.getView() as ReturnType<Map['getView']> & {
+      on: (type: string, listener: (...args: any[]) => void) => void;
+      un: (type: string, listener: (...args: any[]) => void) => void;
+    };
     if (this._options.forcedPrecomposeRerender) {
-      map.on('precompose', this.redraw);
+      // OL 6+ replaced precompose with prerender on Map
+      m.on('prerender', this.redraw);
     }
-    map.on('change:size', this.onResize);
+    m.on('change:size', this.onResize);
     view.on('change:center', this.onCenterChange);
+    view.on('change:resolution', this.onResolutionChange);
     view.on('change:rotation', this.onDragRotateEnd);
-    map.on('movestart', this.onMoveStart);
-    map.on('moveend', this.onMoveEnd);
+    m.on('movestart', this.onMoveStart);
+    m.on('moveend', this.onMoveEnd);
     if (this._options.polyfillEvents) {
-      map.on('pointerdown', this.mouseDown);
-      map.on('pointerup', this.mouseUp);
-      map.on('pointermove', this.mouseMove);
-      map.on('click', this.onClick);
+      m.on('pointerdown', this.mouseDown);
+      m.on('pointerup', this.mouseUp);
+      m.on('pointermove', this.mouseMove);
+      m.on('click', this.onClick);
     }
     this._initEvent = true;
   }
@@ -659,22 +761,31 @@ class EChartsLayer extends obj {
    * un register events
    * @private
    */
-  private unBindEvent() {
-    const map = this.getMap();
+  private unBindEvent(map: NoDef<Map> = this.getMap()) {
     if (!map) return;
     const view = map.getView();
     if (!view) return;
-    map.un('precompose', this.redraw);
-    map.un('change:size', this.onResize);
-    view.un('change:center', this.onCenterChange);
-    view.un('change:rotation', this.onDragRotateEnd);
-    map.un('movestart', this.onMoveStart);
-    map.un('moveend', this.onMoveEnd);
+    const m = map as Map & {
+      on: (type: string, listener: (...args: any[]) => void) => void;
+      un: (type: string, listener: (...args: any[]) => void) => void;
+    };
+    const v = view as ReturnType<Map['getView']> & {
+      on: (type: string, listener: (...args: any[]) => void) => void;
+      un: (type: string, listener: (...args: any[]) => void) => void;
+    };
+    m.un('prerender', this.redraw);
+    m.un('precompose', this.redraw);
+    m.un('change:size', this.onResize);
+    v.un('change:center', this.onCenterChange);
+    v.un('change:resolution', this.onResolutionChange);
+    v.un('change:rotation', this.onDragRotateEnd);
+    m.un('movestart', this.onMoveStart);
+    m.un('moveend', this.onMoveEnd);
     if (this._options.polyfillEvents) {
-      map.un('pointerdown' as any, this.mouseDown);
-      map.un('pointerup' as any, this.mouseUp);
-      map.un('pointermove', this.mouseMove);
-      map.un('click', this.onClick);
+      m.un('pointerdown', this.mouseDown);
+      m.un('pointerup', this.mouseUp);
+      m.un('pointermove', this.mouseMove);
+      m.un('click', this.onClick);
     }
     this._initEvent = false;
   }
@@ -690,8 +801,9 @@ class EChartsLayer extends obj {
     }
     this.$chart.resize();
     if (this._chartOptions) {
-      this.registerMap();
-      this.$chart.setOption(this.convertData(this._chartOptions), false);
+      const option = clone(this._chartOptions);
+      this.registerMap(option);
+      this.$chart.setOption(this.convertData(option), false);
       if (this._incremental && this._incremental.length > 0) {
         for (let i = 0; i < this._incremental.length; i++) {
           this.appendData(this._incremental[i], false);
@@ -706,60 +818,64 @@ class EChartsLayer extends obj {
   }
 
   /**
-   * register map coordinate system
+   * register map coordinate system and stamp series
    * @private
    */
-  private registerMap() {
+  private registerMap(chartOptions?: ChartOptions) {
     if (!this._isRegistered) {
       this.coordinateSystemId = `openlayers_${uuid()}`;
-      // @ts-ignore ignore echarts typing
-      echarts.registerCoordinateSystem(this.coordinateSystemId, this.getCoordinateSystem(this._options));
+      // ECharts CoordinateSystemCreator typing is incomplete for custom systems
+      echarts.registerCoordinateSystem(
+        this.coordinateSystemId,
+        this.getCoordinateSystem(this._options) as unknown as Parameters<typeof echarts.registerCoordinateSystem>[1],
+      );
       this._isRegistered = true;
     }
 
-    if (this._chartOptions) {
-      const series = this._chartOptions.series;
-      if (series && isObject(series)) {
-        const convertTypes = this._options.convertTypes;
-        if (convertTypes) {
-          for (let i = series.length - 1; i >= 0; i--) {
-            // @ts-ignore ignore type error
-            if (!(convertTypes.indexOf(series[i].type) > -1)) {
-              series[i].coordinateSystem = this.coordinateSystemId;
-            }
-            series[i].animation = false;
-          }
+    const target = chartOptions || this._chartOptions;
+    if (target) {
+      const series = target.series ? (Array.isArray(target.series) ? target.series : [target.series]) : [];
+      const convertTypes = this._options.convertTypes || [];
+      for (let i = series.length - 1; i >= 0; i--) {
+        const item = series[i] as ChartSeriesOption;
+        const isConverted = convertTypes.includes(item.type as string) && item.coordinates !== undefined;
+        if (!isConverted && item.coordinateSystem == null) {
+          item.coordinateSystem = this.coordinateSystemId;
         }
+        if (item.animation === undefined) item.animation = false;
       }
     }
   }
 
   /**
-   * 重新处理数据
-   * @param options
-   * @returns {*}
+   * Convert series that use geographic `coordinates` (pie / bar / line grids)
    */
-  private convertData(options: any) {
-    const series = options.series as any;
-    if (series && series.length > 0) {
+  private convertData(options: ChartOptions): ChartOptions {
+    const originalSeries = options.series;
+    const series = originalSeries ? (Array.isArray(originalSeries) ? originalSeries : [originalSeries]) : [];
+    if (series.length > 0) {
+      const map = this.getMap();
+      if (!map) return options;
+
       if (!this._coordinateSystem) {
         const Rc = this.getCoordinateSystem(this._options);
-        this._coordinateSystem = new Rc(this.getMap());
+        this._coordinateSystem = new Rc(map);
       }
-      if (series && isObject(series)) {
-        const convertTypes = this._options.convertTypes;
-        if (convertTypes) {
-          for (let i = series.length - 1; i >= 0; i--) {
-            const { type } = series[i] as any;
-            // @ts-ignore ignore type error
-            if (convertTypes.indexOf(type) > -1) {
-              if (series[i] && series[i].hasOwnProperty('coordinates')) {
-                series[i] = charts[series[i].type](options, series[i], this._coordinateSystem);
-              }
-            }
+      const convertTypes = this._options.convertTypes || [];
+      for (let i = series.length - 1; i >= 0; i--) {
+        const item = series[i] as ChartSeriesOption;
+        const { type } = item;
+        if (type && convertTypes.indexOf(type) > -1 && Object.prototype.hasOwnProperty.call(item, 'coordinates')) {
+          const converter = (charts as unknown as Record<string, Function>)[type];
+          if (typeof converter === 'function') {
+            series[i] = converter(options, item, this._coordinateSystem, {
+              hideOffscreenLabels: this._options.hideOffscreenLabels,
+              seriesIndex: i,
+            });
           }
         }
       }
+      if (!Array.isArray(originalSeries)) options.series = series[0];
     }
     return options;
   }
@@ -768,12 +884,12 @@ class EChartsLayer extends obj {
    * register coordinateSystem
    * @param options
    */
-  private getCoordinateSystem(options?: OptionsTypes): CoordinateSystemCreator {
-    const map = this.getMap();
+  private getCoordinateSystem(options?: EChartsLayerOptions): CoordinateSystemCreator {
+    const map = this.getMap() as Map;
     const coordinateSystemId = this.coordinateSystemId;
 
-    class RegisterCoordinateSystem {
-      map: any;
+    class RegisterCoordinateSystem implements CoordinateSystemInstance {
+      map: Map;
 
       _mapOffset = [0, 0];
 
@@ -783,7 +899,7 @@ class EChartsLayer extends obj {
 
       static dimensions = RegisterCoordinateSystem.prototype.dimensions || ['lng', 'lat'];
 
-      static create = function (echartsModel: any) {
+      static create = function (echartsModel: { eachSeries: (cb: (seriesModel: any) => void) => void }) {
         echartsModel.eachSeries((seriesModel: any) => {
           if (seriesModel.get('coordinateSystem') === coordinateSystemId) {
             seriesModel.coordinateSystem = new RegisterCoordinateSystem(map);
@@ -791,14 +907,12 @@ class EChartsLayer extends obj {
         });
       };
 
-      static getProjectionCode = function (m: any): string {
-        let code = '';
+      static getProjectionCode = function (m: Map): string {
         if (m) {
-          code = m.getView() && m.getView().getProjection().getCode();
-        } else {
-          code = 'EPSG:3857';
+          const view = m.getView();
+          return (view && view.getProjection() && view.getProjection().getCode()) || 'EPSG:3857';
         }
-        return code;
+        return 'EPSG:3857';
       };
 
       /**
@@ -813,13 +927,9 @@ class EChartsLayer extends obj {
        */
       protected _rawTransformable = new Transformable();
 
-      // @ts-ignore
-      private _rawTransform: number[];
+      private _viewRect: BoundingRect | undefined;
 
-      // @ts-ignore
-      private _viewRect: BoundingRect;
-
-      constructor(m: any) {
+      constructor(m: Map) {
         this.map = m;
         this.dimensions = ['lng', 'lat'];
         this.projCode = RegisterCoordinateSystem.getProjectionCode(this.map);
@@ -827,10 +937,9 @@ class EChartsLayer extends obj {
 
       /**
        * get zoom
-       * @returns {number}
        */
       getZoom(): number {
-        return this.map.getView().getZoom();
+        return this.map.getView().getZoom() as number;
       }
 
       /**
@@ -838,7 +947,7 @@ class EChartsLayer extends obj {
        * @param zoom
        */
       setZoom(zoom: number): void {
-        return this.map.getView().setZoom(zoom);
+        this.map.getView().setZoom(zoom);
       }
 
       getViewRectAfterRoam() {
@@ -854,45 +963,54 @@ class EChartsLayer extends obj {
       }
 
       /**
-       * 跟据坐标转换成屏幕像素
-       * @param data
-       * @returns {}
+       * Convert geographic data to screen pixels
        */
       dataToPoint(data: number[]): number[] {
-        let coords: Coordinate;
-        if (data && Array.isArray(data) && data.length > 0) {
-          coords = data.map((item: string | number): number => {
-            let res = 0;
-            if (typeof item === 'string') {
-              res = Number(item);
-            } else {
-              res = item;
-            }
-            return res;
-          });
-
-          const source: ProjectionLike = (options && options.source) || 'EPSG:4326';
-          const destination: ProjectionLike = (options && options.destination) || this.projCode;
-          const pixel = this.map.getPixelFromCoordinate(transform(coords, source, destination));
-          const mapOffset = this._mapOffset;
-          return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
+        if (!(data && Array.isArray(data) && data.length > 0)) {
+          return [0, 0];
         }
-        return [0, 0];
+
+        const coords = data.map((item: string | number): number =>
+          typeof item === 'string' ? Number(item) : item,
+        ) as Coordinate;
+
+        const source: ProjectionLike = (options && options.source) || 'EPSG:4326';
+        const destination: ProjectionLike = (options && options.destination) || this.projCode;
+        const projected = transform(coords, source, destination);
+        const pixel = this.map.getPixelFromCoordinate(projected);
+        if (!pixel) {
+          return [0, 0];
+        }
+        const mapOffset = this._mapOffset;
+        return [pixel[0] - mapOffset[0], pixel[1] - mapOffset[1]];
       }
 
       /**
-       * 跟据屏幕像素转换成坐标
-       * @param pixel
-       * @returns {}
+       * Convert screen pixels to map coordinates
        */
       pointToData(pixel: number[]): number[] {
         const mapOffset: number[] = this._mapOffset;
-        return this.map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
+        const projected = this.map.getCoordinateFromPixel([pixel[0] + mapOffset[0], pixel[1] + mapOffset[1]]);
+        if (!projected) return [0, 0];
+        const source: ProjectionLike = (options && options.source) || 'EPSG:4326';
+        const destination: ProjectionLike = (options && options.destination) || this.projCode;
+        return transform(projected, destination, source);
+      }
+
+      containPoint(point: number[]): boolean {
+        const rect = this.getViewRect();
+        return (
+          Number.isFinite(point[0]) &&
+          Number.isFinite(point[1]) &&
+          point[0] >= rect.x &&
+          point[0] <= rect.x + rect.width &&
+          point[1] >= rect.y &&
+          point[1] <= rect.y + rect.height
+        );
       }
 
       setViewRect(): void {
-        const size = this.map.getSize();
-        // this._transformTo(0, 0, size[0], size[1]);
+        const size = this.map.getSize() || [0, 0];
         this._viewRect = new BoundingRect(0, 0, size[0], size[1]);
       }
 
@@ -901,10 +1019,11 @@ class EChartsLayer extends obj {
        * @returns {*}
        */
       getViewRect() {
-        if (!this._viewRect) {
+        const size = this.map.getSize() || [0, 0];
+        if (!this._viewRect || this._viewRect.width !== size[0] || this._viewRect.height !== size[1]) {
           this.setViewRect();
         }
-        return this._viewRect;
+        return this._viewRect!;
       }
 
       /**
@@ -995,18 +1114,6 @@ class EChartsLayer extends obj {
 
   public get(key: string) {
     return super.get(key);
-  }
-
-  // @ts-ignore ignore
-  public on(type: any, listener: (p0: any) => void) {
-    // @ts-ignore ignore
-    return super.on(type, listener);
-  }
-
-  // @ts-ignore ignore
-  public un(type: any, listener: (p0: any) => void) {
-    // @ts-ignore ignore
-    return super.un(type, listener);
   }
 }
 

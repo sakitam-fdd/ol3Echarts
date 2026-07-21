@@ -39,6 +39,7 @@ function render(props) {
     const option = {
       tooltip: {
         trigger: 'item',
+        confine: true,
         formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
@@ -62,8 +63,8 @@ function render(props) {
             { value: 135, name: '视频广告' },
             { value: 1548, name: '搜索引擎' },
           ],
-          itemStyle: {
-            emphasis: {
+          emphasis: {
+            itemStyle: {
               shadowBlur: 10,
               shadowOffsetX: 0,
               shadowColor: 'rgba(255, 255, 255, 0.5)',
@@ -82,8 +83,8 @@ function render(props) {
             { value: 135, name: '视频广告' },
             { value: 1548, name: '搜索引擎' },
           ],
-          itemStyle: {
-            emphasis: {
+          emphasis: {
+            itemStyle: {
               shadowBlur: 10,
               shadowOffsetX: 0,
               shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -102,8 +103,8 @@ function render(props) {
             { value: 135, name: '视频广告' },
             { value: 1548, name: '搜索引擎' },
           ],
-          itemStyle: {
-            emphasis: {
+          emphasis: {
+            itemStyle: {
               shadowBlur: 10,
               shadowOffsetX: 0,
               shadowColor: 'rgba(0, 0, 0, 0.5)',

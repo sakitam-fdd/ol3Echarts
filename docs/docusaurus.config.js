@@ -7,15 +7,19 @@ const { pluginTypedoc } = require('./plugins/plugin-typedoc');
 const BASE_URL = '/ol3Echarts';
 
 module.exports = {
-  title: 'ol-echarts Documentation',
-  tagline: 'a openlayers extension to echarts',
+  title: 'ol-echarts',
+  tagline: 'OpenLayers 与 Apache ECharts 的地图可视化桥接层',
   url: 'https://sakitam-fdd.github.io',
   baseUrl: `${BASE_URL}/`,
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: 'throw',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    },
+  },
   favicon: 'images/logo.png',
   organizationName: 'sakitam-fdd',
-  projectName: 'ol-echarts',
+  projectName: 'ol3Echarts',
   i18n: {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans'],
@@ -29,7 +33,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars/docs.sidebars.js'),
-          editUrl: 'https://github.com/sakitam-fdd/ol3Echarts/edit/master/documents/docs',
+          editUrl: 'https://github.com/sakitam-fdd/ol3Echarts/edit/master/docs/',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           breadcrumbs: true,
@@ -62,7 +66,7 @@ module.exports = {
           // https://docusaurus.io/zh-CN/docs/blog#feed
           feedOptions: {
             type: 'all',
-            copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
+            copyright: `Copyright © ${new Date().getFullYear()} sakitam-fdd`,
             createFeedItems: async (params) => {
               const { blogPosts, defaultCreateFeedItems, ...rest } = params;
               return defaultCreateFeedItems({
@@ -131,7 +135,7 @@ module.exports = {
           position: 'right',
         },
         {
-          href: 'https://github.com/sakitam-fdd/ol-echarts',
+          href: 'https://github.com/sakitam-fdd/ol3Echarts',
           position: 'right',
           className: 'header-social-link header-github-link',
           'aria-label': 'GitHub',
@@ -192,11 +196,11 @@ module.exports = {
       appId: '7HSJME72X5',
       apiKey: '867f56d90de9d14dbb4cd3d0928ff13f',
       indexName: 'ol-echarts',
-      // contextualSearch: true,
+      contextualSearch: false,
     },
     announcementBar: {
       id: 'actions',
-      content: "🚀 ol echarts for openlayers.",
+      content: '🚀 ol-echarts 4：支持 OpenLayers 7–10 与 ECharts 5/6',
       backgroundColor: 'var(--ifm-color-primary-dark)',
       textColor: '#ffffff',
       isCloseable: true,
@@ -205,17 +209,6 @@ module.exports = {
   plugins: [
     path.resolve(__dirname, './plugins/plugin-overwrite-webpack.js'),
     path.resolve(__dirname, './plugins/plugin-tailwindcss.js'),
-    // 图片处理插件（响应式、懒加载及低像素占位图）
-    [
-      '@docusaurus/plugin-ideal-image',
-      {
-        quality: 70,
-        max: 1030,
-        min: 640,
-        steps: 2,
-        disableInDev: false,
-      },
-    ],
     ...pluginTypedoc(['ol-echarts', 'ol3-echarts']),
   ],
   themes: [

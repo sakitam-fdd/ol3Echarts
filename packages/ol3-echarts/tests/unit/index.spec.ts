@@ -30,8 +30,8 @@ const options = {
         { value: 135, name: '视频广告' },
         { value: 1548, name: '搜索引擎' },
       ],
-      itemStyle: {
-        emphasis: {
+      emphasis: {
+        itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -50,8 +50,8 @@ const options = {
         { value: 135, name: '视频广告' },
         { value: 1548, name: '搜索引擎' },
       ],
-      itemStyle: {
-        emphasis: {
+      emphasis: {
+        itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -70,8 +70,8 @@ const options = {
         { value: 135, name: '视频广告' },
         { value: 1548, name: '搜索引擎' },
       ],
-      itemStyle: {
-        emphasis: {
+      emphasis: {
+        itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -104,9 +104,11 @@ describe('indexSpec', () => {
         zoom: 8,
       }),
     });
+    map.setSize([800, 600]);
   });
 
   afterEach(() => {
+    map?.setTarget(null);
     if (container && container.parentNode) {
       container.parentNode.removeChild(container);
     }
@@ -285,6 +287,7 @@ describe('indexSpec', () => {
 
     it(
       'resize',
+      { timeout: 50000 },
       () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
@@ -311,11 +314,11 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
     it(
       'zoomEnd',
+      { timeout: 50000 },
       () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
@@ -326,25 +329,23 @@ describe('indexSpec', () => {
 
         return new Promise((resolve) => {
           layer.on('zoomend', (event: any) => {
-            expect(event.value).toBe(8);
+            expect(event.value).toBe(9);
             layer.remove();
             resolve(true);
           });
 
           layer.on('load', () => {
-            setTimeout(() => {
-              map.getView().setZoom(8);
-            }, 1000);
+            map.getView().setZoom(9);
           });
 
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
     it(
       'onDragRotateEnd',
+      { timeout: 50000 },
       () => {
         const layer = new EChartsLayer(options, {
           stopEvent: false,
@@ -369,7 +370,6 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
     it(
@@ -404,7 +404,6 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
     it(
@@ -436,7 +435,6 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
 
     it.skip(
@@ -466,7 +464,6 @@ describe('indexSpec', () => {
           layer.appendTo(map);
         });
       },
-      { timeout: 50000 },
     );
   });
 

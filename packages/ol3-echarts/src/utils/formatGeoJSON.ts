@@ -32,7 +32,7 @@ const decodePolygon = (
     y += prevY;
     prevX = x;
     prevY = y;
-    // @ts-ignore
+    // @ts-ignore -- decoded ring tuple is compatible with the legacy loose return type
     result.push([x / encodeScale, y / encodeScale]);
   }
   return result;
@@ -78,7 +78,7 @@ const decode = (json: any) => {
  */
 export default function (json: any) {
   const geoJson = decode(json);
-  // @ts-ignore
+  // @ts-ignore -- legacy ECharts map JSON has no stable public TypeScript shape
   const filterData = geoJson.features.filter(
     (featureObj: { geometry: { coordinates: { length: number } }; properties: any }) =>
       // Output of mapshaper may have geometry null
