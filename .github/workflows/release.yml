@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
   pull-requests: write
 
 concurrency:
@@ -34,4 +35,3 @@ jobs:
           title: 'chore(release): publish'
         env:
           GITHUB_TOKEN: ${{ secrets.PKG_DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_PKG_PUBLIC_TOKEN }}
