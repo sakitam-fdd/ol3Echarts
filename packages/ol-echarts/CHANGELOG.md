@@ -1,5 +1,11 @@
 - 🐞 修复
 
+## 4.1.0
+
+### Minor Changes
+
+- [`481ec9b`](https://github.com/sakitam-fdd/ol3Echarts/commit/481ec9b9e3f268dc06c05048d88f650eb513a7fe) Thanks [@sakitam-fdd](https://github.com/sakitam-fdd)! - Harden map lifecycle, coordinate conversion, incremental data and option cloning. Preserve GeoJSON polygon structure and suppress labels for offscreen coordinate-anchored pie charts.
+
 ## 4.0.1
 
 ### Patch Changes
