@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
                        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-  <ShortName>ol-echarts Documentation</ShortName>
-  <Description>Search ol-echarts Documentation</Description>
+  <ShortName>ol-echarts</ShortName>
+  <Description>Search ol-echarts</Description>
   <InputEncoding>UTF-8</InputEncoding>
   <Image width="16" height="16" type="image/x-icon">https://sakitam-fdd.github.io/ol3Echarts/images/logo.png</Image>
   <Url type="text/html" method="get" template="https://sakitam-fdd.github.io/ol3Echarts/search?q={searchTerms}"/>

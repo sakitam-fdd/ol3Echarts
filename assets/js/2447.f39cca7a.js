@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkol_echarts_docs=globalThis.webpackChunkol_echarts_docs||[]).push([[2447],{2447(a,c,s){s.r(c),s.d(c,{DocSearchModal:()=>h.a1});var h=s(8383)}}]);

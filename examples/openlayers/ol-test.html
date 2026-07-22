@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>ol-test-charts</title>
-  <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/openlayers@3.20.0/dist/ol.css">-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/openlayers/dist/ol.css">
+  <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@10.9.0/ol.css">-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@10.9.0/ol.css">
   <style>
     html, body, #map {
       height: 100%;
@@ -20,9 +20,9 @@
 <body>
 <div id="map"></div>
 <!--<script src="https://cdn.jsdelivr.net/npm/openlayers@3.20.0/dist/ol-debug.js"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/openlayers/dist/ol-debug.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@10.9.0/dist/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol-echarts@4.0.1/dist/ol-echarts.js"></script>
 <script>
   var Maps = new ol.Map({
     target: 'map',
@@ -821,7 +821,7 @@
     title: {
       text: '全国主要城市空气质量',
       subtext: 'data from PM25.in',
-      sublink: 'http://www.pm25.in',
+      sublink: 'https://www.pm25.in',
       left: 'center',
       textStyle: {
         color: '#fff'
@@ -894,7 +894,7 @@
         zlevel: 1
       }]
   };
-  var echartslayer = new ol3Echarts(option, {
+  var echartslayer = new EChartsLayer(option, {
     hideOnMoving: true
   });
   echartslayer.appendTo(Maps)

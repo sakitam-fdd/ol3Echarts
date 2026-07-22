@@ -5,7 +5,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>lines-airline</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@10.9.0/ol.css">
   <style>
     html, body, #map {
       height: 100%;
@@ -20,46 +20,29 @@
 </head>
 <body>
 <div id="map"></div>
-<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@10.9.0/dist/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
 <script src="../ajax.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol-echarts@4.0.1/dist/ol-echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var map = new HMap({
+  var map = new ol.Map({
     target: 'map',
-    controls: {
-      loading: true,
-      zoomSlider: true,
-      fullScreen: false,
-      attribution: false
-    },
-    view: {
-      center: [113.53450137499999, 34.44104525],
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      })
+    ],
+    view: new ol.View({
       projection: 'EPSG:4326',
-      zoom: 5, // resolution
-    },
-    baseLayers: [
-      {
-        layerName: 'ArcGIS',
-        isDefault: true,
-        layerType: 'TileXYZ',
-        projection: 'EPSG:3857',
-        label: {
-          layerName: 'Label',
-          isDefault: true,
-          layerType: 'TileXYZ',
-          projection: 'EPSG:3857',
-          layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
-        },
-        layerUrl: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-      }
-    ]
+      center: [113.53450137499999, 34.44104525],
+      zoom: 5
+    })
   });
-  var echartslayer = new ol3Echarts(null, {
+  var echartslayer = new EChartsLayer(null, {
     hideOnMoving: false
   });
-  echartslayer.appendTo(map.getMap());
+  echartslayer.appendTo(map);
 
   getJSON('../../json/flights.json', function (data) {
     function getAirportCoord (idx) {

@@ -1,1 +1,13 @@
-function getJSON(t,e){const s=new XMLHttpRequest;s.responseType="json",s.open("get",t,!0),s.onload=function(){if(!(s.status>=200&&s.status<300))throw new Error(s.statusText);e(s.response)},s.send()}
+function getJSON (url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.responseType = 'json';
+  xhr.open('get', url, true);
+  xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      callback(xhr.response);
+    } else {
+      throw new Error(xhr.statusText);
+    }
+  };
+  xhr.send();
+}

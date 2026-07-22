@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>微博签到数据点亮中国-WEBGL</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@10.9.0/ol.css">
   <style>
     html, body, #map {
       height: 100%;
@@ -18,41 +18,31 @@
 </head>
 <body>
 <div id="map"></div>
-<script src="https://cdn.jsdelivr.net/npm/hmap-js/dist/hmap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@10.9.0/dist/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.9/dist/echarts-gl.min.js"></script>
 <script src="../ajax.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol-echarts@4.0.1/dist/ol-echarts.js"></script>
 <!--<script src="../../../dist/ol3Echarts.js"></script>-->
 <script>
-  var map = new HMap('map', {
-    controls: {
-      loading: true,
-      zoomSlider: true,
-      fullScreen: false
-    },
-    view: {
-      center: [11464017.313439976, 3934744.6720247352],
-      extent: [-2.0037507067161843E7, -3.0240971958386254E7, 2.0037507067161843E7, 3.0240971958386205E7],
+  var map = new ol.Map({
+    target: 'map',
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      })
+    ],
+    view: new ol.View({
       projection: 'EPSG:102100',
-      tileSize: 256,
-      zoom: 5, // resolution
-    },
-    baseLayers: [
-      {
-        layerName: 'TileXYZ',
-        isDefault: true,
-        layerType: 'TileXYZ',
-        projection: 'EPSG:3857',
-        layerUrl: 'https://s{1-5}.geohey.com/s/mapping/midnight/all?x={x}&y={y}&z={z}&retina=&ak=ZmI0YmI5MWE4NjEyNDlkNTkxY2NmNmQ1NDYwOWI5ZmU'
-      }
-    ]
+      center: [11464017.313439976, 3934744.6720247352],
+      zoom: 5
+    })
   });
-  var echartslayer = new ol3Echarts(null, {
+  var echartslayer = new EChartsLayer(null, {
     hideOnMoving: true,
     hideOnZooming: true
   });
-  echartslayer.appendTo(map.getMap());
+  echartslayer.appendTo(map);
   getJSON('../../json/weibo-gl.json', function (rawData) {
     var weiboData = rawData.map(function (serieData, idx) {
       var px = serieData[0] / 1000;
